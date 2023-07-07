@@ -2,6 +2,6 @@
 
 int main(void)
 {
-    std::cout << Server().getPort() << std::endl;
+    Server();
     return 0;
 }

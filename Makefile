@@ -11,12 +11,12 @@ CFLAGS	= -Wall -Wextra -Werror -std=c++98
 
 DIR_SRCS	=	sources
 DIR_OBJS	=	obj
+DIR_TESTS	=	tests
 
-SRCS		=	$(DIR_SRCS)/main.cpp \
-				$(DIR_SRCS)/Server.cpp \
+SRCS		=	$(addprefix $(DIR_SRCS)/, $(shell ls $(DIR_SRCS) | grep .cpp$))
 
-TEST		=	tests/cavalinho.o
-TEST_SRC	=	$(addprefix tests/, $(shell ls tests/ | grep tests_*))
+TEST		=	$(DIR_TESTS)/cavalinho.o
+TEST_SRC	=	$(addprefix $(DIR_TESTS)/, $(shell ls $(DIR_TESTS)/ | grep tests_*))
 TEST_SRC	+=	$(filter-out $(DIR_SRCS)/main.cpp, $(SRCS))
 
 OBJS		=	$(subst $(DIR_SRCS), $(DIR_OBJS), $(SRCS:.cpp=.o))
@@ -42,11 +42,10 @@ fclean:	clean
 re:		fclean all
 
 $(TEST):
-		c++ -c tests/main_t.cpp $< -o $(TEST)
+		$(CC) -c $(DIR_TESTS)/main_t.cpp $< -o $(TEST)
 
 test:	$(TEST)
-		$(CC) $(INCLUDES) -g3 $(TEST_SRC) $(TEST) -o tests/cavalinho
-		@echo
-		valgrind --leak-check=full --show-leak-kinds=all --log-file="leaks.txt" tests/cavalinho $(TEST_FLAG)
+		$(CC) $(INCLUDES) -g3 $(TEST_SRC) $(TEST) -o $(DIR_TESTS)/cavalinho -lcurl -pthread
+		valgrind --leak-check=full --show-leak-kinds=all --log-file="leaks.txt" $(DIR_TESTS)/cavalinho $(TEST_FLAG)
 
 PHONY:	all clean fclean re
