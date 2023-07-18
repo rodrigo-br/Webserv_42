@@ -6,6 +6,7 @@
 # include <cstdlib> // For exit() and EXIT_FAILURE
 # include <iostream> // For cout
 # include <unistd.h> // For read
+# include <cstring> // For strerror
 # include <cerrno> // For errno
 # include <fstream> // For ifstream
 # include <vector> // For vector (duh)
@@ -17,7 +18,6 @@ class Server
 {
     public:
         Server();
-        int getPort();
 };
 
 #endif

@@ -6,8 +6,7 @@ CC	= c++
 
 RM	= rm -rf
 
-CFLAGS	= -Wall -Wextra -Werror -std=c++98
-
+CFLAGS	= -Wall -Wextra -Werror -Wshadow -std=c++98
 
 DIR_SRCS	=	sources
 DIR_OBJS	=	obj
@@ -24,11 +23,13 @@ OBJS		=	$(subst $(DIR_SRCS), $(DIR_OBJS), $(SRCS:.cpp=.o))
 $(NAME): $(OBJS)
 		$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-$(DIR_OBJS)/%.o	:	$(DIR_SRCS)/%.cpp
-			mkdir -p $(DIR_OBJS)
+$(DIR_OBJS)/%.o	: $(DIR_SRCS)/%.cpp
 			$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-all: $(NAME)
+makedir:
+		mkdir -p $(DIR_OBJS)
+
+all: makedir $(NAME)
 
 clean:
 		$(RM) $(OBJS)

@@ -1,31 +1,45 @@
 #include "Server.hpp"
 
-static int create_socket(sockaddr_in &sockaddr)
+static bool check(ssize_t result, int erro = -1)
+{
+	if (result <= erro)
+	{
+		std::cout << std::strerror(errno) << std::endl;
+	}
+	return (result <= erro);
+}
+
+static int create_socket(void)
 {
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd == -1)
+	if (check(sockfd))
 	{
-		std::cout << "Failed to create socket. errno: " << errno << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	sockaddr.sin_family = AF_INET;
-	sockaddr.sin_addr.s_addr = INADDR_ANY;
-	sockaddr.sin_port = htons(PORT);
 	return sockfd;
+}
+
+static sockaddr_in create_sockaddr()
+{
+	sockaddr_in _sockaddr;
+	_sockaddr.sin_family = AF_INET;
+	_sockaddr.sin_addr.s_addr = INADDR_ANY;
+	_sockaddr.sin_port = htons(PORT);
+	return (_sockaddr);
 }
 
 static void bind_socket(int &sockfd, sockaddr_in &sockaddr)
 {
-	if (bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0) {
-		std::cout << "Failed to bind to port " << PORT << ". errno: " << errno << std::endl;
+	if (check(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr))))
+	{
 		exit(EXIT_FAILURE);
 	}
 }
 
 static void listen_socket(int &sockfd)
 {
-	if (listen(sockfd, 10) < 0) {
-		std::cout << "Failed to listen on socket. errno: " << errno << std::endl;
+	if (check(listen(sockfd, 10)))
+	{
 		exit(EXIT_FAILURE);
 	}
 }
@@ -33,8 +47,8 @@ static void listen_socket(int &sockfd)
 static int accept_socket(int &sockfd, sockaddr_in &sockaddr, int &addrlen)
 {
 	int connection = accept(sockfd, (struct sockaddr*)&sockaddr, (socklen_t*)&addrlen);
-	if (connection < 0) {
-		std::cout << "Failed to grab connection. errno: " << errno << std::endl;
+	if (check(connection))
+	{
 		exit(EXIT_FAILURE);
 	}
 	return connection;
@@ -42,21 +56,21 @@ static int accept_socket(int &sockfd, sockaddr_in &sockaddr, int &addrlen)
 
 static void read_from_connection(int &connection, char *buffer)
 {
-	int bytesRead = read(connection, buffer, BUFFER_SIZE);
-	if (bytesRead <= 0)
+	if (check(read(connection, buffer, BUFFER_SIZE), 0))
 	{
-		std::cout << "No msg read" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::cout << "The message was: " << buffer;
 }
 
-int Server::getPort() { return PORT; };
+static std::string create_response()
+{
+	return ("HTTP/1.1 200 OK\nContent-Type: image/png\n\n");
+}
 
 Server::Server()
 {
-	sockaddr_in sockaddr;
-	int sockfd = create_socket(sockaddr);
+	int sockfd = create_socket();
+	sockaddr_in sockaddr = create_sockaddr();
 	bind_socket(sockfd, sockaddr);
 	listen_socket(sockfd);
 	int addrlen = sizeof(sockaddr);
@@ -64,11 +78,12 @@ Server::Server()
 	while(1)
 	{
 		int connection = accept_socket(sockfd, sockaddr, addrlen);
+		char request[BUFFER_SIZE] = {0};
+		read_from_connection(connection, request);
+		std::cout << request << std::string(42, '-') << '\n' << std::endl;
 
-		char buffer[BUFFER_SIZE] = {0};
-		read_from_connection(connection, buffer);
+		/* #region Brinks */
 		std::ifstream file("Dogs.png", std::ios::binary | std::ios::ate);
-
 		if (!file.is_open())
 		{
 			std::cout << "Failed to open image file." << std::endl;
@@ -83,11 +98,11 @@ Server::Server()
 			exit(EXIT_FAILURE);
 		}
 		file.close();
+		/* #endregion */
 
-		std::string response = "HTTP/1.1 200 OK\nContent-Type: image/png\n\n";
+		std::string response = create_response();
 		send(connection, response.c_str(), response.size(), 0);
-		send(connection, imageBuffer.data(), imageBuffer.size(), 0);
-
+		send(connection, imageBuffer.data(), imageBuffer.size(), 0);// Parte da brinks
 		close(connection);
 	}
 	close(sockfd);
