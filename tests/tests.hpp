@@ -2,6 +2,6 @@
 # define TESTS_H
 
 # include "catch.hpp"
-# include "webserv.hpp"
+# include "../includes/webserv.hpp"
 
 #endif

@@ -43,7 +43,7 @@ fclean:	clean
 re:		fclean all
 
 $(TEST):
-		$(CC) -c $(DIR_TESTS)/main_t.cpp $< -o $(TEST)
+		$(CC) $(INCLUDES) -c $(DIR_TESTS)/main_t.cpp $< -o $(TEST)
 
 test:	$(TEST)
 		$(CC) $(INCLUDES) -g3 $(TEST_SRC) $(TEST) -o $(DIR_TESTS)/cavalinho -lcurl -pthread
