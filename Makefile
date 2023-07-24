@@ -20,14 +20,12 @@ TEST_SRC	+=	$(filter-out $(DIR_SRCS)/main.cpp, $(SRCS))
 
 OBJS		=	$(subst $(DIR_SRCS), $(DIR_OBJS), $(SRCS:.cpp=.o))
 
-$(NAME): makedir $(OBJS)
+$(NAME): $(OBJS)
 		$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 $(DIR_OBJS)/%.o	: $(DIR_SRCS)/%.cpp
-			$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-makedir:
-		mkdir -p $(DIR_OBJS)
+			@mkdir -p $(DIR_OBJS)
+			$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@	
 
 all: $(NAME)
 
