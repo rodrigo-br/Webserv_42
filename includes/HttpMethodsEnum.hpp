@@ -1,7 +1,7 @@
 #ifndef HTTP_METHODS_ENUM_H
 # define HTTP_METHODS_ENUM_H
 
-enum HttpMethod
+enum httpMethod
 {
     GET,
     POST,
