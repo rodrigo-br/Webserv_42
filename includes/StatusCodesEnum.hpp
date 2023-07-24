@@ -1,7 +1,7 @@
 #ifndef STATUS_CODES_ENUM_H
 # define STATUS_CODES_ENUM_H
 
-enum StatusCodes
+enum statusCodes
 {
 	CONTINUE = 100,
 	SWITCHING_PROTOCOLS = 101,
