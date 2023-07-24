@@ -10,6 +10,7 @@
 # include <cerrno> // For errno
 # include <fstream> // For ifstream
 # include <vector> // For vector (duh)
+# include "webserv.hpp"
 
 # define PORT 8000
 # define BUFFER_SIZE 30000
