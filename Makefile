@@ -20,7 +20,7 @@ TEST_SRC	+=	$(filter-out $(DIR_SRCS)/main.cpp, $(SRCS))
 
 OBJS		=	$(subst $(DIR_SRCS), $(DIR_OBJS), $(SRCS:.cpp=.o))
 
-$(NAME): $(OBJS)
+$(NAME): makedir $(OBJS)
 		$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 $(DIR_OBJS)/%.o	: $(DIR_SRCS)/%.cpp
@@ -29,7 +29,7 @@ $(DIR_OBJS)/%.o	: $(DIR_SRCS)/%.cpp
 makedir:
 		mkdir -p $(DIR_OBJS)
 
-all: makedir $(NAME)
+all: $(NAME)
 
 clean:
 		$(RM) $(OBJS)
