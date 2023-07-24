@@ -74,7 +74,6 @@ Server::Server()
 	bind_socket(sockfd, sockaddr);
 	listen_socket(sockfd);
 	int addrlen = sizeof(sockaddr);
-
 	while(1)
 	{
 		int connection = accept_socket(sockfd, sockaddr, addrlen);
