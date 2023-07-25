@@ -62,11 +62,6 @@ static void read_from_connection(int &connection, char *buffer)
 	}
 }
 
-static std::string create_response()
-{
-	return ("HTTP/1.1 200 OK\nContent-Type: image/png\n\n");
-}
-
 Server::Server()
 {
 	int sockfd = create_socket();
@@ -99,8 +94,7 @@ Server::Server()
 		file.close();
 		/* #endregion */
 
-		std::string response = create_response();
-		send(connection, response.c_str(), response.size(), 0);
+		send(connection, this->response.get_response().c_str(), this->response.get_size(), 0);
 		send(connection, imageBuffer.data(), imageBuffer.size(), 0);// Parte da brinks
 		close(connection);
 	}
