@@ -8,8 +8,6 @@
 
 class Server
 {
-    private:
-        Response response;
     public:
         Server();
 };

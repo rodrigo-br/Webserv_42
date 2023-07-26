@@ -10,9 +10,9 @@
 # include <cerrno> // For errno
 # include <fstream> // For ifstream
 # include <vector> // For vector (duh)
-# include "Response.hpp"
-# include "Server.hpp"
-# include "HttpMethodsEnum.hpp"
-# include "StatusCodesEnum.hpp"
+# include "classes/Server.hpp"
+# include "classes/Response.hpp"
+# include "enums/HttpMethodsEnum.hpp"
+# include "enums/StatusCodesEnum.hpp"
 
 #endif
