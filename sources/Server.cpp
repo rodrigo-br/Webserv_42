@@ -77,7 +77,7 @@ Server::Server()
 		std::cout << request << std::string(42, '-') << '\n' << std::endl;
 
 		/* #region Brinks */
-		std::ifstream file("Dogs.png", std::ios::binary | std::ios::ate);
+		std::ifstream file("files/Dogs.png", std::ios::binary | std::ios::ate);
 		if (!file.is_open())
 		{
 			std::cout << "Failed to open image file." << std::endl;
@@ -100,5 +100,3 @@ Server::Server()
 	}
 	close(sockfd);
 }
-
-
