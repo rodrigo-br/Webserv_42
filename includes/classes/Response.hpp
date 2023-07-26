@@ -1,19 +1,22 @@
 #ifndef RESPONSE_H
 # define RESPONSE_H
 
-# include <string>
+# include <cstring>
+# include "classes/ResponseBuilder.hpp"
+# include <stdlib.h>
 
 class Response
 {
     public:
-        std::string response;
-        size_t      size;
+        ResponseBuilder builder;
+        const char      *response;
+        size_t          size;
 
         Response();
+        ~Response();
 
-        void build_response();
-        std::string get_response() const;
-        size_t get_size() const;
+        const char      *get_response() const;
+        size_t          get_size() const;
 };
 
 #endif

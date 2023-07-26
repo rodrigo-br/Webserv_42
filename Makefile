@@ -6,7 +6,7 @@ CC	= c++
 
 RM	= rm -rf
 
-CFLAGS	= -Wall -Wextra -Werror -Wshadow -std=c++98
+CFLAGS	= -g3 -Wall -Wextra -Werror -Wshadow -std=c++98
 
 DIR_SRCS	=	sources
 DIR_OBJS	=	obj
@@ -25,7 +25,7 @@ $(NAME): $(OBJS)
 
 $(DIR_OBJS)/%.o	: $(DIR_SRCS)/%.cpp
 			@mkdir -p $(DIR_OBJS)
-			$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@	
+			$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 all: $(NAME)
 

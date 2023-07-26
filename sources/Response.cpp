@@ -2,16 +2,19 @@
 
 Response::Response()
 {
-    build_response();
+    this->response = builder.build_response();
+    this->size = std::strlen(response);
 }
 
-void Response::build_response()
+Response::~Response()
 {
-    this->response = "HTTP/1.1 200 OK\nContent-Type: image/png\n\n";
-    this->size = this->response.size();
+    if (this->response != NULL)
+    {
+        free(const_cast<char *>(this->response));
+    }
 }
 
-std::string Response::get_response() const
+const char *Response::get_response() const
 {
     return this->response;
 }
