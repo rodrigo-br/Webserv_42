@@ -62,9 +62,9 @@ static void read_from_connection(int &connection, char *buffer)
 	}
 }
 
-static std::string create_response()
-{
-	return ("HTTP/1.1 200 OK\nContent-Type: image/png\n\n");
+void Server::signalHandler(int signum) {
+	(void)signum;
+    Server::gSignalInterrupted = true;
 }
 
 Server::Server()
@@ -74,15 +74,20 @@ Server::Server()
 	bind_socket(sockfd, sockaddr);
 	listen_socket(sockfd);
 	int addrlen = sizeof(sockaddr);
+	signal(SIGINT, Server::signalHandler);
 	while(1)
 	{
+		if (this->gSignalInterrupted)
+		{
+			break ;
+		}
 		int connection = accept_socket(sockfd, sockaddr, addrlen);
 		char request[BUFFER_SIZE] = {0};
 		read_from_connection(connection, request);
 		std::cout << request << std::string(42, '-') << '\n' << std::endl;
 
 		/* #region Brinks */
-		std::ifstream file("Dogs.png", std::ios::binary | std::ios::ate);
+		std::ifstream file("files/Dogs.png", std::ios::binary | std::ios::ate);
 		if (!file.is_open())
 		{
 			std::cout << "Failed to open image file." << std::endl;
@@ -99,12 +104,11 @@ Server::Server()
 		file.close();
 		/* #endregion */
 
-		std::string response = create_response();
-		send(connection, response.c_str(), response.size(), 0);
+		send(connection, this->response.get_response(), this->response.get_size(), 0);
 		send(connection, imageBuffer.data(), imageBuffer.size(), 0);// Parte da brinks
 		close(connection);
 	}
 	close(sockfd);
 }
 
-
+bool Server::gSignalInterrupted = false;
