@@ -1,4 +1,4 @@
-#include "classes/Server.hpp"
+#include "Server.hpp"
 
 static bool check(ssize_t result, int erro = -1)
 {
