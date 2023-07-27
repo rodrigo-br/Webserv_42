@@ -44,6 +44,16 @@ static void listen_socket(int &sockfd)
 	}
 }
 
+static void set_socket_reusable(int sockfd)
+{
+    int optval = 1;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0)
+    {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+}
+
 static int accept_socket(int &sockfd, sockaddr_in &sockaddr, int &addrlen)
 {
 	int connection = accept(sockfd, (struct sockaddr*)&sockaddr, (socklen_t*)&addrlen);
@@ -70,11 +80,13 @@ void Server::signalHandler(int signum) {
 Server::Server()
 {
 	int sockfd = create_socket();
+	set_socket_reusable(sockfd);
 	sockaddr_in sockaddr = create_sockaddr();
 	bind_socket(sockfd, sockaddr);
 	listen_socket(sockfd);
 	int addrlen = sizeof(sockaddr);
 	signal(SIGINT, Server::signalHandler);
+
 	while(1)
 	{
 		if (this->gSignalInterrupted)
