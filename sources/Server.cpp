@@ -47,9 +47,8 @@ static void listen_socket(int &sockfd)
 static void set_socket_reusable(int sockfd)
 {
     int optval = 1;
-    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0)
+    if (check(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval))))
     {
-        perror("setsockopt");
         exit(EXIT_FAILURE);
     }
 }
