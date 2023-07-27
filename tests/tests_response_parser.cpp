@@ -24,5 +24,5 @@ TEST_CASE ("Resposta 404 para conteúdo não encontrado")
 
 TEST_CASE ("Resposta 500 para erro interno no servidor")
 {
-    
+
 }
