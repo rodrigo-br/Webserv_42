@@ -3,7 +3,7 @@
 #include <cstring>
 #include <stdlib.h>
 
-const char *ResponseBuilder::build_response()
+const char* ResponseBuilder::build_response()
 {
     std::string response;
 
@@ -19,7 +19,7 @@ const char *ResponseBuilder::build_response()
     response.append("\n\n");
 
     // convert string to char ptr
-    char *teste = (char *)calloc(1, response.length() + 1);
+    char *teste = new char[(response.length() + 1)];
     std::strcpy(teste, response.c_str());
 
     return teste;
