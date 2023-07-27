@@ -42,6 +42,6 @@ std::string ResponseBuilder::get_status_msg() const
 
 std::string ResponseBuilder::get_content_type() const
 {
-    return "image/png";
+    return contentTypes.get_mime_type(".png");
 }
 

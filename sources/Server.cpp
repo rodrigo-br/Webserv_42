@@ -118,7 +118,6 @@ Server::Server()
 
 		send(connection, this->response.get_response(), this->response.get_size(), 0);
 		send(connection, imageBuffer.data(), imageBuffer.size(), 0);// Parte da brinks
-		std::cout << "\n\naa\n" << this->response.builder.get_content_type() << "!\naa\n\n" << std::endl;
 		close(connection);
 	}
 	close(sockfd);

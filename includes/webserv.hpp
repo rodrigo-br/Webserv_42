@@ -13,6 +13,7 @@
 # include <csignal> // For signal
 # include "classes/Response.hpp"
 # include "classes/Server.hpp"
+# include "classes/ContentTypes.hpp"
 # include "enums/HttpMethodsEnum.hpp"
 # include "enums/StatusCodesEnum.hpp"
 

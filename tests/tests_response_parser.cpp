@@ -2,9 +2,7 @@
 
 TEST_CASE ("Resposta possui header válido")
 {
-    Response response;
 
-    // std::cout << response.builder.get_content_type() << std::endl;
 }
 
 
