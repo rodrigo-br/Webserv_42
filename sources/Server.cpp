@@ -63,13 +63,13 @@ static int accept_socket(int &sockfd, sockaddr_in &sockaddr, int &addrlen)
 	return connection;
 }
 
-static void read_from_connection(int &connection, char *buffer)
-{
-	if (check(read(connection, buffer, BUFFER_SIZE), 0))
-	{
-		exit(EXIT_FAILURE);
-	}
-}
+// static void read_from_connection(int &connection, char *buffer)
+// {
+// 	if (check(read(connection, buffer, BUFFER_SIZE), 0))
+// 	{
+// 		exit(EXIT_FAILURE);
+// 	}
+// }
 
 void Server::signalHandler(int signum) {
 	(void)signum;
@@ -93,9 +93,8 @@ Server::Server()
 			break ;
 		}
 		int connection = accept_socket(sockfd, sockaddr, addrlen);
-		char request[BUFFER_SIZE] = {0};
-		read_from_connection(connection, request);
-		std::cout << request << std::string(42, '-') << '\n' << std::endl;
+		Request request = Request(connection);
+		std::cout << request.get_request() << std::string(42, '-') << '\n' << std::endl;
 
 		/* #region Brinks */
 		std::ifstream file("files/Dogs.png", std::ios::binary | std::ios::ate);
