@@ -8,6 +8,8 @@ class ResponseBuilder
 {
     public:
         const char  *build_response();
+
+    private:
         ContentTypes contentTypes;
 
         std::string get_protocol_version() const;
