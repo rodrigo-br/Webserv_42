@@ -13,7 +13,7 @@ TEST_CASE ("Resposta 200 para OK")
     std::string status_code = responseBuilder.get_status_code();
     std::string status_message = responseBuilder.get_status_msg();
 
-    REQUIRE(status_code.compare("200 ") == 0);
+    REQUIRE(status_code.compare("200") == 0);
     REQUIRE(status_message.compare("OK") == 0);
 }
 

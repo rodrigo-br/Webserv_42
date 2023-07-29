@@ -1,7 +1,7 @@
 #ifndef STATUS_CODES_ENUM_H
 # define STATUS_CODES_ENUM_H
 
-namespace StatusCodes
+namespace StatusCodesEnum
 {
 	enum statusCodes
 	{
