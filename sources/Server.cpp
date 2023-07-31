@@ -1,36 +1,36 @@
 #include "classes/Server.hpp"
 
-static bool check(ssize_t result, int erro = -1)
-{
-	if (result <= erro)
-	{
-		std::cout << std::strerror(errno) << std::endl;
-	}
-	return (result <= erro);
-}
+// static bool check(ssize_t result, int erro = -1)
+// {
+// 	if (result <= erro)
+// 	{
+// 		std::cout << std::strerror(errno) << std::endl;
+// 	}
+// 	return (result <= erro);
+// }
 
 static int create_socket(void)
 {
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (check(sockfd))
+	if (Utils::check(sockfd))
 	{
 		exit(EXIT_FAILURE);
 	}
 	return sockfd;
 }
 
-static sockaddr_in create_sockaddr()
+static sockaddr_in create_sockaddr(int port)
 {
 	sockaddr_in _sockaddr;
 	_sockaddr.sin_family = AF_INET;
 	_sockaddr.sin_addr.s_addr = INADDR_ANY;
-	_sockaddr.sin_port = htons(PORT);
+	_sockaddr.sin_port = htons(port);
 	return (_sockaddr);
 }
 
 static void bind_socket(int &sockfd, sockaddr_in &sockaddr)
 {
-	if (check(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr))))
+	if (Utils::check(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr))))
 	{
 		exit(EXIT_FAILURE);
 	}
@@ -38,7 +38,7 @@ static void bind_socket(int &sockfd, sockaddr_in &sockaddr)
 
 static void listen_socket(int &sockfd)
 {
-	if (check(listen(sockfd, 10)))
+	if (Utils::check(listen(sockfd, 10)))
 	{
 		exit(EXIT_FAILURE);
 	}
@@ -47,7 +47,7 @@ static void listen_socket(int &sockfd)
 static void set_socket_reusable(int sockfd)
 {
     int optval = 1;
-    if (check(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval))))
+    if (Utils::check(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval))))
     {
         exit(EXIT_FAILURE);
     }
@@ -56,20 +56,12 @@ static void set_socket_reusable(int sockfd)
 static int accept_socket(int &sockfd, sockaddr_in &sockaddr, int &addrlen)
 {
 	int connection = accept(sockfd, (struct sockaddr*)&sockaddr, (socklen_t*)&addrlen);
-	if (check(connection))
+	if (Utils::check(connection))
 	{
 		exit(EXIT_FAILURE);
 	}
 	return connection;
 }
-
-// static void read_from_connection(int &connection, char *buffer)
-// {
-// 	if (check(read(connection, buffer, BUFFER_SIZE), 0))
-// 	{
-// 		exit(EXIT_FAILURE);
-// 	}
-// }
 
 void Server::signalHandler(int signum) {
 	(void)signum;
@@ -80,7 +72,7 @@ Server::Server()
 {
 	int sockfd = create_socket();
 	set_socket_reusable(sockfd);
-	sockaddr_in sockaddr = create_sockaddr();
+	sockaddr_in sockaddr = create_sockaddr(this->conf.get_listen());
 	bind_socket(sockfd, sockaddr);
 	listen_socket(sockfd);
 	int addrlen = sizeof(sockaddr);
@@ -94,6 +86,7 @@ Server::Server()
 		}
 		int connection = accept_socket(sockfd, sockaddr, addrlen);
 		Request request = Request(connection);
+		// request.parser(request.get_request());
 		std::cout << request.get_request() << std::string(42, '-') << '\n' << std::endl;
 
 		/* #region Brinks */

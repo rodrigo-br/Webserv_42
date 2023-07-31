@@ -3,7 +3,6 @@
 
 # include "webserv.hpp"
 
-# define PORT 8000
 # define BUFFER_SIZE 30000
 
 
@@ -12,6 +11,7 @@ class Server
     public:
         static bool gSignalInterrupted;
         Response response;
+        Conf conf;
         Server();
         static void signalHandler(int signum);
 };

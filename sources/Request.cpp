@@ -2,26 +2,23 @@
 
 Request::Request( int fd_connection ) : _request()
 {
-    if (Utils::check(read(fd_connection, _request, BUFFER_SIZE), 0))
+    if (Utils::check(read(fd_connection,this-> _request, BUFFER_SIZE), 0))
 	{
 		exit(EXIT_FAILURE);
 	}
+	this->_parser.parser_http_request(this->_request);
+	// Request::_method = requestParser.set_method();
 
 }
 
 Request::~Request( void ) { }
 
-// bool Request::check(ssize_t result, int erro)
-// {
-// 	if (result <= erro)
-// 	{
-// 		std::cout << std::strerror(errno) << std::endl;
-// 	}
-// 	return (result <= erro);
-// }
-
-
 const char*    Request::get_request( void ) const
 {
     return (this->_request);
 }
+
+// HttpMethodEnum::httpMethod	Request::get_method( void )
+// {
+// 	return()
+// }
