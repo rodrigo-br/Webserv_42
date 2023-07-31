@@ -30,8 +30,6 @@ class Request
         Request( int fd_connection );
         ~Request();
 
-        // bool check(ssize_t result, int erro = -1);
-
         const char*         get_request() const;
         size_t              get_size() const;
 };
