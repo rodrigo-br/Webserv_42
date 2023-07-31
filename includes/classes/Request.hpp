@@ -3,10 +3,11 @@
 
 # include <cstring>
 # include <stdlib.h>
-# include <iostream> // For cout
+# include <iostream>
 # include "enums/HttpMethodsEnum.hpp"
-# include <unistd.h> // For read
-#include <cerrno>
+# include <unistd.h>
+# include <cerrno>
+# include "classes/Utils.hpp"
 
 # define BUFFER_SIZE 30000
 
@@ -26,14 +27,10 @@ class Request
 
         char             _request[BUFFER_SIZE];
 
-        // GET / HTTP/1.1
-// Host: localhost:8000
-// User-Agent: curl/7.81.0
-// Accept: */
         Request( int fd_connection );
         ~Request();
 
-        bool check(ssize_t result, int erro = -1);
+        // bool check(ssize_t result, int erro = -1);
 
         const char*         get_request() const;
         size_t              get_size() const;
