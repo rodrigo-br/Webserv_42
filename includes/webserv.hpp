@@ -11,6 +11,7 @@
 # include <fstream> // For ifstream
 # include <vector> // For vector (duh)
 # include <csignal> // For signal
+# include "classes/RequestParser.hpp"
 # include "classes/Request.hpp"
 # include "classes/ContentTypes.hpp"
 # include "classes/StatusCodes.hpp"

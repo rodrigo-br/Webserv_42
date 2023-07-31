@@ -14,7 +14,7 @@
 class Request
 {
     public:
-        
+
         int              _method;
         bool             _url;
         bool             _http_version;

@@ -86,6 +86,7 @@ Server::Server()
 		}
 		int connection = accept_socket(sockfd, sockaddr, addrlen);
 		Request request = Request(connection);
+		RequestParser requestParser(request.get_request());
 		std::cout << request.get_request() << std::string(42, '-') << '\n' << std::endl;
 
 		/* #region Brinks */
