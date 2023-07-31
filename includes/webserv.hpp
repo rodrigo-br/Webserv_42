@@ -12,9 +12,10 @@
 # include <vector> // For vector (duh)
 # include <csignal> // For signal
 # include "classes/Request.hpp"
+# include "classes/ContentTypes.hpp"
+# include "classes/StatusCodes.hpp"
 # include "classes/Response.hpp"
 # include "classes/Server.hpp"
-# include "classes/ContentTypes.hpp"
 # include "enums/HttpMethodsEnum.hpp"
 # include "enums/StatusCodesEnum.hpp"
 
