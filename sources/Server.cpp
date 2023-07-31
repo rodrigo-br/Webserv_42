@@ -1,14 +1,5 @@
 #include "classes/Server.hpp"
 
-// static bool check(ssize_t result, int erro = -1)
-// {
-// 	if (result <= erro)
-// 	{
-// 		std::cout << std::strerror(errno) << std::endl;
-// 	}
-// 	return (result <= erro);
-// }
-
 static int create_socket(void)
 {
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
