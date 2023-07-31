@@ -19,12 +19,12 @@ static int create_socket(void)
 	return sockfd;
 }
 
-static sockaddr_in create_sockaddr()
+static sockaddr_in create_sockaddr(int port)
 {
 	sockaddr_in _sockaddr;
 	_sockaddr.sin_family = AF_INET;
 	_sockaddr.sin_addr.s_addr = INADDR_ANY;
-	_sockaddr.sin_port = htons(PORT);
+	_sockaddr.sin_port = htons(port);
 	return (_sockaddr);
 }
 
@@ -63,14 +63,6 @@ static int accept_socket(int &sockfd, sockaddr_in &sockaddr, int &addrlen)
 	return connection;
 }
 
-// static void read_from_connection(int &connection, char *buffer)
-// {
-// 	if (check(read(connection, buffer, BUFFER_SIZE), 0))
-// 	{
-// 		exit(EXIT_FAILURE);
-// 	}
-// }
-
 void Server::signalHandler(int signum) {
 	(void)signum;
     Server::gSignalInterrupted = true;
@@ -80,7 +72,7 @@ Server::Server()
 {
 	int sockfd = create_socket();
 	set_socket_reusable(sockfd);
-	sockaddr_in sockaddr = create_sockaddr();
+	sockaddr_in sockaddr = create_sockaddr(this->conf.get_listen());
 	bind_socket(sockfd, sockaddr);
 	listen_socket(sockfd);
 	int addrlen = sizeof(sockaddr);

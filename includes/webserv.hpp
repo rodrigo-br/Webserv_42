@@ -15,6 +15,7 @@
 # include "classes/ContentTypes.hpp"
 # include "classes/StatusCodes.hpp"
 # include "classes/Response.hpp"
+# include "classes/Conf.hpp"
 # include "classes/Server.hpp"
 # include "enums/HttpMethodsEnum.hpp"
 # include "enums/StatusCodesEnum.hpp"
