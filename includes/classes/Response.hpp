@@ -7,11 +7,12 @@
 
 class Response
 {
-    public:
+    private:
         ResponseBuilder builder;
         const char      *response;
         size_t          size;
 
+    public:
         Response();
         ~Response();
 

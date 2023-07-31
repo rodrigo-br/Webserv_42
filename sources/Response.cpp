@@ -10,7 +10,7 @@ Response::~Response()
 {
     if (this->response != NULL)
     {
-        free(const_cast<char *>(this->response));
+        delete[] this->response;
     }
 }
 
