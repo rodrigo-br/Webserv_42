@@ -1,6 +1,6 @@
 #include "classes/Conf.hpp"
 
-Conf::Conf() : listen(8000), root("files/")
+Conf::Conf() : listen(8000), root("/")
 {
     location["/"] = "index.html";
 };
