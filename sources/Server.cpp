@@ -1,14 +1,5 @@
 #include "classes/Server.hpp"
 
-// static bool check(ssize_t result, int erro = -1)
-// {
-// 	if (result <= erro)
-// 	{
-// 		std::cout << std::strerror(errno) << std::endl;
-// 	}
-// 	return (result <= erro);
-// }
-
 static int create_socket(void)
 {
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -86,29 +77,14 @@ Server::Server()
 		}
 		int connection = accept_socket(sockfd, sockaddr, addrlen);
 		Request request = Request(connection);
-		// request.parser(request.get_request());
 		std::cout << request.get_request() << std::string(42, '-') << '\n' << std::endl;
 
-		/* #region Brinks */
-		std::ifstream file("files/Dogs.png", std::ios::binary | std::ios::ate);
-		if (!file.is_open())
-		{
-			std::cout << "Failed to open image file." << std::endl;
-			exit(EXIT_FAILURE);
-		}
-		std::streamsize size = file.tellg();
-		file.seekg(0, std::ios::beg);
-		std::vector<char> imageBuffer(size);
-		if (!file.read(imageBuffer.data(), size))
-		{
-			std::cout << "Failed to read image file" << std::endl;
-			exit(EXIT_FAILURE);
-		}
-		file.close();
-		/* #endregion */
-
 		send(connection, this->response.get_response(), this->response.get_size(), 0);
-		send(connection, imageBuffer.data(), imageBuffer.size(), 0);// Parte da brinks
+		if (this->response.has_body())
+		{
+			send(connection, this->response.get_body(), this->response.body_size(), 0);
+		}
+		std::cout << this->response.get_body() << std::endl;
 		close(connection);
 	}
 	close(sockfd);

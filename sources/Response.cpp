@@ -14,6 +14,21 @@ Response::~Response()
     }
 }
 
+const char *Response::get_body()
+{
+    return this->builder.get_body();
+}
+
+bool Response::has_body() const
+{
+    return this->builder.has_body();
+}
+
+ssize_t Response::body_size() const
+{
+    return this->builder.get_body_size();
+}
+
 const char *Response::get_response() const
 {
     return this->response;
