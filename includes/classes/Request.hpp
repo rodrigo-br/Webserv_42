@@ -28,6 +28,7 @@ class Request
 		std::string					get_http_version(void);
 		std::string					get_user_agent(void);
 		std::string					get_host(void);
+		std::string					get_bory(void);
 
 		Request						&create_parsed_message(int fd_connecion);
 

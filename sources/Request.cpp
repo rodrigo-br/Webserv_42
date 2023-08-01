@@ -46,3 +46,9 @@ std::string Request::get_host(void)
 {
     return _parser.get_host();
 }
+
+std::string Request::get_bory(void)
+{
+    return _parser.get_bory();
+}
+
