@@ -28,27 +28,20 @@ void RequestParser::_parse_request_bory(std::string& line, std::istringstream& i
 
 void 	RequestParser::_parse_request_header( std::string &line, std::istringstream &iss )
 {
-	while (std::getline(iss, line) && !line.empty())
-	{
+	    while (std::getline(iss, line) && !line.empty())
+    {
         size_t colonPos = line.find(':');
-		size_t lastNonCRLF = line.find_last_not_of("\r\n");
-		if (lastNonCRLF != std::string::npos) {
-			line = line.substr(0, lastNonCRLF + 1);
-		}
+        size_t lastNonCRLF = line.find_last_not_of("\r\n");
+        if (lastNonCRLF != std::string::npos) {
+            line = line.substr(0, lastNonCRLF + 1);
+        }
         if (colonPos != std::string::npos) {
             std::string headerName = line.substr(0, colonPos);
-            if (headerName.compare("User-Agent") == 0) {
-                this->_user_agent = line.substr(colonPos + 2);
-            }
-			if (headerName.compare("Host") == 0) {
-                this->_host = line.substr(colonPos + 2);
-            }
-        }
-    }
+            std::string headerValue = line.substr(colonPos + 2);
+            headers[headerName] = headerValue;
+		}
+	}
 }
-
-
-
 
 void	RequestParser::_parse_request_start_line(std::string &line, std::istringstream &iss)
 {
@@ -73,32 +66,46 @@ HttpMethodEnum::httpMethod RequestParser::set_method()
 	return _method;
 }
 
-HttpMethodEnum::httpMethod RequestParser::get_method(void)
+HttpMethodEnum::httpMethod RequestParser::get_method(void) const
 {
     return this->_method;
 }
 
-std::string RequestParser::get_path(void)
+std::string RequestParser::get_path(void) const
 {
     return this->_path;
 }
 
-std::string RequestParser::get_http_version(void)
+std::string RequestParser::get_http_version(void) const
 {
     return this->_http_version;
 }
 
-std::string RequestParser::get_user_agent(void)
+std::string RequestParser::get_user_agent(void) const
 {
     return this->_user_agent;
 }
 
-std::string RequestParser::get_host(void)
+std::string RequestParser::get_host(void) const
 {
     return this->_host;
 }
 
-std::string RequestParser::get_bory(void)
+std::string RequestParser::get_body(void) const
 {
     return this->_requestBody;
+}
+
+std::string RequestParser::get_header(std::string header_name) const
+{
+    std::map<std::string, std::string>::const_iterator it = headers.find(header_name);
+
+    if (it != headers.end())
+    {
+        return it->second;
+    }
+    else
+    {
+        return NULL;
+    }
 }

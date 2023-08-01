@@ -23,12 +23,13 @@ class Request
 		size_t              get_size() const;
 
 		RequestParser				_parser;
-		HttpMethodEnum::httpMethod	get_method();
-		std::string					get_path(void);
-		std::string					get_http_version(void);
-		std::string					get_user_agent(void);
-		std::string					get_host(void);
-		std::string					get_bory(void);
+		HttpMethodEnum::httpMethod	get_method() const;
+		std::string					get_path(void) const;
+		std::string					get_http_version(void) const;
+		std::string					get_user_agent(void) const;
+		std::string					get_host(void) const;
+		std::string					get_body(void) const;
+		std::string					get_header(std::string header_name) const;
 
 		Request						&create_parsed_message(int fd_connecion);
 

@@ -6,23 +6,89 @@ const char* ResponseBuilder::build_response()
     std::string response;
 
     // Opening Line
-    response.append(this->get_protocol_version());
-    response.append(" ");
-    response.append(this->get_status_code());
-    response.append(" ");
-    response.append(this->get_status_msg());
-    response.append("\r\n");
+    response.append(this->build_start_line());
 
     // Headers
-    response.append("Content-Type: ");
-    response.append(this->get_content_type());
-    response.append("\r\n\n");
+    response.append(this->build_headers());
+
+    // ssize_t body_size;
+    // Body
+    // response.append(this->BODY_BUILDER_BIIIIHHHHLLL(body_size));
 
     // convert string to char ptr
     char *response_as_char = new char[(response.length() + 1)];
     std::strcpy(response_as_char, response.c_str());
 
+    // std::cout << response_as_char << std::endl;
+
     return response_as_char;
+}
+
+const char* ResponseBuilder::get_body()
+{
+    return this->BODY_BUILDER_BIIIIHHHHLLL();
+}
+
+ssize_t ResponseBuilder::get_body_size() const
+{
+    return this->body_size;
+}
+
+bool ResponseBuilder::has_body() const
+{
+    return this->hasBody;
+}
+
+std::string ResponseBuilder::build_start_line() const
+{
+    std::string start_line;
+    start_line.append(this->get_protocol_version());
+    start_line.append(" ");
+    start_line.append(this->get_status_code());
+    start_line.append(" ");
+    start_line.append(this->get_status_msg());
+    start_line.append("\r\n");
+
+    return start_line;
+}
+
+std::string ResponseBuilder::build_headers() const
+{
+    std::string headers;
+    headers.append("Content-Type: ");
+    headers.append(this->get_content_type());
+    headers.append("\r\n\n");
+
+    return headers;
+}
+
+char *ResponseBuilder::BODY_BUILDER_BIIIIHHHHLLL()
+{
+    std::ifstream file("files/Dogs.png", std::ios::binary | std::ios::ate);
+    if (!file.is_open())
+    {
+        std::cout << "Failed to open image file." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    std::vector<char> imageBuffer(size);
+    if (!file.read(imageBuffer.data(), size))
+    {
+        std::cout << "Failed to read image file" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    file.close();
+
+    this->body_size = imageBuffer.size();
+    char *body = new char[this->body_size];
+    std::copy(imageBuffer.begin(), imageBuffer.end(), body);
+
+    if (this->body_size > 0)
+    {
+        this->hasBody = true;
+    }
+    return body;
 }
 
 std::string ResponseBuilder::get_protocol_version() const
@@ -46,4 +112,3 @@ std::string ResponseBuilder::get_content_type() const
 {
     return contentTypes.get_mime_type(".png");
 }
-

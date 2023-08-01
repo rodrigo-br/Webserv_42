@@ -10,7 +10,7 @@ TEST_CASE("Testando se o parser request acha o bory num request")
     RequestParser requestParser;
     requestParser.parser_http_request(request_curl_bory);
 
-    std::string user_agent = requestParser.get_bory();
+    std::string user_agent = requestParser.get_body();
     std::string expectd = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"}";
 
     REQUIRE(user_agent == expectd);
@@ -21,7 +21,7 @@ TEST_CASE("Testando se o parser request acha o bory2 num request")
     RequestParser requestParser;
     requestParser.parser_http_request(request_curl_bory2);
 
-    std::string user_agent = requestParser.get_bory();
+    std::string user_agent = requestParser.get_body();
     std::string expectd = "part1=Hello&part2=World&part3=123";
 
     REQUIRE(user_agent == expectd);
