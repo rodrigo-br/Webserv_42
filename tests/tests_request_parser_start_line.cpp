@@ -6,7 +6,7 @@ TEST_CASE("Testando se o parser request acha o método GET num GET request")
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    HttpMethodEnum::httpMethod method = requestParser.set_method();
+    HttpMethodEnum::httpMethod method = requestParser.get_method();
 
     REQUIRE(method == HttpMethodEnum::GET);
 }
@@ -17,7 +17,7 @@ TEST_CASE("Testando se o parser request acha o método POST num POST request")
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    HttpMethodEnum::httpMethod method = requestParser.set_method();
+    HttpMethodEnum::httpMethod method = requestParser.get_method();
 
     REQUIRE(method == HttpMethodEnum::POST);
 }
@@ -28,7 +28,7 @@ TEST_CASE("Testando se o parser request acha o método DELETE num DELETE request
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    HttpMethodEnum::httpMethod method = requestParser.set_method();
+    HttpMethodEnum::httpMethod method = requestParser.get_method();
 
     REQUIRE(method == HttpMethodEnum::DELETE);
 }
@@ -39,7 +39,7 @@ TEST_CASE("Testando se o parser request acha o método desconehcido num request"
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    HttpMethodEnum::httpMethod method = requestParser.set_method();
+    HttpMethodEnum::httpMethod method = requestParser.get_method();
 
     REQUIRE(method == HttpMethodEnum::UNKNOWN);
 }
@@ -50,7 +50,7 @@ TEST_CASE("Testando se o parser request acha o PATH / num request")
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    std::string path = requestParser._path;
+    std::string path = requestParser.get_path();
     std::string expectd = "/";
     REQUIRE(path == expectd);
 }
@@ -61,7 +61,7 @@ TEST_CASE("Testando se o parser request acha o PATH /index.html num request")
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    std::string path = requestParser._path;
+    std::string path = requestParser.get_path();
     std::string expectd = "/index.html";
     REQUIRE(path == expectd);
 }
@@ -72,7 +72,7 @@ TEST_CASE("Testando se o parser request acha o PATH /files/cavalinho.html  num r
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    std::string path = requestParser._path;
+    std::string path = requestParser.get_path();
     std::string expectd = "/files/cavalinho.html";
     REQUIRE(path == expectd);
 }
@@ -83,9 +83,9 @@ TEST_CASE("Testando se o parser request acha o http request é HTTP/1.1 num requ
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    std::string path = requestParser._http_version;
+    std::string http_version = requestParser.get_http_version();
     std::string expectd = "HTTP/1.1";
-    REQUIRE(path == expectd);
+    REQUIRE(http_version == expectd);
 }
 
 
@@ -95,7 +95,7 @@ TEST_CASE("Testando se o parser request acha o http request é HTTP/1.2 num requ
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    std::string path = requestParser._http_version;
+    std::string http_version = requestParser.get_http_version();
     std::string expectd = "HTTP/1.1";
-    REQUIRE(path != expectd);
+    REQUIRE(http_version != expectd);
 }

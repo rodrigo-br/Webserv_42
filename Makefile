@@ -6,7 +6,7 @@ CC	= c++
 
 RM	= rm -rf
 
-CFLAGS	= -g3 -Wall -Wextra -Werror -Wshadow -std=c++98
+CFLAGS	= -g3 -Wall -Wextra -Werror -Wshadow -std=c++98 
 
 DIR_SRCS	=	sources
 DIR_OBJS	=	obj
