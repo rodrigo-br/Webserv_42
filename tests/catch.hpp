@@ -8464,7 +8464,9 @@ namespace Catch {
 
 #include <cassert>
 #include <ostream>
+#undef private
 #include <sstream>
+#define private public
 #include <vector>
 
 #ifndef CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH

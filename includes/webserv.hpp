@@ -12,6 +12,7 @@
 # include <vector> // For vector (duh)
 # include <csignal> // For signal
 # include "classes/Utils.hpp"
+# include "classes/ResponseBuilder.hpp"
 # include "classes/RequestParser.hpp"
 # include "classes/Request.hpp"
 # include "classes/ContentTypes.hpp"
