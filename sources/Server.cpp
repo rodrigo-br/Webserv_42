@@ -84,7 +84,6 @@ Server::Server()
 		{
 			send(connection, this->response.get_body(), this->response.body_size(), 0);
 		}
-		std::cout << this->response.get_body() << std::endl;
 		close(connection);
 	}
 	close(sockfd);

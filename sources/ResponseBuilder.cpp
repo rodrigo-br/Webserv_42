@@ -81,8 +81,8 @@ char *ResponseBuilder::BODY_BUILDER_BIIIIHHHHLLL()
     file.close();
 
     this->body_size = imageBuffer.size();
-    char *body = new char[size];
-    std::strcpy(body, imageBuffer.data());
+    char *body = new char[this->body_size];
+    std::copy(imageBuffer.begin(), imageBuffer.end(), body);
 
     if (this->body_size > 0)
     {
