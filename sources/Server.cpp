@@ -1,14 +1,5 @@
 #include "classes/Server.hpp"
 
-// static bool check(ssize_t result, int erro = -1)
-// {
-// 	if (result <= erro)
-// 	{
-// 		std::cout << std::strerror(errno) << std::endl;
-// 	}
-// 	return (result <= erro);
-// }
-
 static int create_socket(void)
 {
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -85,9 +76,10 @@ Server::Server()
 			break ;
 		}
 		int connection = accept_socket(sockfd, sockaddr, addrlen);
-		Request request = Request(connection);
-		// request.parser(request.get_request());
-		std::cout << request.get_request() << std::string(42, '-') << '\n' << std::endl;
+		Request request = Request().create_parsed_message(connection);
+		// request._parser().get_mensage_request());
+		std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
+		std::cout << request.get_method() << '\n' << std::endl;
 
 		/* #region Brinks */
 		std::ifstream file("files/Dogs.png", std::ios::binary | std::ios::ate);
