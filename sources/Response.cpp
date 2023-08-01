@@ -1,8 +1,9 @@
 #include "classes/Response.hpp"
 
-Response::Response()
+Response::Response() : response(NULL), body(NULL)
 {
     this->response = builder.build_response();
+    this->body = builder.get_body();
     this->size = std::strlen(response);
 }
 
@@ -12,11 +13,15 @@ Response::~Response()
     {
         delete[] this->response;
     }
+    if (this->body != NULL)
+    {
+        delete[] this->body;
+    }
 }
 
 const char *Response::get_body()
 {
-    return this->builder.get_body();
+    return this->body;
 }
 
 bool Response::has_body() const

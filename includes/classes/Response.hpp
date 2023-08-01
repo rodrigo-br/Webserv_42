@@ -10,6 +10,7 @@ class Response
     private:
         ResponseBuilder builder;
         const char      *response;
+        const char      *body;
         size_t          size;
 
     public:
