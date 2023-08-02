@@ -21,7 +21,6 @@ TEST_CASE ("Resposta 400 para request inválido")
 
 }
 
-
 TEST_CASE ("Resposta 404 para conteúdo não encontrado")
 {
 
