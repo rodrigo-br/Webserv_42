@@ -16,15 +16,23 @@ class Request
 {
 	public:
 
-		Request( int fd_connection );
+		Request();
 		~Request();
 
-		const char*         get_request() const;
+		const char*         get_mensage_request() const;
 		size_t              get_size() const;
 
 		RequestParser				_parser;
-		HttpMethodEnum::httpMethod	get_method();
-		
+		HttpMethodEnum::httpMethod	get_method() const;
+		std::string					get_path(void) const;
+		std::string					get_http_version(void) const;
+		std::string					get_user_agent(void) const;
+		std::string					get_host(void) const;
+		std::string					get_body(void) const;
+		std::string					get_header(std::string header_name) const;
+
+		Request						&create_parsed_message(int fd_connecion);
+
 		// HttpMethodEnum::httpMethod  _method;
 		// std::string					_url;
 		// std::string					_http_version;
