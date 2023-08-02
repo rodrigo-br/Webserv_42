@@ -15,6 +15,7 @@
 # include "classes/ResponseBuilder.hpp"
 # include "classes/RequestParser.hpp"
 # include "classes/Request.hpp"
+# include "classes/RequestValidator.hpp"
 # include "classes/ContentTypes.hpp"
 # include "classes/StatusCodes.hpp"
 # include "classes/Response.hpp"
