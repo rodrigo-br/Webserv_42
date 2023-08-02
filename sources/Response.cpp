@@ -3,7 +3,7 @@
 Response::Response() : response(NULL), body(NULL)
 {
     this->response = builder.build_response();
-    this->body = builder.get_body();
+    this->body = builder.build_body();
     this->size = std::strlen(response);
 }
 
