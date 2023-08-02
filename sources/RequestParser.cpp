@@ -5,7 +5,7 @@
 #include <typeinfo>
 #include <vector>
 
-RequestParser::RequestParser(void) : _method(HttpMethodEnum::UNKNOWN) {}
+RequestParser::RequestParser(void) : _method(HttpMethodEnum::UNKNOWN) { }
 
 RequestParser::~RequestParser(void) {}
 
@@ -28,7 +28,7 @@ void RequestParser::_parse_request_bory(std::string& line, std::istringstream& i
 
 void 	RequestParser::_parse_request_header( std::string &line, std::istringstream &iss )
 {
-	    while (std::getline(iss, line) && !line.empty())
+	while (std::getline(iss, line) && !line.empty())
     {
         size_t colonPos = line.find(':');
         size_t lastNonCRLF = line.find_last_not_of("\r\n");
@@ -45,14 +45,12 @@ void 	RequestParser::_parse_request_header( std::string &line, std::istringstrea
 
 void	RequestParser::_parse_request_start_line(std::string &line, std::istringstream &iss)
 {
-
 	if (std::getline(iss, line)) 
 	{
         std::istringstream lineStream(line);
         lineStream >> this->str_method >> this->_path >> this->_http_version;
     }
 	set_method();
-
 }
 
 HttpMethodEnum::httpMethod RequestParser::set_method()
@@ -101,11 +99,7 @@ std::string RequestParser::get_header(std::string header_name) const
     std::map<std::string, std::string>::const_iterator it = headers.find(header_name);
 
     if (it != headers.end())
-    {
         return it->second;
-    }
     else
-    {
         return NULL;
-    }
 }

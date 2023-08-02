@@ -15,6 +15,40 @@ TEST_CASE("Testando se o parser request acha o header user-agent num request")
     REQUIRE(header == expected);
 }
 
+
+TEST_CASE("Testando se o parser request acha o header host num request")
+{
+    RequestParser requestParser;
+    requestParser.parser_http_request(request_curl);
+
+    std::string header  = requestParser.get_header("Host");
+    std::string expectd = "localhost:8000";
+
+    REQUIRE(header == expectd);
+}
+
+TEST_CASE("Testando se o parser request acha o header Accept num request")
+{
+    RequestParser requestParser;
+    requestParser.parser_http_request(request_curl);
+
+    std::string header  = requestParser.get_header("Accept");
+    std::string expectd = "*/*";
+
+    REQUIRE(header == expectd);
+}
+
+TEST_CASE("Testando se o parser request image acha o header Connection num request")
+{
+    RequestParser requestParser;
+    requestParser.parser_http_request(request_image);
+
+    std::string header  = requestParser.get_header("Connection");
+    std::string expectd = "keep-alive";
+
+    REQUIRE(header == expectd);
+}
+
 TEST_CASE("Testando se o parser request acha o header user-agent de uma imagem num request")
 {
     RequestParser requestParser;
@@ -37,37 +71,36 @@ TEST_CASE("Testando se o parser request acha o header host de uma imagem num req
     REQUIRE(header == expectd);
 }
 
-
-TEST_CASE("Testando se o parser request acha o header host num request")
-{
-    RequestParser requestParser;
-    requestParser.parser_http_request(request_curl);
-
-    std::string header  = requestParser.get_header("Host");
-    std::string expectd = "localhost:8000";
-
-    REQUIRE(header == expectd);
-}
-
-
-TEST_CASE("Testando se o parser request acha o header Connection num request")
+TEST_CASE("Testando se o parser request acha o header sec-ch-ua numa imagem request")
 {
     RequestParser requestParser;
     requestParser.parser_http_request(request_image);
 
-    std::string header  = requestParser.get_header("Connection");
-    std::string expectd = "keep-alive";
+    std::string header  = requestParser.get_header("sec-ch-ua");
+    std::string expectd = "\"Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"115\", \"Chromium\";v=\"115\"";
 
     REQUIRE(header == expectd);
 }
 
-TEST_CASE("Testando se o parser request acha o header Accept num request")
+TEST_CASE("Testando se o parser request acha o header sec-ch-ua-mobile numa imagem request")
 {
     RequestParser requestParser;
-    requestParser.parser_http_request(request_curl);
+    requestParser.parser_http_request(request_image);
+
+    std::string header  = requestParser.get_header("sec-ch-ua-mobile");
+    std::string expectd = "?0";
+
+    REQUIRE(header == expectd);
+}
+
+
+TEST_CASE("Testando se o parser request acha o header Accept numa imagem request")
+{
+    RequestParser requestParser;
+    requestParser.parser_http_request(request_image);
 
     std::string header  = requestParser.get_header("Accept");
-    std::string expectd = "*/*";
+    std::string expectd = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
 
     REQUIRE(header == expectd);
 }
