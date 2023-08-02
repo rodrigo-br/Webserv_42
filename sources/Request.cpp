@@ -34,16 +34,6 @@ std::string Request::get_http_version(void) const
     return _parser.get_http_version();
 }
 
-std::string Request::get_user_agent(void) const
-{
-    return _parser.get_user_agent();
-}
-
-std::string Request::get_host(void) const
-{
-    return _parser.get_host();
-}
-
 std::string Request::get_body(void) const
 {
     return _parser.get_body();

@@ -7,7 +7,7 @@
 # include <unistd.h>
 # include <cerrno>
 # include "classes/Utils.hpp"
-# include  "classes/RequestParser.hpp" 
+# include "classes/RequestParser.hpp" 
 # include "enums/HttpMethodsEnum.hpp"
 
 # define BUFFER_SIZE 30000
@@ -26,8 +26,6 @@ class Request
 		HttpMethodEnum::httpMethod	get_method() const;
 		std::string					get_path(void) const;
 		std::string					get_http_version(void) const;
-		std::string					get_user_agent(void) const;
-		std::string					get_host(void) const;
 		std::string					get_body(void) const;
 		std::string					get_header(std::string header_name) const;
 

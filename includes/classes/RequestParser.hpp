@@ -19,8 +19,6 @@ class RequestParser
 		HttpMethodEnum::httpMethod	get_method(void) const;
 		std::string					get_path(void) const;
 		std::string					get_http_version(void) const;
-		std::string					get_user_agent(void) const;
-		std::string					get_host(void) const;
 		std::string					get_body(void) const;
 		std::string					get_header(std::string header_name) const;
 
@@ -29,13 +27,11 @@ class RequestParser
 		void 						_parse_request_header( std::string &line, std::istringstream &iss );
 		void 						_parse_request_bory( std::string &line, std::istringstream &iss );
 
-    	std::map<std::string, std::string> 	headers;
-		std::string                 		str_method;
+		std::string                 		_str_method;
+    	std::map<std::string, std::string> 	_headers;
 		HttpMethodEnum::httpMethod  		_method;
 		std::string                 		_path;
 		std::string                			_http_version;
-		std::string                			_user_agent;
-		std::string							_host;
 		std::string							_requestBody;
 };
 

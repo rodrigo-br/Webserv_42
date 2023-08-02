@@ -5,7 +5,8 @@
 #include <typeinfo>
 #include <vector>
 
-RequestParser::RequestParser(void) : _method(HttpMethodEnum::UNKNOWN) { }
+RequestParser::RequestParser(void) : 
+ _str_method(""),_headers(), _method(HttpMethodEnum::UNKNOWN), _path(""), _http_version(""), _requestBody("") { }
 
 RequestParser::~RequestParser(void) {}
 
@@ -38,7 +39,7 @@ void 	RequestParser::_parse_request_header( std::string &line, std::istringstrea
         if (colonPos != std::string::npos) {
             std::string headerName = line.substr(0, colonPos);
             std::string headerValue = line.substr(colonPos + 2);
-            headers[headerName] = headerValue;
+            this->_headers[headerName] = headerValue;
 		}
 	}
 }
@@ -48,18 +49,18 @@ void	RequestParser::_parse_request_start_line(std::string &line, std::istringstr
 	if (std::getline(iss, line)) 
 	{
         std::istringstream lineStream(line);
-        lineStream >> this->str_method >> this->_path >> this->_http_version;
+        lineStream >> this->_str_method >> this->_path >> this->_http_version;
     }
 	set_method();
 }
 
 HttpMethodEnum::httpMethod RequestParser::set_method()
 {
-	if (this->str_method.compare("GET") == 0)
+	if (this->_str_method.compare("GET") == 0)
 		_method = HttpMethodEnum::GET;
-	else if (this->str_method.compare("POST") == 0)
+	else if (this->_str_method.compare("POST") == 0)
 		_method = HttpMethodEnum::POST;
-	else if (this->str_method.compare("DELETE") == 0)
+	else if (this->_str_method.compare("DELETE") == 0)
 		_method = HttpMethodEnum::DELETE;
 	return _method;
 }
@@ -79,16 +80,6 @@ std::string RequestParser::get_http_version(void) const
     return this->_http_version;
 }
 
-std::string RequestParser::get_user_agent(void) const
-{
-    return this->_user_agent;
-}
-
-std::string RequestParser::get_host(void) const
-{
-    return this->_host;
-}
-
 std::string RequestParser::get_body(void) const
 {
     return this->_requestBody;
@@ -96,10 +87,10 @@ std::string RequestParser::get_body(void) const
 
 std::string RequestParser::get_header(std::string header_name) const
 {
-    std::map<std::string, std::string>::const_iterator it = headers.find(header_name);
+    std::map<std::string, std::string>::const_iterator it = this->_headers.find(header_name);
 
-    if (it != headers.end())
+    if (it != this->_headers.end())
         return it->second;
     else
-        return NULL;
+        return "";
 }

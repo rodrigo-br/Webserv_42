@@ -5,6 +5,8 @@
 # include "enums/HttpMethodsEnum.hpp"
 # include <iostream>
 # include <map>
+# include "classes/Request.hpp" 
+# include "classes/Conf.hpp"
 
 class RequestValidator
 {
@@ -12,14 +14,11 @@ class RequestValidator
 	public:
 		RequestValidator ();
 		~RequestValidator();
-		
 
-		void    					parser_http_request(char *request);
+		RequestValidator    		&request_validator( Conf &conf, Request &request);
 		HttpMethodEnum::httpMethod	get_method(void) const;
 		bool				        get_path(void) const;
 		bool				        get_http_version(void) const;
-		bool				        get_user_agent(void) const;
-		bool				        get_host(void) const;
 		bool				        get_body(void) const;
 		bool				        get_header(std::string header_name) const;
 
