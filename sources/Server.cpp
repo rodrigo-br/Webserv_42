@@ -82,6 +82,7 @@ Server::Server()
 		
 		std::cout << "path = "<<std::boolalpha << request_validator.get_path() << std::endl;
 		std::cout <<  "HTTP = "<<std::boolalpha << request_validator.get_http_version() << std::endl;
+		std::cout <<  "body = "<<std::boolalpha << request_validator.get_body() << std::endl;
 
 		send(connection, this->response.get_response(), this->response.get_size(), 0);
 		if (this->response.has_body())

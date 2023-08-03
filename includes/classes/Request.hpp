@@ -19,8 +19,8 @@ class Request
 		Request();
 		~Request();
 
-		const char*         get_mensage_request() const;
-		size_t              get_size() const;
+		const char*         		get_mensage_request() const;
+		size_t						get_size() const;
 
 		RequestParser				_parser;
 		HttpMethodEnum::httpMethod	get_method() const;
@@ -30,15 +30,6 @@ class Request
 		std::string					get_header(std::string header_name) const;
 
 		Request						&create_parsed_message(int fd_connecion);
-
-		// HttpMethodEnum::httpMethod  _method;
-		// std::string					_url;
-		// std::string					_http_version;
-		// std::string					_contentLength;
-		// std::string					_transferEncoding;
-		// std::string					_host;
-		// std::string					_contentType;
-		// std::string					_userAgent;
 		
 		char            			_request[BUFFER_SIZE];
 

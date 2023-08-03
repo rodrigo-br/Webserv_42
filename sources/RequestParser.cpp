@@ -24,28 +24,35 @@ void RequestParser::_parse_request_bory(std::string& line, std::istringstream& i
 {
     while (std::getline(iss, line)) {
         _requestBody += line;
-	}
+    }
 }
 
 void 	RequestParser::_parse_request_header( std::string &line, std::istringstream &iss )
 {
 	while (std::getline(iss, line) && !line.empty())
     {
-        size_t colonPos = line.find(':');
-        size_t lastNonCRLF = line.find_last_not_of("\r\n");
-        if (lastNonCRLF != std::string::npos) {
-            line = line.substr(0, lastNonCRLF + 1);
+        if (line == "\r" || line == "\r\n") 
+                break;
+        else
+        {
+            size_t colonPos = line.find(':');
+            if (colonPos != std::string::npos)
+            {
+                size_t lastNonCRLF = line.find_last_not_of("\r\n");
+                if (lastNonCRLF != std::string::npos) {
+                    line = line.substr(0, lastNonCRLF + 1);
+                    std::string headerName = line.substr(0, colonPos);
+                    std::string headerValue = line.substr(colonPos + 2);
+                    this->_headers[headerName] = headerValue;
+                }
+            }
         }
-        if (colonPos != std::string::npos) {
-            std::string headerName = line.substr(0, colonPos);
-            std::string headerValue = line.substr(colonPos + 2);
-            this->_headers[headerName] = headerValue;
-		}
 	}
 }
 
 void	RequestParser::_parse_request_start_line(std::string &line, std::istringstream &iss)
 {
+
 	if (std::getline(iss, line)) 
 	{
         std::istringstream lineStream(line);
