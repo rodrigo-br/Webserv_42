@@ -4,17 +4,6 @@ char request_image[] = "GET / HTTP/1.1\r\nHost: localhost:8000\r\nConnection: ke
 
 char request_curl[] = "GET / HTTP/1.1\r\nHost: localhost:8000\r\nUser-Agent: curl/7.81.0\r\nAccept: */*";
 
-
-TEST_CASE("Testando se o parser request acha o header user-agent num request")
-{
-    RequestParser requestParser;
-    requestParser.parser_http_request(request_curl);
-    std::string header  = requestParser.get_header("User-Agent");
-    std::string expected = "curl/7.81.0";
-
-    REQUIRE(header == expected);
-}
-
 TEST_CASE("Testando se o parser request acha o header user-agent de uma imagem num request")
 {
     RequestParser requestParser;
@@ -37,19 +26,6 @@ TEST_CASE("Testando se o parser request acha o header host de uma imagem num req
     REQUIRE(header == expectd);
 }
 
-
-TEST_CASE("Testando se o parser request acha o header host num request")
-{
-    RequestParser requestParser;
-    requestParser.parser_http_request(request_curl);
-
-    std::string header  = requestParser.get_header("Host");
-    std::string expectd = "localhost:8000";
-
-    REQUIRE(header == expectd);
-}
-
-
 TEST_CASE("Testando se o parser request acha o header Connection num request")
 {
     RequestParser requestParser;
@@ -61,13 +37,33 @@ TEST_CASE("Testando se o parser request acha o header Connection num request")
     REQUIRE(header == expectd);
 }
 
-TEST_CASE("Testando se o parser request acha o header Accept num request")
+TEST_CASE("Request curl")
 {
     RequestParser requestParser;
     requestParser.parser_http_request(request_curl);
 
-    std::string header  = requestParser.get_header("Accept");
-    std::string expectd = "*/*";
+    SECTION("Testando se o parser request acha o header host num request")
+    {
+        std::string header  = requestParser.get_header("Host");
+        std::string expectd = "localhost:8000";
 
-    REQUIRE(header == expectd);
+        REQUIRE(header == expectd);
+    }
+
+    SECTION("Testando se o parser request acha o header Accept num request")
+    {
+        std::string header  = requestParser.get_header("Accept");
+        std::string expectd = "*/*";
+
+        REQUIRE(header == expectd);
+    }
+
+    SECTION("Testando se o parser request acha o header user-agent num request")
+    {
+        std::string header  = requestParser.get_header("User-Agent");
+        std::string expected = "curl/7.81.0";
+
+        REQUIRE(header == expected);
+    }
 }
+

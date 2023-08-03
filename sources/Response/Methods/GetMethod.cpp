@@ -2,6 +2,7 @@
 #include <sstream> // Precisa ficar neste arquivo para evitar erro de incomplete type no test (C++11)
 
 std::string PATH = "files/Dogs.png";
+bool VALID_PATH = true;
 
 const char* GetMethod::build_response()
 {
