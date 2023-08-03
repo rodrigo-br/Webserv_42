@@ -2,18 +2,16 @@
 
 IMethod *MethodCreator::create_method_object(HttpMethodEnum::httpMethod method)
 {
-    if (method == HttpMethodEnum::GET)
+    switch(method)
     {
-        return new GetMethod();
+        case HttpMethodEnum::GET:
+            return new GetMethod();
+        case HttpMethodEnum::POST:
+            return new PostMethod();
+        case HttpMethodEnum::DELETE:
+            return new DeleteMethod();
+        default:
+            return new UnknownMethod();
     }
-    else if (method == HttpMethodEnum::POST)
-    {
-        return new PostMethod();
-    }
-    else if (method == HttpMethodEnum::DELETE)
-    {
-        return new DeleteMethod();
-    }
-    return new UnknownMethod();
 }
 

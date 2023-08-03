@@ -13,15 +13,9 @@ const char* GetMethod::build_response()
     // Headers
     response.append(this->build_headers());
 
-    // ssize_t body_size;
-    // Body
-    // response.append(this->BODY_BUILDER_BIIIIHHHHLLL(body_size));
-
     // convert string to char ptr
     char *response_as_char = new char[(response.length() + 1)];
     std::strcpy(response_as_char, response.c_str());
-
-    // std::cout << response_as_char << std::endl;
 
     return response_as_char;
 }
@@ -66,11 +60,11 @@ std::string GetMethod::build_headers() const
 
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
-    std::vector<char> imageBuffer = this->open_file_as_vector(PATH);
+    std::vector<char> buffer = this->open_file_as_vector(PATH);
 
-    this->body_size = imageBuffer.size();
+    this->body_size = buffer.size();
     char *body = new char[this->body_size];
-    std::copy(imageBuffer.begin(), imageBuffer.end(), body);
+    std::copy(buffer.begin(), buffer.end(), body);
 
     if (this->body_size > 0)
     {
