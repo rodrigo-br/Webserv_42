@@ -79,10 +79,6 @@ Server::Server()
 		Request request = Request().create_parsed_message(connection);
 		std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
 		RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
-		
-		std::cout << "path = "<<std::boolalpha << request_validator.get_path() << std::endl;
-		std::cout <<  "HTTP = "<<std::boolalpha << request_validator.get_http_version() << std::endl;
-		std::cout <<  "body = "<<std::boolalpha << request_validator.get_body() << std::endl;
 
 		send(connection, this->response.get_response(), this->response.get_size(), 0);
 		if (this->response.has_body())
