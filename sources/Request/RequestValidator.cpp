@@ -17,12 +17,12 @@ HttpMethodEnum::httpMethod RequestValidator::method_validator(Request& request)
 {
 	std::string method = request.get_method();
 	if (method.compare("GET") == 0)
-		_method = HttpMethodEnum::GET;
+		this->_method = HttpMethodEnum::GET;
 	else if (method.compare("POST") == 0)
-		_method = HttpMethodEnum::POST;
+		this->_method = HttpMethodEnum::POST;
 	else if (method.compare("DELETE") == 0)
-		_method = HttpMethodEnum::DELETE;
-	return _method;
+		this->_method = HttpMethodEnum::DELETE;
+	return this->_method;
 }
 
 void RequestValidator::path_validator(Conf& conf, Request& request)
@@ -57,17 +57,17 @@ void RequestValidator::http_version_validator(Request& request)
 
 bool RequestValidator::get_path(void) const
 {
-	return _path;
+	return this->_path;
 }
 
 bool RequestValidator::get_http_version(void) const
 {
-	return _http_version;
+	return this->_http_version;
 }
 
 bool RequestValidator::get_body(void) const
 {
-	return _requestBody;
+	return this->_requestBody;
 }
 
 HttpMethodEnum::httpMethod RequestValidator::get_method(void) const

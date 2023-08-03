@@ -22,7 +22,7 @@ void    RequestParser::parser_http_request(char *request)
 void RequestParser::_parse_request_bory(std::string& line, std::istringstream& iss)
 {
     while (std::getline(iss, line)) {
-        _requestBody += line;
+        this->_requestBody += line;
     }
 }
 
