@@ -91,63 +91,55 @@ Server::Server()
 	close(sockfd);
 }
 
-// Server::Server()
-// {
-//     int sockfd = create_socket();
-//     set_socket_reusable(sockfd);
-//     sockaddr_in sockaddr = create_sockaddr(this->conf.get_listen());
-//     bind_socket(sockfd, sockaddr);
-//     listen_socket(sockfd);
-//     int addrlen = sizeof(sockaddr);
-//     signal(SIGINT, Server::signalHandler);
-//     int max_socket_so_far = sockfd;
-//     fd_set current_sockets, read_sockets;
-//     FD_ZERO(&current_sockets);
-//     FD_SET(sockfd, &current_sockets);
+Server::Server()
+{
+    int sockfd = create_socket();
+    set_socket_reusable(sockfd);
+    sockaddr_in sockaddr = create_sockaddr(this->conf.get_listen());
+    bind_socket(sockfd, sockaddr);
+    listen_socket(sockfd);
+    int addrlen = sizeof(sockaddr);
+    signal(SIGINT, Server::signalHandler);
+    int max_socket_so_far = sockfd;
+    fd_set current_sockets, read_sockets;
+    FD_ZERO(&current_sockets);
+    FD_SET(sockfd, &current_sockets);
 
-//     while (!gSignalInterrupted)
-//     {
-//         read_sockets = current_sockets;
-//         if (select(max_socket_so_far + 1, &read_sockets, NULL, NULL, NULL) == -1)
-//         {
-//             perror("select");
-//             exit(EXIT_FAILURE);
-//         }
+    while (!gSignalInterrupted)
+    {
+        read_sockets = current_sockets;
+		if (Utils::check(select(FD_SETSIZE, &read_sockets, NULL,NULL, NULL)))
+			exit(EXIT_FAILURE);
+        for (int i = 0; i <= max_socket_so_far; i++)
+        {
+            if (FD_ISSET(i, &read_sockets))
+            {
+                if (i == sockfd)
+                {
+                    int connection = accept_socket(sockfd, sockaddr, addrlen);
+                    FD_SET(connection, &current_sockets);
+                    if (connection > max_socket_so_far)
+                        max_socket_so_far = connection;
+                }
+                else
+                {
+                    Request request = Request().create_parsed_message(i);
+                    std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
+                    RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
 
-//         for (int i = 0; i <= max_socket_so_far; i++)
-//         {
-//             if (FD_ISSET(i, &read_sockets))
-//             {
-//                 if (i == sockfd)
-//                 {
-//                     int connection = accept_socket(sockfd, sockaddr, addrlen);
-//                     FD_SET(connection, &current_sockets);
-//                     if (connection > max_socket_so_far)
-//                     {
-//                         max_socket_so_far = connection;
-//                     }
-//                 }
-//                 else
-//                 {
-//                     Request request = Request().create_parsed_message(i);
-//                     std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
-//                     RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
+                    send(i, this->response.get_response(), this->response.get_size(), 0);
+                    if (this->response.has_body())
+                    {
+                        send(i, this->response.get_body(), this->response.body_size(), 0);
+                    }
+                    close(i);
+                    FD_CLR(i, &current_sockets);
+                }
+            }
+        }
+    }
 
-//                     send(i, this->response.get_response(), this->response.get_size(), 0);
-//                     if (this->response.has_body())
-//                     {
-//                         send(i, this->response.get_body(), this->response.body_size(), 0);
-//                     }
-//                     close(i);
-//                     FD_CLR(i, &current_sockets);
-//                 }
-//             }
-//         }
-//     }
-
-//     // Antes de encerrar o servidor, feche o socket principal
-//     close(sockfd);
-// }
-
+    close(sockfd);
+}
 
 bool Server::gSignalInterrupted = false;
