@@ -23,7 +23,7 @@ class Request
 		size_t						get_size() const;
 
 		RequestParser				_parser;
-		HttpMethodEnum::httpMethod	get_method() const;
+		std::string					get_method() const;
 		std::string					get_path(void) const;
 		std::string					get_http_version(void) const;
 		std::string					get_body(void) const;
