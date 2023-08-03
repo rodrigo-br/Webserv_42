@@ -1,6 +1,8 @@
 #include "interfaces/GetMethod.hpp"
 #include <sstream> // Precisa ficar neste arquivo para evitar erro de incomplete type no test (C++11)
 
+std::string PATH = "files/Dogs.png";
+
 const char* GetMethod::build_response()
 {
     std::string response;
@@ -64,21 +66,7 @@ std::string GetMethod::build_headers() const
 
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
-    std::ifstream file("files/Dogs.png", std::ios::binary | std::ios::ate);
-    if (!file.is_open())
-    {
-        std::cout << "Failed to open image file." << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-    std::vector<char> imageBuffer(size);
-    if (!file.read(imageBuffer.data(), size))
-    {
-        std::cout << "Failed to read image file" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    file.close();
+    std::vector<char> imageBuffer = this->open_file_as_vector(PATH);
 
     this->body_size = imageBuffer.size();
     char *body = new char[this->body_size];
@@ -89,11 +77,6 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
         this->hasBody = true;
     }
     return body;
-}
-
-std::string GetMethod::get_protocol_version() const
-{
-    return "HTTP/1.1";
 }
 
 std::string GetMethod::get_status_code() const
@@ -110,5 +93,5 @@ std::string GetMethod::get_status_msg() const
 
 std::string GetMethod::get_content_type() const
 {
-    return contentTypes.get_mime_type(".png");
+    return contentTypes.get_mime_type(this->get_extension(PATH));
 }
