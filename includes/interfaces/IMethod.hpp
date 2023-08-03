@@ -1,7 +1,9 @@
 #ifndef IMETHOD_H
 # define IMETHOD_H
 
-class IMethod
+# include "MethodsUtils.hpp"
+
+class IMethod : public MethodsUtils
 {
     public:
         virtual ~IMethod() {};
