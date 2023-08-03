@@ -16,7 +16,9 @@ class Conf
 
         int get_listen() const;
         std::string get_root() const;
+        std::string get_locations( std::string location_name ) const;
         std::map<std::string, std::string> get_locations() const;
+
 };
 
 #endif

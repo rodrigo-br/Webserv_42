@@ -77,7 +77,8 @@ Server::Server()
 		}
 		int connection = accept_socket(sockfd, sockaddr, addrlen);
 		Request request = Request().create_parsed_message(connection);
-		// request._parser().get_mensage_request());
+		std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
+		RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
 
 		send(connection, this->response.get_response(), this->response.get_size(), 0);
 		if (this->response.has_body())

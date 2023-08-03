@@ -6,9 +6,9 @@ TEST_CASE("Testando se o parser request acha o método GET num GET request")
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    HttpMethodEnum::httpMethod method = requestParser.get_method();
+    std::string method = requestParser.get_method();
 
-    REQUIRE(method == HttpMethodEnum::GET);
+    REQUIRE(method == "GET");
 }
 
 TEST_CASE("Testando se o parser request acha o método POST num POST request")
@@ -17,9 +17,9 @@ TEST_CASE("Testando se o parser request acha o método POST num POST request")
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    HttpMethodEnum::httpMethod method = requestParser.get_method();
+    std::string method = requestParser.get_method();
 
-    REQUIRE(method == HttpMethodEnum::POST);
+    REQUIRE(method ==  "POST");
 }
 
 TEST_CASE("Testando se o parser request acha o método DELETE num DELETE request")
@@ -28,9 +28,9 @@ TEST_CASE("Testando se o parser request acha o método DELETE num DELETE request
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    HttpMethodEnum::httpMethod method = requestParser.get_method();
+    std::string method = requestParser.get_method();
 
-    REQUIRE(method == HttpMethodEnum::DELETE);
+    REQUIRE(method ==  "DELETE");
 }
 
 TEST_CASE("Testando se o parser request acha o método desconehcido num request")
@@ -39,9 +39,9 @@ TEST_CASE("Testando se o parser request acha o método desconehcido num request"
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
-    HttpMethodEnum::httpMethod method = requestParser.get_method();
+    std::string method = requestParser.get_method();
 
-    REQUIRE(method == HttpMethodEnum::UNKNOWN);
+    REQUIRE(method == "UNKNOWN");
 }
 
 TEST_CASE("Testando se o parser request acha o PATH / num request")
