@@ -11,6 +11,7 @@
 # include <fstream> // For ifstream
 # include <vector> // For vector (duh)
 # include <csignal> // For signal
+# include <sys/select.h> // For select function
 # include "classes/Utils.hpp"
 # include "classes/ResponseBuilder.hpp"
 # include "classes/RequestParser.hpp"

@@ -59,37 +59,37 @@ void Server::signalHandler(int signum) {
     Server::gSignalInterrupted = true;
 }
 
-Server::Server()
-{
-	int sockfd = create_socket();
-	set_socket_reusable(sockfd);
-	sockaddr_in sockaddr = create_sockaddr(this->conf.get_listen());
-	bind_socket(sockfd, sockaddr);
-	listen_socket(sockfd);
-	int addrlen = sizeof(sockaddr);
-	signal(SIGINT, Server::signalHandler);
+// Server::Server()
+// {
+// 	int sockfd = create_socket();
+// 	set_socket_reusable(sockfd);
+// 	sockaddr_in sockaddr = create_sockaddr(this->conf.get_listen());
+// 	bind_socket(sockfd, sockaddr);
+// 	listen_socket(sockfd);
+// 	int addrlen = sizeof(sockaddr);
+// 	signal(SIGINT, Server::signalHandler);
 
-	while(1)
-	{
-		if (this->gSignalInterrupted)
-		{
-			break ;
-		}
-		int connection = accept_socket(sockfd, sockaddr, addrlen);
-		Request request = Request().create_parsed_message(connection);
-		std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
-		RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
+// 	while(1)
+// 	{
+// 		if (this->gSignalInterrupted)
+// 		{
+// 			break ;
+// 		}
+// 		int connection = accept_socket(sockfd, sockaddr, addrlen);
+// 		Request request = Request().create_parsed_message(connection);
+// 		std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
+// 		RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
 
 
-		send(connection, this->response.get_response(), this->response.get_size(), 0);
-		if (this->response.has_body())
-		{
-			send(connection, this->response.get_body(), this->response.body_size(), 0);
-		}
-		close(connection);
-	}
-	close(sockfd);
-}
+// 		send(connection, this->response.get_response(), this->response.get_size(), 0);
+// 		if (this->response.has_body())
+// 		{
+// 			send(connection, this->response.get_body(), this->response.body_size(), 0);
+// 		}
+// 		close(connection);
+// 	}
+// 	close(sockfd);
+// }
 
 Server::Server()
 {
