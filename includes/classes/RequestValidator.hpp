@@ -16,10 +16,6 @@ class RequestValidator
 		~RequestValidator();
 
 		RequestValidator    		&request_validator( Conf &conf, Request &request);
-		HttpMethodEnum::httpMethod	method_validator(Request& request);
-		void 						path_validator(Conf& conf, Request& request);
-		void						body_validator(Request& request);
-		void						http_version_validator(Request& request);
 		HttpMethodEnum::httpMethod	get_method(void) const;
 		bool				        get_path(void) const;
 		bool				        get_http_version(void) const;
@@ -27,10 +23,14 @@ class RequestValidator
 		bool				        get_header(std::string header_name) const;
 
 	private:
-		HttpMethodEnum::httpMethod      _method;
-		bool                 		    _path;
-		bool                			_http_version;
-		bool							_requestBody;
+		HttpMethodEnum::httpMethod	method_validator(Request& request);
+		void 						path_validator(Conf& conf, Request& request);
+		void						body_validator(Request& request);
+		void						http_version_validator(Request& request);
+		HttpMethodEnum::httpMethod	_method;
+		bool                 		_path;
+		bool                		_http_version;
+		bool						_requestBody;
 };
 
 #endif

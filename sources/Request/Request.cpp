@@ -21,25 +21,25 @@ Request			&Request::create_parsed_message(int fd_connection)
 
 std::string Request::get_method() const
 {
-    return _parser.get_method();
+    return this->_parser.get_method();
 }
 
 std::string Request::get_path(void) const
 {
-    return _parser.get_path();
+    return this->_parser.get_path();
 }
 
 std::string Request::get_http_version(void) const
 {
-    return _parser.get_http_version();
+    return this->_parser.get_http_version();
 }
 
 std::string Request::get_body(void) const
 {
-    return _parser.get_body();
+    return this->_parser.get_body();
 }
 
 std::string Request::get_header(std::string header_name ) const
 {
-    return _parser.get_header(header_name);
+    return this->_parser.get_header(header_name);
 }

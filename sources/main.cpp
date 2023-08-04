@@ -2,7 +2,7 @@
 
 int main(void)
 {
-    Server();
+    Server server;
 
     return 0;
 }

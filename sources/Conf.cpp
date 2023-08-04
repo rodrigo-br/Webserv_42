@@ -1,9 +1,12 @@
 #include "classes/Conf.hpp"
+#include <iostream>
 
-Conf::Conf() : listen(8000), root("files/")
+Conf::Conf()
 {
-    location["/"] = "index.html";
-};
+    this->listen = 8000;
+    this->root = "files/";
+    this->location["/"] = "index.html";
+}
 
 int Conf::get_listen() const
 {

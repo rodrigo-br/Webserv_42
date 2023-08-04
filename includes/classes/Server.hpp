@@ -10,7 +10,6 @@ class Server
 {
     public:
         static bool gSignalInterrupted;
-        Response response;
         Conf conf;
         Server();
         static void signalHandler(int signum);
