@@ -10,6 +10,7 @@
 # include <cerrno> // For errno
 # include <fstream> // For ifstream
 # include <vector> // For vector (duh)
+# include <map> // For map (duh)
 # include <csignal> // For signal
 # include <sys/select.h> // For select function
 # include "classes/Utils.hpp"

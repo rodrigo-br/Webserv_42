@@ -81,10 +81,10 @@ void Server::signalHandler(int signum) {
 // 		RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
 
 
-// 		send(connection, this->response.get_response(), this->response.get_size(), 0);
-// 		if (this->response.has_body())
+// 		send(connection, response.get_response(), response.get_size(), 0);
+// 		if (response.has_body())
 // 		{
-// 			send(connection, this->response.get_body(), this->response.body_size(), 0);
+// 			send(connection, response.get_body(), response.body_size(), 0);
 // 		}
 // 		close(connection);
 // 	}
@@ -99,17 +99,19 @@ Server::Server()
     bind_socket(sockfd, sockaddr);
     listen_socket(sockfd);
     int addrlen = sizeof(sockaddr);
-    signal(SIGINT, Server::signalHandler);
     int max_socket_so_far = sockfd;
     fd_set current_sockets, read_sockets;
     FD_ZERO(&current_sockets);
     FD_SET(sockfd, &current_sockets);
+    signal(SIGINT, Server::signalHandler);
 
     while (!gSignalInterrupted)
     {
         read_sockets = current_sockets;
 		if (Utils::check(select(FD_SETSIZE, &read_sockets, NULL,NULL, NULL)))
-			exit(EXIT_FAILURE);
+        {
+            break ;
+        }
         for (int i = 0; i <= max_socket_so_far; i++)
         {
             if (FD_ISSET(i, &read_sockets))
@@ -126,11 +128,12 @@ Server::Server()
                     Request request = Request().create_parsed_message(i);
                     std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
                     RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
+					Response response;
 
-                    send(i, this->response.get_response(), this->response.get_size(), 0);
-                    if (this->response.has_body())
+                    send(i, response.get_response(), response.get_size(), 0);
+                    if (response.has_body())
                     {
-                        send(i, this->response.get_body(), this->response.body_size(), 0);
+                        send(i, response.get_body(), response.body_size(), 0);
                     }
                     close(i);
                     FD_CLR(i, &current_sockets);
