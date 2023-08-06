@@ -4,17 +4,19 @@
 # include <cstring>
 # include "classes/ResponseBuilder.hpp"
 # include <stdlib.h>
+# include "classes/Request.hpp"
+# include "classes/RequestValidator.hpp"
 
 class Response
 {
     private:
-        ResponseBuilder builder;
-        const char      *response;
-        const char      *body;
-        size_t          size;
+        ResponseBuilder *_builder;
+        const char      *_response;
+        const char      *_body;
+        size_t          _size;
 
     public:
-        Response();
+        Response(ResponseBuilder *builder);
         ~Response();
 
         bool            has_body() const;

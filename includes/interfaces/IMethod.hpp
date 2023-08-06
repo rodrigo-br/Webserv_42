@@ -1,11 +1,13 @@
 #ifndef IMETHOD_H
 # define IMETHOD_H
 
-# include "MethodsUtils.hpp"
+# include "interfaces/MethodsUtils.hpp"
+# include "classes/Request.hpp"
 
 class IMethod : public MethodsUtils
 {
     public:
+        Request request;
         virtual ~IMethod() {};
 
         virtual const char  *build_response() = 0;
