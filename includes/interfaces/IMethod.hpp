@@ -3,11 +3,13 @@
 
 # include "interfaces/MethodsUtils.hpp"
 # include "classes/Request.hpp"
+# include "classes/RequestValidator.hpp"
 
 class IMethod : public MethodsUtils
 {
     public:
         Request request;
+        RequestValidator validator;
         virtual ~IMethod() {};
 
         virtual const char  *build_response() = 0;

@@ -4,7 +4,7 @@
 
 a project to put photos of my dogs on the web
 
-![](files/Dogs.png)
+![](wwwroot/assets/Dogs.png)
 
 
 ## Requirements

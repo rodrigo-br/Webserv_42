@@ -66,20 +66,20 @@ TEST_CASE("Testando se o parser request acha o PATH /index.html num request")
     REQUIRE(path == expectd);
 }
 
-TEST_CASE("Testando se o parser request acha o PATH /files/cavalinho.html  num request")
+TEST_CASE("Testando se o parser request acha o PATH /wwwroot/cavalinho.html  num request")
 {
-    char request[] = "GET /files/cavalinho.html HTTP/1.1\n";
+    char request[] = "GET /wwwroot/cavalinho.html HTTP/1.1\n";
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
     std::string path = requestParser.get_path();
-    std::string expectd = "/files/cavalinho.html";
+    std::string expectd = "/wwwroot/cavalinho.html";
     REQUIRE(path == expectd);
 }
 
 TEST_CASE("Testando se o parser request acha o http request é HTTP/1.1 num request")
 {
-    char request[] = "GET /files/cavalinho.html HTTP/1.1\n";
+    char request[] = "GET /wwwroot/cavalinho.html HTTP/1.1\n";
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 
@@ -91,7 +91,7 @@ TEST_CASE("Testando se o parser request acha o http request é HTTP/1.1 num requ
 
 TEST_CASE("Testando se o parser request acha o http request é HTTP/1.2 num request e da erro")
 {
-    char request[] = "GET /files/cavalinho.html HTTP/1.2\n";
+    char request[] = "GET /wwwroot/cavalinho.html HTTP/1.2\n";
     RequestParser requestParser;
     requestParser.parser_http_request(request);
 

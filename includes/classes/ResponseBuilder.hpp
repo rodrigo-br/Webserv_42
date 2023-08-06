@@ -19,7 +19,6 @@ class ResponseBuilder
         IMethod *_method;
 
     public:
-
         ResponseBuilder(Request &, RequestValidator &);
         ~ResponseBuilder();
         const char  *build_response();

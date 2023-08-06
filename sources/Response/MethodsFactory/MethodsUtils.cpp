@@ -1,7 +1,7 @@
 #include "interfaces/MethodsUtils.hpp"
 #include <sstream>
 
-# define ROOT "files/"
+# define ROOT "wwwroot/"
 
 std::vector<char> MethodsUtils::open_file_as_vector(std::string path)
 {

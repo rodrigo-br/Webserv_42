@@ -4,7 +4,7 @@
 Conf::Conf()
 {
     this->listen = 8000;
-    this->root = "files/";
+    this->root = "wwwroot/";
     this->location["/"] = "index.html";
 }
 

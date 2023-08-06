@@ -77,9 +77,9 @@ TEST_CASE("Testando se o request validator acha o PATH /index.html num request")
     REQUIRE(path == expectd);
 }
 
-TEST_CASE("Testando se o request validator acha o PATH /files/cavalinho.html  num request")
+TEST_CASE("Testando se o request validator acha o PATH /wwwroot/cavalinho.html  num request")
 {
-    char requestMensage[] = "GET /files/cavalinho.html HTTP/1.1\n";
+    char requestMensage[] = "GET /wwwroot/cavalinho.html HTTP/1.1\n";
       Request request;
     Conf conf;
     request._parser.parser_http_request(requestMensage);
@@ -92,7 +92,7 @@ TEST_CASE("Testando se o request validator acha o PATH /files/cavalinho.html  nu
 
 TEST_CASE("Testando se o request validator acha o http request é HTTP/1.1 num request")
 {
-    char requestMensage[] = "GET /files/cavalinho.html HTTP/1.1\n";
+    char requestMensage[] = "GET /wwwroot/cavalinho.html HTTP/1.1\n";
     Request request;
     Conf conf;
     request._parser.parser_http_request(requestMensage);
@@ -105,7 +105,7 @@ TEST_CASE("Testando se o request validator acha o http request é HTTP/1.1 num r
 
 TEST_CASE("Testando se o request validator acha o http request é HTTP/1.2 num request e da erro")
 {
-    char requestMensage[] = "GET /files/cavalinho.html HTTP/1.2\n";
+    char requestMensage[] = "GET /wwwroot/cavalinho.html HTTP/1.2\n";
     Request request;
     Conf conf;
     request._parser.parser_http_request(requestMensage);

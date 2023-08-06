@@ -1,8 +1,7 @@
 #include "interfaces/GetMethod.hpp"
 #include <sstream> // Precisa ficar neste arquivo para evitar erro de incomplete type no test (C++11)
 
-std::string PATH = "files/Dogs.png";
-bool VALID_PATH = true;
+#define ROOT "wwwroot"
 
 const char* GetMethod::build_response()
 {
@@ -61,7 +60,16 @@ std::string GetMethod::build_headers() const
 
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
-    std::vector<char> buffer = this->open_file_as_vector("files" + this->request.get_path());
+    std::string file;
+    if (this->validator.get_path())
+    {
+        file = ROOT + this->request.get_path();
+    }
+    else
+    {
+        file = ROOT + std::string("/404.html");
+    }
+    std::vector<char> buffer = this->open_file_as_vector(file);
 
     this->body_size = buffer.size();
     char *body = new char[this->body_size];
@@ -88,5 +96,14 @@ std::string GetMethod::get_status_msg() const
 
 std::string GetMethod::get_content_type() const
 {
-    return contentTypes.get_mime_type(this->get_extension("files" + this->request.get_path()));
+    std::string file;
+    if (this->validator.get_path())
+    {
+        file = ROOT + this->request.get_path();
+    }
+    else
+    {
+        file = ROOT + std::string("/404.html");
+    }
+    return contentTypes.get_mime_type(this->get_extension(file));
 }
