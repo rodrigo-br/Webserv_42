@@ -19,6 +19,7 @@ class RequestParser
 		std::string							get_http_version(void) const;
 		std::string							get_body(void) const;
 		std::string							get_header(std::string header_name) const;
+		void								set_path(std::string new_path);
 
 	private:
 		void 								_parse_request_start_line( std::string &line, std::istringstream &iss );

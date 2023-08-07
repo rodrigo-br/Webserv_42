@@ -29,17 +29,55 @@ void RequestValidator::path_validator(Conf& conf, Request& request)
 {
 	std::string	path = request.get_path();
 	size_t		position = path.find_last_of("/");
-	if (position == path.length() - 1)
+	size_t		len = path.length();
+	std::string root = conf.get_root();
+
+	if (len == 1 && (path.compare("/") == 0))
 	{
-		if (!conf.get_locations(path).empty())
+		std::string location = conf.get_locations(path);
+		if (!location.empty())
+		{
 			this->_path = true;
+			request.set_path(root + path + location);
+		}
+	}
+	else if (len == position + 1)
+	{
+		std::string location = conf.get_locations(path.substr(0, len - 1));
+		if (!location.empty())
+		{
+			this->_path = true;
+			request.set_path(root + path + location);
+		}
 	}
 	else
-	{ 
-		std::string location = conf.get_locations(path.substr(0, position + 1));
+	{
+		std::string location = conf.get_locations(path.substr(0, position));
 		if (!location.empty())
-			if (location.compare(path.substr(position + 1)) == 0)
+		{
+			if (location.compare( path.substr(position + 1)) == 0)
+			{
 				this->_path = true;
+				request.set_path(root + path  + "/" + location);
+			}
+		}
+		else
+		{
+			if (path.compare( "/index.html") == 0)
+			{
+				this->_path = true;
+				request.set_path(root + path);
+			}
+		}
+
+	}
+	if (path.find("/assets") != std::string::npos) 
+	{			
+		if (!request.get_header("Referer").empty())
+		{
+			this->_path = true;
+			request.set_path(root + path);
+		}
 	}
 }
 
@@ -72,5 +110,5 @@ bool RequestValidator::get_body(void) const
 
 HttpMethodEnum::httpMethod RequestValidator::get_method(void) const
 {
-    return this->_method;
+	return this->_method;
 }

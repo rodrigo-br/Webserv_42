@@ -59,38 +59,6 @@ void Server::signalHandler(int signum) {
     Server::gSignalInterrupted = true;
 }
 
-// Server::Server()
-// {
-// 	int sockfd = create_socket();
-// 	set_socket_reusable(sockfd);
-// 	sockaddr_in sockaddr = create_sockaddr(this->conf.get_listen());
-// 	bind_socket(sockfd, sockaddr);
-// 	listen_socket(sockfd);
-// 	int addrlen = sizeof(sockaddr);
-// 	signal(SIGINT, Server::signalHandler);
-
-// 	while(1)
-// 	{
-// 		if (this->gSignalInterrupted)
-// 		{
-// 			break ;
-// 		}
-// 		int connection = accept_socket(sockfd, sockaddr, addrlen);
-// 		Request request = Request().create_parsed_message(connection);
-// 		std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
-// 		RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
-
-
-// 		send(connection, response.get_response(), response.get_size(), 0);
-// 		if (response.has_body())
-// 		{
-// 			send(connection, response.get_body(), response.body_size(), 0);
-// 		}
-// 		close(connection);
-// 	}
-// 	close(sockfd);
-// }
-
 Server::Server()
 {
     int sockfd = create_socket();
@@ -128,7 +96,8 @@ Server::Server()
                     Request request = Request().create_parsed_message(i);
                     std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
                     RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
-					Response response;
+                    
+					Response response(new ResponseBuilder(request, request_validator));
 
                     send(i, response.get_response(), response.get_size(), 0);
                     if (response.has_body())

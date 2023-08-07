@@ -1,45 +1,46 @@
 #include "classes/Response.hpp"
 
-Response::Response() : response(NULL), body(NULL)
+Response::Response(ResponseBuilder *builder) : _builder(builder), _response(NULL), _body(NULL)
 {
-    this->response = builder.build_response();
-    this->body = builder.build_body();
-    this->size = std::strlen(response);
+    this->_response = _builder->build_response();
+    this->_body = _builder->build_body();
+    this->_size = std::strlen(this->_response);
 }
 
 Response::~Response()
 {
-    if (this->response != NULL)
+    if (this->_response != NULL)
     {
-        delete[] this->response;
+        delete[] this->_response;
     }
-    if (this->body != NULL)
+    if (this->_body != NULL)
     {
-        delete[] this->body;
+        delete[] this->_body;
     }
+    delete this->_builder;
 }
 
 const char *Response::get_body()
 {
-    return this->body;
+    return this->_body;
 }
 
 bool Response::has_body() const
 {
-    return this->builder.has_body();
+    return this->_builder->has_body();
 }
 
 ssize_t Response::body_size() const
 {
-    return this->builder.get_body_size();
+    return this->_builder->get_body_size();
 }
 
 const char *Response::get_response() const
 {
-    return this->response;
+    return this->_response;
 }
 
 size_t Response::get_size() const
 {
-    return this->size;
+    return this->_size;
 }

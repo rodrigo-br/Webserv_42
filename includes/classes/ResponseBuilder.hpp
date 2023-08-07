@@ -10,13 +10,16 @@
 # include <stdlib.h>
 # include <vector>
 # include "interfaces/MethodCreator.hpp"
+# include "classes/Request.hpp"
+# include "classes/RequestValidator.hpp"
 
 class ResponseBuilder
 {
-    public:
-        IMethod *method;
+    private:
+        IMethod *_method;
 
-        ResponseBuilder();
+    public:
+        ResponseBuilder(Request &, RequestValidator &);
         ~ResponseBuilder();
         const char  *build_response();
         const char  *build_body();

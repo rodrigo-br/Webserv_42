@@ -51,11 +51,10 @@ void 	RequestParser::_parse_request_header( std::string &line, std::istringstrea
 
 void	RequestParser::_parse_request_start_line(std::string &line, std::istringstream &iss)
 {
-
 	if (std::getline(iss, line)) 
 	{
         std::istringstream lineStream(line);
-        lineStream >> this->_method >> this->_path >> this->_http_version;
+        lineStream >> this->_method >> _path >> this->_http_version;
     }
 }
 
@@ -88,3 +87,9 @@ std::string RequestParser::get_header(std::string header_name) const
     else
         return "";
 }
+
+void RequestParser::set_path(std::string new_path)
+{
+    this->_path = new_path;
+}
+

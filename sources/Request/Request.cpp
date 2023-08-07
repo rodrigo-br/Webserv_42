@@ -43,3 +43,8 @@ std::string Request::get_header(std::string header_name ) const
 {
     return this->_parser.get_header(header_name);
 }
+
+void Request::set_path(std::string new_path)
+{
+    this->_parser.set_path(new_path);
+}
