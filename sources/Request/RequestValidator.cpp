@@ -32,7 +32,7 @@ void RequestValidator::path_validator(Conf& conf, Request& request)
 	size_t		len = path.length();
 	std::string root = conf.get_root();
 
-	if (len == 1 && (path.compare("/") == 0))
+	if (len == 1 && (path.compare("/") == 0))//verifica "/"
 	{
 		std::string location = conf.get_locations(path);
 		if (!location.empty())
@@ -41,7 +41,7 @@ void RequestValidator::path_validator(Conf& conf, Request& request)
 			request.set_path(root + path + location);
 		}
 	}
-	else if (len == position + 1)
+	else if (len == position + 1)//verifica se a / está na última posição
 	{
 		std::string location = conf.get_locations(path.substr(0, len - 1));
 		if (!location.empty())
@@ -50,20 +50,27 @@ void RequestValidator::path_validator(Conf& conf, Request& request)
 			request.set_path(root + path + location);
 		}
 	}
-	else
+	else//não termina com /
 	{
-		std::string location = conf.get_locations(path.substr(0, position));
-		if (!location.empty())
+		std::string test = conf.get_locations(path);
+		if (!test.empty())//verifica se não está dando o caminho SEM o arquivo (exemplo http://localhost:8000/api/upload)
 		{
-			if (location.compare( path.substr(position + 1)) == 0)
+			this->_path = true;
+			request.set_path(root + path + "/" + test);
+			return ;
+		}
+		std::string location = conf.get_locations(path.substr(0, position));
+		if (!location.empty())// para casos em que tem um caminho válido com algum arquivo ainda não verificado
+		{
+			if (location.compare(path.substr(position + 1)) == 0)// verifica se o arquivo está ok
 			{
 				this->_path = true;
-				request.set_path(root + path  + "/" + location);
+				request.set_path(root + path);
 			}
 		}
-		else
+		else//tudo deu errado
 		{
-			if (path.compare( "/index.html") == 0)
+			if (path.compare("/index.html") == 0)// é simplesmente /index.html?
 			{
 				this->_path = true;
 				request.set_path(root + path);
@@ -71,9 +78,9 @@ void RequestValidator::path_validator(Conf& conf, Request& request)
 		}
 
 	}
-	if (path.find("/assets") != std::string::npos) 
-	{			
-		if (!request.get_header("Referer").empty())
+	if (path.find("/assets") != std::string::npos)//verifica se é assets mas sem verificar se existe referer
+	{
+		if (!request.get_header("Referer").empty())// verifica se é referer
 		{
 			this->_path = true;
 			request.set_path(root + path);

@@ -132,7 +132,7 @@ TEST_CASE("Testando se o request validator acha o http request é HTTP/1.2 num r
 
 TEST_CASE( "Testando se tudo dá true")
 {
-    std::string requestMensage = GENERATE("GET /api/api.html HTTP/1.1\n", 
+    std::string requestMensage = GENERATE("GET /api/api.html HTTP/1.1\n",
                                        "GET /api/upload/upload.html HTTP/1.1\n",
                                         "GET /images/images.html HTTP/1.1\n",
                                          "GET /images/random/index.html HTTP/1.1\n" );
@@ -145,7 +145,7 @@ TEST_CASE( "Testando se tudo dá true")
     bool path = request_validator.get_path();
     bool expectd = true;
     REQUIRE(path == expectd);
-               
+    REQUIRE(request.get_path() == "wwwroot" + requestMensage.substr(4, requestMensage.find_last_of(" ") - 4));
 }
 
 
