@@ -6,10 +6,10 @@ Conf::Conf()
     this->listen = 8000;
     this->root = "wwwroot/";
     this->location["/"] = Location("index.html");
-    this->location["/api/"] = Location("api.html");
-    this->location["/api/upload/"] = Location("upload.html");
-    this->location["/images/"] = Location("images.html");
-    this->location["/images/random/"] = Location("index.html");
+    this->location["/api"] = Location("api.html");
+    this->location["/api/upload"] = Location("upload.html");
+    this->location["/images"] = Location("images.html");
+    this->location["/images/random"] = Location("index.html");
 }
 
 int Conf::get_listen() const

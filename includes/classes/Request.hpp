@@ -26,6 +26,9 @@ class Request
 		std::string					get_http_version(void) const;
 		std::string					get_body(void) const;
 		std::string					get_header(std::string header_name) const;
+		void        				set_path(std::string new_path);
+
+		// RequestValidator			_validator;
 
 	private:
 		RequestParser				_parser;

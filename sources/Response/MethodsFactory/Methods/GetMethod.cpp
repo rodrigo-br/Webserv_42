@@ -63,7 +63,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     std::string file;
     if (this->validator.get_path())
     {
-        file = ROOT + this->request.get_path();
+        file = this->request.get_path();
     }
     else
     {
@@ -99,7 +99,7 @@ std::string GetMethod::get_content_type() const
     std::string file;
     if (this->validator.get_path())
     {
-        file = ROOT + this->request.get_path();
+        file = this->request.get_path();
     }
     else
     {

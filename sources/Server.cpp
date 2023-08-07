@@ -96,6 +96,7 @@ Server::Server()
                     Request request = Request().create_parsed_message(i);
                     std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
                     RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
+                    
 					Response response(new ResponseBuilder(request, request_validator));
 
                     send(i, response.get_response(), response.get_size(), 0);
