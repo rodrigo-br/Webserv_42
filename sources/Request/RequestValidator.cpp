@@ -71,6 +71,14 @@ void RequestValidator::path_validator(Conf& conf, Request& request)
 		}
 
 	}
+	if (path.find("/assets") != std::string::npos) 
+	{			
+		if (!request.get_header("Referer").empty())
+		{
+			this->_path = true;
+			request.set_path(root + path);
+		}
+	}
 }
 
 void RequestValidator::body_validator(Request& request)
