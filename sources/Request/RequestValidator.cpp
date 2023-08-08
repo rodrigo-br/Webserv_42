@@ -27,65 +27,87 @@ HttpMethodEnum::httpMethod RequestValidator::method_validator(Request& request)
 
 void RequestValidator::path_validator(Conf& conf, Request& request)
 {
-	std::string	path = request.get_path();
+    std::string path = request.get_path();
+    std::string root = conf.get_root();
 	size_t		position = path.find_last_of("/");
 	size_t		len = path.length();
-	std::string root = conf.get_root();
 
-	if (len == 1 && (path.compare("/") == 0))//verifica "/"
-	{
-		std::string location = conf.get_locations(path);
-		if (!location.empty())
-		{
-			this->_path = true;
-			request.set_path(root + path + location);
-		}
-	}
-	else if (len == position + 1)//verifica se a / está na última posição
-	{
-		std::string location = conf.get_locations(path.substr(0, len - 1));
-		if (!location.empty())
-		{
-			this->_path = true;
-			request.set_path(root + path + location);
-		}
-	}
-	else//não termina com /
-	{
-		std::string test = conf.get_locations(path);
-		if (!test.empty())//verifica se não está dando o caminho SEM o arquivo (exemplo http://localhost:8000/api/upload)
-		{
-			this->_path = true;
-			request.set_path(root + path + "/" + test);
-			return ;
-		}
-		std::string location = conf.get_locations(path.substr(0, position));
-		if (!location.empty())// para casos em que tem um caminho válido com algum arquivo ainda não verificado
-		{
-			if (location.compare(path.substr(position + 1)) == 0)// verifica se o arquivo está ok
-			{
-				this->_path = true;
-				request.set_path(root + path);
-			}
-		}
-		else//tudo deu errado
-		{
-			if (path.compare("/index.html") == 0)// é simplesmente /index.html?
-			{
-				this->_path = true;
-				request.set_path(root + path);
-			}
-		}
 
-	}
-	if (path.find("/assets") != std::string::npos)//verifica se é assets mas sem verificar se existe referer
+    if (isRootPath(path, len))
+        handleRootPath(conf, request, path, root);
+    else if (endsWithSlash(position, len))
+        handlePathWithTrailingSlash(conf, request, path, root);
+    else
+        handleNonTrailingSlashPath(conf, request, path, root, position);
+    handleAssetsPath(request, path, root);
+}
+
+bool RequestValidator::isRootPath(const std::string& path, size_t len)
+{
+    return (len == 1 && (path.compare("/") == 0));
+}
+
+bool RequestValidator::endsWithSlash(size_t position, size_t len)
+{
+    return (len == position + 1);
+}
+
+void RequestValidator::handleRootPath(Conf& conf, Request& request, const std::string& path, const std::string& root)
+{
+    std::string location = conf.get_locations(path);
+    if (!location.empty())
+    {
+        this->_path = true;
+        request.set_path(root + path + location);
+    }
+}
+
+void RequestValidator::handlePathWithTrailingSlash(Conf& conf, Request& request, const std::string& path, const std::string& root)
+{
+    std::string location = conf.get_locations(path.substr(0, path.length() - 1));
+    if (!location.empty())
+    {
+        this->_path = true;
+        request.set_path(root + path + location);
+    }
+}
+
+void RequestValidator::handleNonTrailingSlashPath(Conf& conf, Request& request, const std::string& path, const std::string& root, size_t position)
+{
+	std::string location = conf.get_locations(path);
+	if (!location.empty())//verifica se não está dando o caminho SEM o arquivo (exemplo http://localhost:8000/api/upload)
 	{
-		if (!request.get_header("Referer").empty())// verifica se é referer
+		this->_path = true;
+		request.set_path(root + path + "/" + location);
+		return ;
+	}
+	location = conf.get_locations(path.substr(0, position));
+	if (!location.empty())// para casos em que tem um caminho válido com algum arquivo ainda não verificado
+	{
+		if (location.compare(path.substr(position + 1)) == 0)// verifica se o arquivo está ok
 		{
 			this->_path = true;
 			request.set_path(root + path);
 		}
 	}
+	else
+	{
+		if (path.compare("/index.html") == 0)// é simplesmente /index.html?
+		{
+			this->_path = true;
+			request.set_path(root + path);
+		}
+	}
+
+}
+
+void RequestValidator::handleAssetsPath(Request& request, const std::string& path, const std::string& root)
+{
+    if (path.find("/assets") != std::string::npos && !request.get_header("Referer").empty())
+    {
+        this->_path = true;
+        request.set_path(root + path);
+    }
 }
 
 void RequestValidator::body_validator(Request& request)

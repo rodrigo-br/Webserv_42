@@ -27,6 +27,14 @@ class RequestValidator
 		void 						path_validator(Conf& conf, Request& request);
 		void						body_validator(Request& request);
 		void						http_version_validator(Request& request);
+		bool isRootPath(const std::string& path, size_t	len);
+		bool 		endsWithSlash(size_t position, size_t len);
+
+
+    	void handleRootPath(Conf& conf, Request& request, const std::string& path, const std::string& root);
+    	void handlePathWithTrailingSlash(Conf& conf, Request& request, const std::string& path, const std::string& root);
+    	void handleNonTrailingSlashPath(Conf& conf, Request& request, const std::string& path, const std::string& root, size_t position);
+    	void handleAssetsPath(Request& request, const std::string& path, const std::string& root);
 		HttpMethodEnum::httpMethod	_method;
 		bool                 		_path;
 		bool                		_http_version;
