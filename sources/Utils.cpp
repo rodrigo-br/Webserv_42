@@ -9,3 +9,9 @@ bool Utils::check(ssize_t result, int erro)
     }
     return false;
 }
+
+bool Utils::hasMethodInInput(int input, HttpMethodEnum::httpMethod method)
+{
+    return ((input & method) != 0) && ((input & method) != HttpMethodEnum::UNKNOWN) &&
+            input >= 1 && input <= 8;
+}

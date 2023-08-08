@@ -5,10 +5,10 @@ namespace HttpMethodEnum
 {
     enum httpMethod
     {
-        GET,
-        POST,
-        DELETE,
-        UNKNOWN
+        GET = 1,
+        POST = 2,
+        DELETE = 4,
+        UNKNOWN = 8
     };
 };
 
