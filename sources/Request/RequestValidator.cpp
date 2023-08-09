@@ -4,10 +4,10 @@ RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _pa
 
 RequestValidator::~RequestValidator(void) {}
 
-RequestValidator &RequestValidator::request_validator(Conf& conf, Request& request)
+RequestValidator &RequestValidator::request_validator(ServerData &serverData, Request& request)
 {
 	method_validator(request);
-	path_validator(conf, request);
+	path_validator(serverData, request);
 	body_validator(request);
 	http_version_validator(request);
 	return *this;
@@ -25,20 +25,20 @@ HttpMethodEnum::httpMethod RequestValidator::method_validator(Request& request)
 	return this->_method;
 }
 
-void RequestValidator::path_validator(Conf& conf, Request& request)
+void RequestValidator::path_validator(ServerData &serverData, Request& request)
 {
     std::string path = request.get_path();
-    std::string root = conf.getRoot(8000);
+    std::string root = serverData.getRoot();
 	size_t		position = path.find_last_of("/");
 	size_t		len = path.length();
 
 
     if (isRootPath(path, len))
-        handleRootPath(conf, request, path, root);
+        handleRootPath(serverData, request, path, root);
     else if (endsWithSlash(position, len))
-        handlePathWithTrailingSlash(conf, request, path, root);
+        handlePathWithTrailingSlash(serverData, request, path, root);
     else
-        handleNonTrailingSlashPath(conf, request, path, root, position);
+        handleNonTrailingSlashPath(serverData, request, path, root, position);
     handleAssetsPath(request, path, root);
 }
 
@@ -52,9 +52,9 @@ bool RequestValidator::endsWithSlash(size_t position, size_t len)
     return (len == position + 1);
 }
 
-void RequestValidator::handleRootPath(Conf& conf, Request& request, const std::string& path, const std::string& root)
+void RequestValidator::handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root)
 {
-    std::string location = conf.getLocation(8000, path);
+    std::string location = serverData.getLocation(path);
     if (!location.empty())
     {
         this->_path = true;
@@ -62,9 +62,9 @@ void RequestValidator::handleRootPath(Conf& conf, Request& request, const std::s
     }
 }
 
-void RequestValidator::handlePathWithTrailingSlash(Conf& conf, Request& request, const std::string& path, const std::string& root)
+void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& root)
 {
-    std::string location = conf.getLocation(8000, path.substr(0, path.length() - 1));
+    std::string location = serverData.getLocation(path.substr(0, path.length() - 1));
     if (!location.empty())
     {
         this->_path = true;
@@ -72,16 +72,16 @@ void RequestValidator::handlePathWithTrailingSlash(Conf& conf, Request& request,
     }
 }
 
-void RequestValidator::handleNonTrailingSlashPath(Conf& conf, Request& request, const std::string& path, const std::string& root, size_t position)
+void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root, size_t position)
 {
-	std::string location = conf.getLocation(8000, path);
+	std::string location = serverData.getLocation(path);
 	if (!location.empty())//verifica se não está dando o caminho SEM o arquivo (exemplo http://localhost:8000/api/upload)
 	{
 		this->_path = true;
 		request.set_path(root + path + "/" + location);
 		return ;
 	}
-	location = conf.getLocation(8000, path.substr(0, position));
+	location = serverData.getLocation(path.substr(0, position));
 	if (!location.empty())// para casos em que tem um caminho válido com algum arquivo ainda não verificado
 	{
 		if (location.compare(path.substr(position + 1)) == 0)// verifica se o arquivo está ok

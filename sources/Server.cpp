@@ -54,8 +54,8 @@ void Server::signalHandler(int signum)
 
 Server::Server(Conf &config) : conf(config)
 {
-	FD_ZERO(&current_sockets);
-	max_socket_so_far = 0;
+	FD_ZERO(&this->current_sockets);
+	this->max_socket_so_far = 0;
 
 	for (std::map<int, ServerData>::const_iterator it = conf.getServersData().begin(); it != conf.getServersData().end(); ++it)
 	{
@@ -66,24 +66,25 @@ Server::Server(Conf &config) : conf(config)
 		bind_socket(sockfd, sockaddr);
 		listen_socket(sockfd);
 
-		listen_sockets.push_back(sockfd);
-		FD_SET(sockfd, &current_sockets);
+		this->listen_sockets.push_back(sockfd);
+		FD_SET(sockfd, &this->current_sockets);
 
-		if (sockfd > max_socket_so_far) {
-			max_socket_so_far = sockfd;
+		if (sockfd > this->max_socket_so_far)
+		{
+			this->max_socket_so_far = sockfd;
 		}
 	}
 	signal(SIGINT, Server::signalHandler);
 	while (!gSignalInterrupted)
 	{
-		fd_set read_sockets = current_sockets;
+		fd_set read_sockets = this->current_sockets;
 
 		if (Utils::check(select(FD_SETSIZE, &read_sockets, NULL,NULL, NULL)))
 		{
 			break ;
 		}
 
-		for (std::vector<int>::iterator it = listen_sockets.begin(); it != listen_sockets.end(); ++it)
+		for (std::vector<int>::iterator it = this->listen_sockets.begin(); it != this->listen_sockets.end(); ++it)
 		{
 			int sockfd = *it;
 			if (FD_ISSET(sockfd, &read_sockets))
@@ -96,8 +97,9 @@ Server::Server(Conf &config) : conf(config)
 				{
 					std::cout << "Accepted connection on port " << ntohs(client_addr.sin_port) << std::endl;
 					Request request = Request().create_parsed_message(new_socket);
+
 					std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
-					RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
+					RequestValidator request_validator = RequestValidator().request_validator(this->conf.getServersData()[std::atoi(request.get_header("Host").substr(10).c_str())], request);
 
 					Response response(new ResponseBuilder(request, request_validator));
 
@@ -107,7 +109,7 @@ Server::Server(Conf &config) : conf(config)
 						send(new_socket, response.get_body(), response.body_size(), 0);
 					}
 					close(new_socket);
-					FD_CLR(new_socket, &current_sockets);
+					FD_CLR(new_socket, &this->current_sockets);
 
 				}
 			}

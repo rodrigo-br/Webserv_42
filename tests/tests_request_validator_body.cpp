@@ -9,55 +9,59 @@ char request_curl2[] = "POST /api/endpoint HTTP/1.1\r\nHost: localhost:8000\r\nU
 TEST_CASE("Testando se o request validator retorna true no body num request")
 {
     Request request;
-    Conf conf(new ConfParser("./conf/default.conf"));
+    // Conf conf(new ConfParser("./conf/default.conf"));
     request._parser.parser_http_request(request_curl_body);
-    RequestValidator request_validator = RequestValidator().request_validator(conf, request);
+    ServerData serverData;
+    RequestValidator request_validator = RequestValidator().request_validator(serverData, request);
 
     bool body = request_validator.get_body();
     bool expectd = true;
 
     REQUIRE(body == expectd);
-    conf.deleteConfParser();
+    // conf.deleteConfParser();
 }
 
 TEST_CASE("Testando se o parser validator retorna true no body2 num request")
 {
     Request request;
-    Conf conf(new ConfParser("./conf/default.conf"));
+    // Conf conf(new ConfParser("./conf/default.conf"));
     request._parser.parser_http_request(request_curl_body2);
-    RequestValidator request_validator = RequestValidator().request_validator(conf, request);
+    ServerData serverData;
+    RequestValidator request_validator = RequestValidator().request_validator(serverData, request);
 
     bool body = request_validator.get_body();
     bool expectd = true;
 
     REQUIRE(body == expectd);
-    conf.deleteConfParser();
+    // conf.deleteConfParser();
 }
 
 TEST_CASE("Testando se o parser validator retorna false no o curl num request")
 {
     Request request;
-    Conf conf(new ConfParser("./conf/default.conf"));
+    // Conf conf(new ConfParser("./conf/default.conf"));
     request._parser.parser_http_request(request_curl1);
-    RequestValidator request_validator = RequestValidator().request_validator(conf, request);
+    ServerData serverData;
+    RequestValidator request_validator = RequestValidator().request_validator(serverData, request);
 
     bool body = request_validator.get_body();
     bool expectd = false;
 
     REQUIRE(body == expectd);
-    conf.deleteConfParser();
+    // conf.deleteConfParser();
 }
 
 TEST_CASE("Testando se o parser validator retorna false no o curl2 num request")
 {
     Request request;
-    Conf conf(new ConfParser("./conf/default.conf"));
+    // Conf conf(new ConfParser("./conf/default.conf"));
     request._parser.parser_http_request(request_curl2);
-    RequestValidator request_validator = RequestValidator().request_validator(conf, request);
+    ServerData serverData;
+    RequestValidator request_validator = RequestValidator().request_validator(serverData, request);
 
     bool body = request_validator.get_body();
     bool expectd = false;
 
     REQUIRE(body == expectd);
-    conf.deleteConfParser();
+    // conf.deleteConfParser();
 }

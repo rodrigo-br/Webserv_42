@@ -31,6 +31,7 @@ class RequestParser
 		std::string                 		_path;
 		std::string                			_http_version;
 		std::string							_requestBody;
+		std::string							_port;
 };
 
 #endif
