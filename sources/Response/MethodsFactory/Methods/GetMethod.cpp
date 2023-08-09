@@ -3,7 +3,7 @@
 
 #define ROOT "wwwroot"
 
-const char* GetMethod::build_response()
+const char* GetMethod::buildResponse()
 {
     std::string response;
 
@@ -20,25 +20,25 @@ const char* GetMethod::build_response()
     return response_as_char;
 }
 
-const char* GetMethod::build_body()
+const char* GetMethod::buildBody()
 {
     return this->BODY_BUILDER_BIIIIHHHHLLL();
 }
 
-ssize_t GetMethod::get_body_size() const
+ssize_t GetMethod::getbodySize() const
 {
-    return this->body_size;
+    return this->_bodySize;
 }
 
-bool GetMethod::has_body() const
+bool GetMethod::hasBody() const
 {
-    return this->hasBody;
+    return this->_hasBody;
 }
 
 std::string GetMethod::build_start_line() const
 {
     std::string start_line;
-    start_line.append(this->get_protocol_version());
+    start_line.append(this->getProtocolVersion());
     start_line.append(" ");
     start_line.append(this->get_status_code());
     start_line.append(" ");
@@ -61,23 +61,23 @@ std::string GetMethod::build_headers() const
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
-    if (this->validator.get_path())
+    if (this->validator.getPath())
     {
-        file = this->request.get_path();
+        file = this->request.getPath();
     }
     else
     {
         file = ROOT + std::string("/404.html");
     }
-    std::vector<char> buffer = this->open_file_as_vector(file);
+    std::vector<char> buffer = this->openFileAsVector(file);
 
-    this->body_size = buffer.size();
-    char *body = new char[this->body_size];
+    this->_bodySize = buffer.size();
+    char *body = new char[this->_bodySize];
     std::copy(buffer.begin(), buffer.end(), body);
 
-    if (this->body_size > 0)
+    if (this->_bodySize > 0)
     {
-        this->hasBody = true;
+        this->_hasBody = true;
     }
     return body;
 }
@@ -91,19 +91,19 @@ std::string GetMethod::get_status_code() const
 
 std::string GetMethod::get_status_msg() const
 {
-    return statusCodes.get_status_message(this->get_status_code());
+    return this->_statusCodes.getStatusMessage(this->get_status_code());
 }
 
 std::string GetMethod::get_content_type() const
 {
     std::string file;
-    if (this->validator.get_path())
+    if (this->validator.getPath())
     {
-        file = this->request.get_path();
+        file = this->request.getPath();
     }
     else
     {
         file = ROOT + std::string("/404.html");
     }
-    return contentTypes.get_mime_type(this->get_extension(file));
+    return this->_contentTypes.getMimeType(this->getExtension(file));
 }

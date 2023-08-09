@@ -76,7 +76,7 @@ StatusCodes::StatusCodes()
 }
 
 
-std::string StatusCodes::get_status_message(std::string code) const
+std::string StatusCodes::getStatusMessage(std::string code) const
 {
     std::map<std::string, std::string>::const_iterator it = statusCodes.find(code);
 

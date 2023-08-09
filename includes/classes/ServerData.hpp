@@ -15,7 +15,7 @@ class ServerData
         ServerData();
 
         std::string getRoot() const;
-        std::string getLocation(std::string location_name) const;
+        std::string getLocation(std::string locationName) const;
         std::map<std::string, Location> getLocations() const;
 };
 

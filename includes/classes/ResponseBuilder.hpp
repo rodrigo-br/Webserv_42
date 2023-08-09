@@ -21,10 +21,10 @@ class ResponseBuilder
     public:
         ResponseBuilder(Request &, RequestValidator &);
         ~ResponseBuilder();
-        const char  *build_response();
-        const char  *build_body();
-        ssize_t     get_body_size() const;
-        bool        has_body() const;
+        const char  *buildResponse();
+        const char  *buildBody();
+        ssize_t     getbodySize() const;
+        bool        hasBody() const;
 };
 
 #endif

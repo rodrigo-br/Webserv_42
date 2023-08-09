@@ -2,7 +2,7 @@
 
 ResponseBuilder::ResponseBuilder(Request &request, RequestValidator &validator)
 {
-    this->_method = MethodCreator::create_method_object(validator.get_method());
+    this->_method = MethodCreator::createMethodObject(validator.getMethod());
     this->_method->request = request;
     this->_method->validator = validator;
 }
@@ -12,23 +12,23 @@ ResponseBuilder::~ResponseBuilder()
     delete this->_method;
 }
 
-const char* ResponseBuilder::build_response()
+const char* ResponseBuilder::buildResponse()
 {
-    return this->_method->build_response();
+    return this->_method->buildResponse();
 }
 
-const char* ResponseBuilder::build_body()
+const char* ResponseBuilder::buildBody()
 {
-    return this->_method->build_body();
+    return this->_method->buildBody();
 }
 
-ssize_t ResponseBuilder::get_body_size() const
+ssize_t ResponseBuilder::getbodySize() const
 {
-    return this->_method->get_body_size();
+    return this->_method->getbodySize();
 }
 
-bool ResponseBuilder::has_body() const
+bool ResponseBuilder::hasBody() const
 {
-    return this->_method->has_body();
+    return this->_method->hasBody();
 }
 

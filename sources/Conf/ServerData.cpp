@@ -20,9 +20,9 @@ std::map<std::string, Location> ServerData::getLocations() const
     return this->_location;
 }
 
-std::string ServerData::getLocation(std::string location_name) const
+std::string ServerData::getLocation(std::string locationName) const
 {
-    std::map<std::string, Location>::const_iterator it = this->_location.find(location_name);
+    std::map<std::string, Location>::const_iterator it = this->_location.find(locationName);
 
     if (it != this->_location.end())
         return it->second.getIndex();

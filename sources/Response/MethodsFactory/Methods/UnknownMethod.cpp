@@ -1,21 +1,21 @@
 #include "interfaces/UnknownMethod.hpp"
 
-const char* UnknownMethod::build_response()
+const char* UnknownMethod::buildResponse()
 {
     return NULL;
 }
 
-const char* UnknownMethod::build_body()
+const char* UnknownMethod::buildBody()
 {
     return NULL;
 }
 
-ssize_t UnknownMethod::get_body_size() const
+ssize_t UnknownMethod::getbodySize() const
 {
     return 0;
 }
 
-bool UnknownMethod::has_body() const
+bool UnknownMethod::hasBody() const
 {
     return false;
 }

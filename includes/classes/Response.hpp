@@ -19,11 +19,11 @@ class Response
         Response(ResponseBuilder *builder);
         ~Response();
 
-        bool            has_body() const;
-        ssize_t         body_size() const;
-        const char      *get_body();
-        const char      *get_response() const;
-        size_t          get_size() const;
+        bool            hasBody() const;
+        ssize_t         bodySize() const;
+        const char      *getBody();
+        const char      *getResponse() const;
+        size_t          getSize() const;
 };
 
 #endif

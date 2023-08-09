@@ -80,7 +80,7 @@ ContentTypes::ContentTypes()
     this->contentTypes[".7z"] = "application/x-7z-compressed";
 }
 
-std::string ContentTypes::get_mime_type(std::string extension) const
+std::string ContentTypes::getMimeType(std::string extension) const
 {
     std::map<std::string, std::string>::const_iterator it = contentTypes.find(extension);
 

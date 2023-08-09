@@ -7,9 +7,9 @@ char request_curl_bory2[] = "POST /api/endpoint HTTP/1.1\r\nHost: localhost:8000
 TEST_CASE("Testando se o parser request acha o bory num request")
 {
     RequestParser requestParser;
-    requestParser.parser_http_request(request_curl_bory);
+    requestParser.parserHttpRequest(request_curl_bory);
 
-    std::string body = requestParser.get_body();
+    std::string body = requestParser.getBody();
     std::string expectd = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"}";
 
     REQUIRE(body == expectd);
@@ -18,9 +18,9 @@ TEST_CASE("Testando se o parser request acha o bory num request")
 TEST_CASE("Testando se o parser request acha o bory2 num request")
 {
     RequestParser requestParser;
-    requestParser.parser_http_request(request_curl_bory2);
+    requestParser.parserHttpRequest(request_curl_bory2);
 
-    std::string body = requestParser.get_body();
+    std::string body = requestParser.getBody();
     std::string expectd = "part1=Hello&part2=World&part3=123";
 
     REQUIRE(body == expectd);

@@ -10,11 +10,11 @@ TEST_CASE("Testando se o request validator retorna true no body num request")
 {
     Request request;
     // Conf conf(new ConfParser("./conf/default.conf"));
-    request._parser.parser_http_request(request_curl_body);
+    request._parser.parserHttpRequest(request_curl_body);
     ServerData serverData;
-    RequestValidator request_validator = RequestValidator().request_validator(serverData, request);
+    RequestValidator requestValidator = RequestValidator().requestValidator(serverData, request);
 
-    bool body = request_validator.get_body();
+    bool body = requestValidator.getBody();
     bool expectd = true;
 
     REQUIRE(body == expectd);
@@ -25,11 +25,11 @@ TEST_CASE("Testando se o parser validator retorna true no body2 num request")
 {
     Request request;
     // Conf conf(new ConfParser("./conf/default.conf"));
-    request._parser.parser_http_request(request_curl_body2);
+    request._parser.parserHttpRequest(request_curl_body2);
     ServerData serverData;
-    RequestValidator request_validator = RequestValidator().request_validator(serverData, request);
+    RequestValidator requestValidator = RequestValidator().requestValidator(serverData, request);
 
-    bool body = request_validator.get_body();
+    bool body = requestValidator.getBody();
     bool expectd = true;
 
     REQUIRE(body == expectd);
@@ -40,11 +40,11 @@ TEST_CASE("Testando se o parser validator retorna false no o curl num request")
 {
     Request request;
     // Conf conf(new ConfParser("./conf/default.conf"));
-    request._parser.parser_http_request(request_curl1);
+    request._parser.parserHttpRequest(request_curl1);
     ServerData serverData;
-    RequestValidator request_validator = RequestValidator().request_validator(serverData, request);
+    RequestValidator requestValidator = RequestValidator().requestValidator(serverData, request);
 
-    bool body = request_validator.get_body();
+    bool body = requestValidator.getBody();
     bool expectd = false;
 
     REQUIRE(body == expectd);
@@ -55,11 +55,11 @@ TEST_CASE("Testando se o parser validator retorna false no o curl2 num request")
 {
     Request request;
     // Conf conf(new ConfParser("./conf/default.conf"));
-    request._parser.parser_http_request(request_curl2);
+    request._parser.parserHttpRequest(request_curl2);
     ServerData serverData;
-    RequestValidator request_validator = RequestValidator().request_validator(serverData, request);
+    RequestValidator requestValidator = RequestValidator().requestValidator(serverData, request);
 
-    bool body = request_validator.get_body();
+    bool body = requestValidator.getBody();
     bool expectd = false;
 
     REQUIRE(body == expectd);

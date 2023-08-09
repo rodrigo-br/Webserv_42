@@ -10,7 +10,7 @@
 class MethodCreator
 {
     public:
-        static IMethod* create_method_object(HttpMethodEnum::httpMethod method);
+        static IMethod* createMethodObject(HttpMethodEnum::httpMethod method);
 };
 
 #endif

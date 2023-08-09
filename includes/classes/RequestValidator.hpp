@@ -1,5 +1,5 @@
-#ifndef REQUEST_VALIDATOR_HPP
-#define REQUEST_VALIDATOR_HPP
+#ifndef requestValidator_HPP
+#define requestValidator_HPP
 
 # include <string>
 # include "enums/HttpMethodsEnum.hpp"
@@ -16,20 +16,20 @@ class RequestValidator
 		RequestValidator ();
 		~RequestValidator();
 
-		RequestValidator    		&request_validator(ServerData &serverData, Request &request);
-		HttpMethodEnum::httpMethod	get_method(void) const;
-		bool				        get_path(void) const;
-		bool				        get_http_version(void) const;
-		bool				        get_body(void) const;
-		bool				        get_header(std::string header_name) const;
+		RequestValidator    		&requestValidator(ServerData &serverData, Request &request);
+		HttpMethodEnum::httpMethod	getMethod(void) const;
+		bool				        getPath(void) const;
+		bool				        getHttpVersion(void) const;
+		bool				        getBody(void) const;
+		bool				        getHeader(std::string headerName) const;
 
 	private:
-		HttpMethodEnum::httpMethod	method_validator(Request& request);
-		void 						path_validator(ServerData &serverData, Request& request);
-		void						body_validator(Request& request);
-		void						http_version_validator(Request& request);
-		bool isRootPath(const std::string& path, size_t	len);
-		bool 		endsWithSlash(size_t position, size_t len);
+		HttpMethodEnum::httpMethod	_methodValidator(Request& request);
+		void 						_pathValidator(ServerData &serverData, Request& request);
+		void						_bodyValidator(Request& request);
+		void						_httpVersionValidator(Request& request);
+		bool						isRootPath(const std::string& path, size_t	len);
+		bool 						endsWithSlash(size_t position, size_t len);
 
 
     	void handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root);
@@ -38,7 +38,7 @@ class RequestValidator
     	void handleAssetsPath(Request& request, const std::string& path, const std::string& root);
 		HttpMethodEnum::httpMethod	_method;
 		bool                 		_path;
-		bool                		_http_version;
+		bool                		_httpVersion;
 		bool						_requestBody;
 };
 

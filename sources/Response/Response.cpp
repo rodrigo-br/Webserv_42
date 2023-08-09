@@ -2,8 +2,8 @@
 
 Response::Response(ResponseBuilder *builder) : _builder(builder), _response(NULL), _body(NULL)
 {
-    this->_response = _builder->build_response();
-    this->_body = _builder->build_body();
+    this->_response = _builder->buildResponse();
+    this->_body = _builder->buildBody();
     this->_size = std::strlen(this->_response);
 }
 
@@ -20,27 +20,27 @@ Response::~Response()
     delete this->_builder;
 }
 
-const char *Response::get_body()
+const char *Response::getBody()
 {
     return this->_body;
 }
 
-bool Response::has_body() const
+bool Response::hasBody() const
 {
-    return this->_builder->has_body();
+    return this->_builder->hasBody();
 }
 
-ssize_t Response::body_size() const
+ssize_t Response::bodySize() const
 {
-    return this->_builder->get_body_size();
+    return this->_builder->getbodySize();
 }
 
-const char *Response::get_response() const
+const char *Response::getResponse() const
 {
     return this->_response;
 }
 
-size_t Response::get_size() const
+size_t Response::getSize() const
 {
     return this->_size;
 }

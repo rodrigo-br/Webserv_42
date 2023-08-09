@@ -1,21 +1,21 @@
 #include "interfaces/DeleteMethod.hpp"
 
-const char* DeleteMethod::build_response()
+const char* DeleteMethod::buildResponse()
 {
     return NULL;
 }
 
-const char* DeleteMethod::build_body()
+const char* DeleteMethod::buildBody()
 {
     return NULL;
 }
 
-ssize_t DeleteMethod::get_body_size() const
+ssize_t DeleteMethod::getbodySize() const
 {
     return 0;
 }
 
-bool DeleteMethod::has_body() const
+bool DeleteMethod::hasBody() const
 {
     return false;
 }

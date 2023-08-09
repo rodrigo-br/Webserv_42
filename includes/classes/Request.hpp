@@ -7,7 +7,7 @@
 # include <unistd.h>
 # include <cerrno>
 # include "classes/Utils.hpp"
-# include "classes/RequestParser.hpp" 
+# include "classes/RequestParser.hpp"
 # include "enums/HttpMethodsEnum.hpp"
 
 # define BUFFER_SIZE 30000
@@ -19,14 +19,14 @@ class Request
 		Request();
 		~Request();
 
-		Request						&create_parsed_message(int fd_connecion);
-		const char*         		get_mensage_request() const;
-		std::string					get_method() const;
-		std::string					get_path(void) const;
-		std::string					get_http_version(void) const;
-		std::string					get_body(void) const;
-		std::string					get_header(std::string header_name) const;
-		void        				set_path(std::string new_path);
+		Request						&createParsedMessage(int fdConnecion);
+		const char*         		getMensageRequest() const;
+		std::string					getMethod() const;
+		std::string					getPath(void) const;
+		std::string					getHttpVersion(void) const;
+		std::string					getBody(void) const;
+		std::string					getHeader(std::string headerName) const;
+		void        				setPath(std::string newPath);
 
 		// RequestValidator			_validator;
 

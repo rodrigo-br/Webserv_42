@@ -12,7 +12,7 @@ class StatusCodes
 
     public:
         StatusCodes();
-        std::string get_status_message(std::string code) const;
+        std::string getStatusMessage(std::string code) const;
 };
 
 #endif
