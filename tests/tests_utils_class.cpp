@@ -68,3 +68,18 @@ TEST_CASE("hasMethodInInput retorna false para DELETE com valores 1, 2, 3, 8 e d
 
     REQUIRE(hasGet == false);
 }
+
+TEST_CASE("hasMethodInInput deve retornar false para métodos diferentes de 1 a 7")
+{
+    bool hasGet = GENERATE(Utils::hasMethodInInput(-1, HttpMethodEnum::UNKNOWN),
+                            Utils::hasMethodInInput(8, HttpMethodEnum::UNKNOWN),
+                            Utils::hasMethodInInput(0, HttpMethodEnum::UNKNOWN),
+                            Utils::hasMethodInInput(9, HttpMethodEnum::UNKNOWN),
+                            Utils::hasMethodInInput(10, HttpMethodEnum::UNKNOWN),
+                            Utils::hasMethodInInput(-1, HttpMethodEnum::GET),
+                            Utils::hasMethodInInput(-2, HttpMethodEnum::POST),
+                            Utils::hasMethodInInput(-4, HttpMethodEnum::DELETE),
+                            Utils::hasMethodInInput(-8, HttpMethodEnum::UNKNOWN));
+
+    REQUIRE(hasGet == false);
+}
