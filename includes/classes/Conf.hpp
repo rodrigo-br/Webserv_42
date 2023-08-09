@@ -5,25 +5,25 @@
 # include <string>
 # include "classes/Location.hpp"
 # include "classes/ConfParser.hpp"
+# include "classes/ServerData.hpp"
 
 class Conf
 {
     private:
-        int                             _listen;
         std::string                     _root;
         std::map<std::string, Location> _location;
         ConfParser                      *_parser;
+        std::map<int, ServerData>        _serversData;
 
     public:
         Conf(ConfParser *parser);
 
         bool succeeded();
         void deleteConfParser();
-        int get_listen() const;
-        std::string get_root() const;
-        std::string get_locations( std::string location_name ) const;
-        std::map<std::string, Location> get_locations() const;
-
+        std::string getRoot(int port) const;
+        std::string getLocation(int port, std::string locationName) const;
+        std::map<std::string, Location> getLocations(int port) const;
+        std::map<int, ServerData> &getServersData();
 };
 
 #endif

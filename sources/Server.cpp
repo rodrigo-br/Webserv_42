@@ -54,20 +54,12 @@ void Server::signalHandler(int signum)
 
 Server::Server(Conf &config) : conf(config)
 {
-	std::vector<int> ports;
-	ports.push_back(8000);
-	ports.push_back(8080);
-	ports.push_back(65535);
-	ports.push_back(65536);
-	ports.push_back(1024);
-	ports.push_back(6664);
-	ports.push_back(6668);
-	ports.push_back(56666);
 	FD_ZERO(&current_sockets);
 	max_socket_so_far = 0;
 
-	for (std::vector<int>::const_iterator it = ports.begin(); it != ports.end(); ++it) {
-		int port = *it;
+	for (std::map<int, ServerData>::const_iterator it = conf.getServersData().begin(); it != conf.getServersData().end(); ++it)
+	{
+		int port = it->first;
 		int sockfd = create_socket();
 		set_socket_reusable(sockfd);
 		sockaddr_in sockaddr = create_sockaddr(port);

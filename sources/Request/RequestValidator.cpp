@@ -28,7 +28,7 @@ HttpMethodEnum::httpMethod RequestValidator::method_validator(Request& request)
 void RequestValidator::path_validator(Conf& conf, Request& request)
 {
     std::string path = request.get_path();
-    std::string root = conf.get_root();
+    std::string root = conf.getRoot(8000);
 	size_t		position = path.find_last_of("/");
 	size_t		len = path.length();
 
@@ -54,7 +54,7 @@ bool RequestValidator::endsWithSlash(size_t position, size_t len)
 
 void RequestValidator::handleRootPath(Conf& conf, Request& request, const std::string& path, const std::string& root)
 {
-    std::string location = conf.get_locations(path);
+    std::string location = conf.getLocation(8000, path);
     if (!location.empty())
     {
         this->_path = true;
@@ -64,7 +64,7 @@ void RequestValidator::handleRootPath(Conf& conf, Request& request, const std::s
 
 void RequestValidator::handlePathWithTrailingSlash(Conf& conf, Request& request, const std::string& path, const std::string& root)
 {
-    std::string location = conf.get_locations(path.substr(0, path.length() - 1));
+    std::string location = conf.getLocation(8000, path.substr(0, path.length() - 1));
     if (!location.empty())
     {
         this->_path = true;
@@ -74,14 +74,14 @@ void RequestValidator::handlePathWithTrailingSlash(Conf& conf, Request& request,
 
 void RequestValidator::handleNonTrailingSlashPath(Conf& conf, Request& request, const std::string& path, const std::string& root, size_t position)
 {
-	std::string location = conf.get_locations(path);
+	std::string location = conf.getLocation(8000, path);
 	if (!location.empty())//verifica se não está dando o caminho SEM o arquivo (exemplo http://localhost:8000/api/upload)
 	{
 		this->_path = true;
 		request.set_path(root + path + "/" + location);
 		return ;
 	}
-	location = conf.get_locations(path.substr(0, position));
+	location = conf.getLocation(8000, path.substr(0, position));
 	if (!location.empty())// para casos em que tem um caminho válido com algum arquivo ainda não verificado
 	{
 		if (location.compare(path.substr(position + 1)) == 0)// verifica se o arquivo está ok
