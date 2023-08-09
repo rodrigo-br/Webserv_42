@@ -19,12 +19,5 @@ void ConfParser::readConfigFile(std::string file)
         std::cout << "Erro ao abrir o arquivo de conf" << std::endl;
         return ;
     }
-
-    std::string line;
-    while (std::getline(this->_configFile, line))
-    {
-        std::cout << line << "\n";
-    }
-    std::cout << std::endl;
 }
 
