@@ -16,7 +16,14 @@ class Server
 
         void run();
         std::vector<int> listen_sockets;
-        fd_set current_sockets;
+        fd_set read_fds;
+        fd_set write_fds;
+        RequestValidator request_validator;
+	    Request request ;
+        // int client_sock;
+         std::vector<int> client_socks;
+
+
         int max_socket_so_far;
 };
 
