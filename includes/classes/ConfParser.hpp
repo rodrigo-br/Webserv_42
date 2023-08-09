@@ -9,6 +9,7 @@ class ConfParser
 {
     public:
         ConfParser(std::string file);
+        ~ConfParser();
 
     private:
         std::ifstream _configFile;

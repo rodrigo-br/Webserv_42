@@ -11,7 +11,7 @@ class Server
     public:
         static bool gSignalInterrupted;
         Conf conf;
-        Server();
+        Server(Conf &config);
         static void signalHandler(int signum);
 
         void run();

@@ -8,8 +8,11 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
     std::string confPath = (argc == 2) ? argv[1] : "./conf/default.conf";
-    ConfParser confParser(confPath);
-    Server server;
+    Conf conf = Conf(new ConfParser(confPath));
+    if (conf.succeeded())
+    {
+        Server server(conf);
+    }
 
     return 0;
 }

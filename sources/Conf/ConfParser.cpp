@@ -5,6 +5,11 @@ ConfParser::ConfParser(std::string file)
     readConfigFile(file);
 }
 
+ConfParser::~ConfParser()
+{
+    this->_configFile.close();
+}
+
 void ConfParser::readConfigFile(std::string file)
 {
     this->_configFile.open(file.c_str());
@@ -21,6 +26,5 @@ void ConfParser::readConfigFile(std::string file)
         std::cout << line << "\n";
     }
     std::cout << std::endl;
-    this->_configFile.close();
 }
 
