@@ -52,11 +52,11 @@ void Server::signalHandler(int signum)
 	Server::gSignalInterrupted = true;
 }
 
+
 Server::Server(Conf &config) : conf(config)
 {
 	FD_ZERO(&this->read_fds);
 	FD_ZERO(&this->write_fds);
-	this->maxSocketSoFar = 0;
 	int serveSocket;
 	for (std::map<int, ServerData>::const_iterator it = conf.getServersData().begin(); it != conf.getServersData().end(); ++it)
 	{
@@ -73,10 +73,6 @@ Server::Server(Conf &config) : conf(config)
 		}
 		FD_SET(serveSocket, &this->read_fds);
 		this->listenSockets.push_back(serveSocket);
-		if (serveSocket > this->maxSocketSoFar)
-		{
-			this->maxSocketSoFar = serveSocket;
-		}
 	}
 	signal(SIGINT, Server::signalHandler);
 	while (!gSignalInterrupted)
@@ -99,10 +95,7 @@ Server::Server(Conf &config) : conf(config)
 
 				if (client_sock != -1)
 				{
-					this->request = Request().createParsedMessage(client_sock);
-					std::cout << this->request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
-					this->requestValidator = RequestValidator().requestValidator(this->conf.getServersData()[std::atoi(request.getHeader("Host").substr(10).c_str())], request);
-					FD_SET(client_sock, &write_sockets);
+					FD_SET(client_sock, &read_sockets);
 					this->clienstSocks.push_back(client_sock);
 				}
 			}
@@ -110,6 +103,14 @@ Server::Server(Conf &config) : conf(config)
 		for (size_t i = 0; i < this->clienstSocks.size(); ++i)
 		{
 			int client_sock = this->clienstSocks[i];
+			if (FD_ISSET(client_sock, &read_sockets))
+			{
+				this->request = Request().createParsedMessage(client_sock);
+				std::cout << this->request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
+				this->requestValidator = RequestValidator().requestValidator(this->conf.getServersData()[std::atoi(request.getHeader("Host").substr(10).c_str())], request);
+				FD_CLR(client_sock, &read_sockets);
+				FD_SET(client_sock, &write_sockets);
+			}
 			if (FD_ISSET(client_sock, &write_sockets))
 			{
 				Response response(new ResponseBuilder(request, this->requestValidator));
@@ -125,7 +126,8 @@ Server::Server(Conf &config) : conf(config)
 						break;
 					}
 				}
-				FD_CLR(client_sock, &read_sockets);
+				FD_CLR(client_sock, &write_sockets);
+				FD_SET(client_sock, &read_sockets);
 				close(client_sock);
 				clienstSocks.erase(clienstSocks.begin() + i);
 				--i;
