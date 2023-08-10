@@ -1,0 +1,32 @@
+==23853== Memcheck, a memory error detector
+==23853== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==23853== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==23853== Command: ./webserv
+==23853== Parent PID: 23852
+==23853== 
+==23853== 
+==23853== FILE DESCRIPTORS: 8 open (3 std) at exit.
+==23853== Open file descriptor 103: /usr/share/code/v8_context_snapshot.bin
+==23853==    <inherited from parent>
+==23853== 
+==23853== Open file descriptor 40: /usr/share/code/resources/app/node_modules.asar
+==23853==    <inherited from parent>
+==23853== 
+==23853== Open AF_UNIX socket 39: <unknown>
+==23853==    <inherited from parent>
+==23853== 
+==23853== Open file descriptor 38: /home/pedro/.config/Code/logs/20230810T110240/ptyhost.log
+==23853==    <inherited from parent>
+==23853== 
+==23853== Open file descriptor 3: /home/pedro/42-larissa/Webserv_42/web_leaks.txt
+==23853==    <inherited from parent>
+==23853== 
+==23853== 
+==23853== HEAP SUMMARY:
+==23853==     in use at exit: 0 bytes in 0 blocks
+==23853==   total heap usage: 22 allocs, 22 frees, 83,956 bytes allocated
+==23853== 
+==23853== All heap blocks were freed -- no leaks are possible
+==23853== 
+==23853== For lists of detected and suppressed errors, rerun with: -s
+==23853== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
