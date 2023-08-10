@@ -13,15 +13,16 @@
 # include <map> // For map (duh)
 # include <csignal> // For signal
 # include <sys/select.h> // For select function
+# include <fcntl.h>// For fcntl function
 # include "classes/Utils.hpp"
-# include "classes/ResponseBuilder.hpp"
 # include "classes/RequestParser.hpp"
-# include "classes/Request.hpp"
 # include "classes/RequestValidator.hpp"
 # include "classes/ContentTypes.hpp"
 # include "classes/StatusCodes.hpp"
 # include "classes/Response.hpp"
 # include "classes/Conf.hpp"
+# include "classes/ResponseBuilder.hpp"
+# include "classes/Request.hpp"
 # include "classes/Server.hpp"
 # include "classes/ConfParser.hpp"
 # include "enums/HttpMethodsEnum.hpp"
