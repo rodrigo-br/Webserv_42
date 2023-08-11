@@ -9,9 +9,9 @@
 class MethodsUtils
 {
     public:
-        std::vector<char>   open_file_as_vector(std::string path);
-        std::string         get_extension(std::string path) const;
-        std::string         get_protocol_version() const;
+        std::vector<char>   openFileAsVector(std::string path);
+        std::string         getExtension(std::string path) const;
+        std::string         getProtocolVersion() const;
 };
 
 #endif

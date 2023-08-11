@@ -4,47 +4,47 @@ Request::Request( ) : _request() {	}
 
 Request::~Request( void ) { }
 
-const char*    Request::get_mensage_request( void ) const
+const char*    Request::getMensageRequest( void ) const
 {
     return (this->_request);
 }
 
-Request			&Request::create_parsed_message(int fd_connection)
+Request			&Request::createParsedMessage(int fdConnection)
 {
-	if (Utils::check(read(fd_connection,this->_request, BUFFER_SIZE), 0))
+	if (Utils::check(read(fdConnection,this->_request, BUFFER_SIZE), 0))
 	{
 		exit(EXIT_FAILURE);
 	}
-	this->_parser.parser_http_request(this->_request);
+	this->_parser.parserHttpRequest(this->_request);
 	return *this;
 }
 
-std::string Request::get_method() const
+std::string Request::getMethod() const
 {
-    return this->_parser.get_method();
+    return this->_parser.getMethod();
 }
 
-std::string Request::get_path(void) const
+std::string Request::getPath(void) const
 {
-    return this->_parser.get_path();
+    return this->_parser.getPath();
 }
 
-std::string Request::get_http_version(void) const
+std::string Request::getHttpVersion(void) const
 {
-    return this->_parser.get_http_version();
+    return this->_parser.getHttpVersion();
 }
 
-std::string Request::get_body(void) const
+std::string Request::getBody(void) const
 {
-    return this->_parser.get_body();
+    return this->_parser.getBody();
 }
 
-std::string Request::get_header(std::string header_name ) const
+std::string Request::getHeader(std::string headerName ) const
 {
-    return this->_parser.get_header(header_name);
+    return this->_parser.getHeader(headerName);
 }
 
-void Request::set_path(std::string new_path)
+void Request::setPath(std::string newPath)
 {
-    this->_parser.set_path(new_path);
+    this->_parser.setPath(newPath);
 }

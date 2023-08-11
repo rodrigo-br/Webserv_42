@@ -14,10 +14,17 @@ class Server
         Server(Conf &config);
         static void signalHandler(int signum);
 
+
+        void initializeSockets();
         void run();
-        std::vector<int> listen_sockets;
-        fd_set current_sockets;
-        int max_socket_so_far;
+        void setClients();
+        std::vector<int> listenSockets;
+        std::vector<int> clienstSocks;
+        RequestValidator requestValidator;
+	    Request request ;
+        fd_set read_fds;
+        fd_set write_fds;
+
 };
 
 #endif

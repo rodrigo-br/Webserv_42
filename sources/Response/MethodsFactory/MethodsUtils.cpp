@@ -3,7 +3,7 @@
 
 # define ROOT "wwwroot/"
 
-std::vector<char> MethodsUtils::open_file_as_vector(std::string path)
+std::vector<char> MethodsUtils::openFileAsVector(std::string path)
 {
     if (path == ROOT)
     {
@@ -28,7 +28,7 @@ std::vector<char> MethodsUtils::open_file_as_vector(std::string path)
     return imageBuffer;
 }
 
-std::string MethodsUtils::get_extension(std::string path) const
+std::string MethodsUtils::getExtension(std::string path) const
 {
     if (path == ROOT)
     {
@@ -42,7 +42,7 @@ std::string MethodsUtils::get_extension(std::string path) const
     return path.substr(pos);
 }
 
-std::string MethodsUtils::get_protocol_version() const
+std::string MethodsUtils::getProtocolVersion() const
 {
     return "HTTP/1.1";
 }

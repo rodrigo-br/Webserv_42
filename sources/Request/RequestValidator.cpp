@@ -1,21 +1,21 @@
 #include "classes/RequestValidator.hpp"
 
-RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _http_version(false), _requestBody(false)  { }
+RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _httpVersion(false), _requestBody(false)  { }
 
 RequestValidator::~RequestValidator(void) {}
 
-RequestValidator &RequestValidator::request_validator(Conf& conf, Request& request)
+RequestValidator &RequestValidator::requestValidator(ServerData &serverData, Request& request)
 {
-	method_validator(request);
-	path_validator(conf, request);
-	body_validator(request);
-	http_version_validator(request);
+	_methodValidator(request);
+	_pathValidator(serverData, request);
+	_bodyValidator(request);
+	_httpVersionValidator(request);
 	return *this;
 }
 
-HttpMethodEnum::httpMethod RequestValidator::method_validator(Request& request)
+HttpMethodEnum::httpMethod RequestValidator::_methodValidator(Request& request)
 {
-	std::string method = request.get_method();
+	std::string method = request.getMethod();
 	if (method.compare("GET") == 0)
 		this->_method = HttpMethodEnum::GET;
 	else if (method.compare("POST") == 0)
@@ -25,20 +25,20 @@ HttpMethodEnum::httpMethod RequestValidator::method_validator(Request& request)
 	return this->_method;
 }
 
-void RequestValidator::path_validator(Conf& conf, Request& request)
+void RequestValidator::_pathValidator(ServerData &serverData, Request& request)
 {
-    std::string path = request.get_path();
-    std::string root = conf.get_root();
+    std::string path = request.getPath();
+    std::string root = serverData.getRoot();
 	size_t		position = path.find_last_of("/");
 	size_t		len = path.length();
 
 
     if (isRootPath(path, len))
-        handleRootPath(conf, request, path, root);
+        handleRootPath(serverData, request, path, root);
     else if (endsWithSlash(position, len))
-        handlePathWithTrailingSlash(conf, request, path, root);
+        handlePathWithTrailingSlash(serverData, request, path, root);
     else
-        handleNonTrailingSlashPath(conf, request, path, root, position);
+        handleNonTrailingSlashPath(serverData, request, path, root, position);
     handleAssetsPath(request, path, root);
 }
 
@@ -52,42 +52,42 @@ bool RequestValidator::endsWithSlash(size_t position, size_t len)
     return (len == position + 1);
 }
 
-void RequestValidator::handleRootPath(Conf& conf, Request& request, const std::string& path, const std::string& root)
+void RequestValidator::handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root)
 {
-    std::string location = conf.get_locations(path);
+    std::string location = serverData.getLocation(path);
     if (!location.empty())
     {
         this->_path = true;
-        request.set_path(root + path + location);
+        request.setPath(root + path + location);
     }
 }
 
-void RequestValidator::handlePathWithTrailingSlash(Conf& conf, Request& request, const std::string& path, const std::string& root)
+void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& root)
 {
-    std::string location = conf.get_locations(path.substr(0, path.length() - 1));
+    std::string location = serverData.getLocation(path.substr(0, path.length() - 1));
     if (!location.empty())
     {
         this->_path = true;
-        request.set_path(root + path + location);
+        request.setPath(root + path + location);
     }
 }
 
-void RequestValidator::handleNonTrailingSlashPath(Conf& conf, Request& request, const std::string& path, const std::string& root, size_t position)
+void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root, size_t position)
 {
-	std::string location = conf.get_locations(path);
+	std::string location = serverData.getLocation(path);
 	if (!location.empty())//verifica se não está dando o caminho SEM o arquivo (exemplo http://localhost:8000/api/upload)
 	{
 		this->_path = true;
-		request.set_path(root + path + "/" + location);
+		request.setPath(root + path + "/" + location);
 		return ;
 	}
-	location = conf.get_locations(path.substr(0, position));
+	location = serverData.getLocation(path.substr(0, position));
 	if (!location.empty())// para casos em que tem um caminho válido com algum arquivo ainda não verificado
 	{
 		if (location.compare(path.substr(position + 1)) == 0)// verifica se o arquivo está ok
 		{
 			this->_path = true;
-			request.set_path(root + path);
+			request.setPath(root + path);
 		}
 	}
 	else
@@ -95,7 +95,7 @@ void RequestValidator::handleNonTrailingSlashPath(Conf& conf, Request& request, 
 		if (path.compare("/index.html") == 0)// é simplesmente /index.html?
 		{
 			this->_path = true;
-			request.set_path(root + path);
+			request.setPath(root + path);
 		}
 	}
 
@@ -103,41 +103,41 @@ void RequestValidator::handleNonTrailingSlashPath(Conf& conf, Request& request, 
 
 void RequestValidator::handleAssetsPath(Request& request, const std::string& path, const std::string& root)
 {
-    if (path.find("/assets") != std::string::npos && !request.get_header("Referer").empty())
+    if (path.find("/assets") != std::string::npos && !request.getHeader("Referer").empty())
     {
         this->_path = true;
-        request.set_path(root + path);
+        request.setPath(root + path);
     }
 }
 
-void RequestValidator::body_validator(Request& request)
+void RequestValidator::_bodyValidator(Request& request)
 {
-	if (!request.get_body().empty())
+	if (!request.getBody().empty())
 		this->_requestBody = true;
 }
 
-void RequestValidator::http_version_validator(Request& request)
+void RequestValidator::_httpVersionValidator(Request& request)
 {
-	if (request.get_http_version().compare("HTTP/1.1") == 0)
-		this->_http_version = true;
+	if (request.getHttpVersion().compare("HTTP/1.1") == 0)
+		this->_httpVersion = true;
 }
 
-bool RequestValidator::get_path(void) const
+bool RequestValidator::getPath(void) const
 {
 	return this->_path;
 }
 
-bool RequestValidator::get_http_version(void) const
+bool RequestValidator::getHttpVersion(void) const
 {
-	return this->_http_version;
+	return this->_httpVersion;
 }
 
-bool RequestValidator::get_body(void) const
+bool RequestValidator::getBody(void) const
 {
 	return this->_requestBody;
 }
 
-HttpMethodEnum::httpMethod RequestValidator::get_method(void) const
+HttpMethodEnum::httpMethod RequestValidator::getMethod(void) const
 {
 	return this->_method;
 }

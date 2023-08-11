@@ -12,10 +12,10 @@ class IMethod : public MethodsUtils
         RequestValidator validator;
         virtual ~IMethod() {};
 
-        virtual const char  *build_response() = 0;
-        virtual const char  *build_body() = 0;
-        virtual ssize_t     get_body_size() const = 0;
-        virtual bool        has_body() const = 0;
+        virtual const char  *buildResponse() = 0;
+        virtual const char  *buildBody() = 0;
+        virtual ssize_t     getbodySize() const = 0;
+        virtual bool        hasBody() const = 0;
 };
 
 #endif

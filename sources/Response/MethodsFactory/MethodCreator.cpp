@@ -1,6 +1,6 @@
 #include "interfaces/MethodCreator.hpp"
 
-IMethod *MethodCreator::create_method_object(HttpMethodEnum::httpMethod method)
+IMethod *MethodCreator::createMethodObject(HttpMethodEnum::httpMethod method)
 {
     switch(method)
     {

@@ -11,7 +11,7 @@ class ContentTypes
 
     public:
         ContentTypes();
-        std::string get_mime_type(std::string extension) const;
+        std::string getMimeType(std::string extension) const;
 };
 
 #endif

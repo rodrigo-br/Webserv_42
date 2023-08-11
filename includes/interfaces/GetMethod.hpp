@@ -1,5 +1,5 @@
-#ifndef GET_METHOD_H
-# define GET_METHOD_H
+#ifndef getMethod_H
+# define getMethod_H
 
 # include <string>
 # include "classes/ContentTypes.hpp"
@@ -14,16 +14,16 @@
 class GetMethod : public IMethod
 {
     public:
-        const char  *build_response();
-        const char  *build_body();
-        ssize_t     get_body_size() const;
-        bool        has_body() const;
+        const char  *buildResponse();
+        const char  *buildBody();
+        ssize_t     getbodySize() const;
+        bool        hasBody() const;
 
     private:
-        ContentTypes contentTypes;
-        StatusCodes statusCodes;
-        bool        hasBody;
-        ssize_t     body_size;
+        ContentTypes _contentTypes;
+        StatusCodes _statusCodes;
+        bool        _hasBody;
+        ssize_t     _bodySize;
 
         std::string build_start_line() const;
         std::string build_headers() const;

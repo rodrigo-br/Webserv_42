@@ -5,32 +5,32 @@
 #include <typeinfo>
 #include <vector>
 
-RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _http_version(""), _requestBody("") { }
+RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVersion(""), _requestBody("") { }
 
 RequestParser::~RequestParser(void) {}
 
-void    RequestParser::parser_http_request(char *request) 
+void    RequestParser::parserHttpRequest(char *request)
 {
 	std::string			line;
 	std::istringstream	iss(request);
 
-	_parse_request_start_line(line, iss);
-	_parse_request_header(line, iss);
-	_parse_request_bory(line, iss);
+	_parseRequestStartLine(line, iss);
+	_parseRequestHeader(line, iss);
+	_parseRequestBody(line, iss);
 }
 
-void RequestParser::_parse_request_bory(std::string& line, std::istringstream& iss)
+void RequestParser::_parseRequestBody(std::string& line, std::istringstream& iss)
 {
     while (std::getline(iss, line)) {
         this->_requestBody += line;
     }
 }
 
-void 	RequestParser::_parse_request_header( std::string &line, std::istringstream &iss )
+void 	RequestParser::_parseRequestHeader( std::string &line, std::istringstream &iss )
 {
 	while (std::getline(iss, line) && !line.empty())
     {
-        if (line == "\r" || line == "\r\n") 
+        if (line == "\r" || line == "\r\n")
                 break;
         else
         {
@@ -49,38 +49,38 @@ void 	RequestParser::_parse_request_header( std::string &line, std::istringstrea
 	}
 }
 
-void	RequestParser::_parse_request_start_line(std::string &line, std::istringstream &iss)
+void	RequestParser::_parseRequestStartLine(std::string &line, std::istringstream &iss)
 {
-	if (std::getline(iss, line)) 
+	if (std::getline(iss, line))
 	{
         std::istringstream lineStream(line);
-        lineStream >> this->_method >> _path >> this->_http_version;
+        lineStream >> this->_method >> _path >> this->_httpVersion;
     }
 }
 
-std::string RequestParser::get_method(void) const
+std::string RequestParser::getMethod(void) const
 {
     return this->_method;
 }
 
-std::string RequestParser::get_path(void) const
+std::string RequestParser::getPath(void) const
 {
     return this->_path;
 }
 
-std::string RequestParser::get_http_version(void) const
+std::string RequestParser::getHttpVersion(void) const
 {
-    return this->_http_version;
+    return this->_httpVersion;
 }
 
-std::string RequestParser::get_body(void) const
+std::string RequestParser::getBody(void) const
 {
     return this->_requestBody;
 }
 
-std::string RequestParser::get_header(std::string header_name) const
+std::string RequestParser::getHeader(std::string headerName) const
 {
-    std::map<std::string, std::string>::const_iterator it = this->_headers.find(header_name);
+    std::map<std::string, std::string>::const_iterator it = this->_headers.find(headerName);
 
     if (it != this->_headers.end())
         return it->second;
@@ -88,8 +88,8 @@ std::string RequestParser::get_header(std::string header_name) const
         return "";
 }
 
-void RequestParser::set_path(std::string new_path)
+void RequestParser::setPath(std::string newPath)
 {
-    this->_path = new_path;
+    this->_path = newPath;
 }
 

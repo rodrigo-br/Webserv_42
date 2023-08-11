@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 
-static int create_socket(void)
+static int createSocket(void)
 {
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (Utils::check(sockfd))
@@ -12,7 +12,7 @@ static int create_socket(void)
 	return sockfd;
 }
 
-static sockaddr_in create_sockaddr(int port)
+static sockaddr_in createSockaddr(int port)
 {
 	sockaddr_in _sockaddr;
 	_sockaddr.sin_family = AF_INET;
@@ -21,7 +21,7 @@ static sockaddr_in create_sockaddr(int port)
 	return (_sockaddr);
 }
 
-static void bind_socket(int &sockfd, sockaddr_in &sockaddr)
+static void bindSocket(int &sockfd, sockaddr_in &sockaddr)
 {
 	if (Utils::check(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr))))
 	{
@@ -29,7 +29,7 @@ static void bind_socket(int &sockfd, sockaddr_in &sockaddr)
 	}
 }
 
-static void listen_socket(int &sockfd)
+static void listenSocket(int &sockfd)
 {
 	if (Utils::check(listen(sockfd, 10)))
 	{
@@ -37,7 +37,7 @@ static void listen_socket(int &sockfd)
 	}
 }
 
-static void set_socket_reusable(int sockfd)
+static void setSocketReusable(int sockfd)
 {
 	int optval = 1;
 	if (Utils::check(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval))))
@@ -52,74 +52,96 @@ void Server::signalHandler(int signum)
 	Server::gSignalInterrupted = true;
 }
 
+
 Server::Server(Conf &config) : conf(config)
 {
-	std::vector<int> ports;
-	ports.push_back(8000);
-	ports.push_back(8080);
-	ports.push_back(65535);
-	ports.push_back(65536);
-	ports.push_back(1024);
-	ports.push_back(6664);
-	ports.push_back(6668);
-	ports.push_back(56666);
-	FD_ZERO(&current_sockets);
-	max_socket_so_far = 0;
-
-	for (std::vector<int>::const_iterator it = ports.begin(); it != ports.end(); ++it) {
-		int port = *it;
-		int sockfd = create_socket();
-		set_socket_reusable(sockfd);
-		sockaddr_in sockaddr = create_sockaddr(port);
-		bind_socket(sockfd, sockaddr);
-		listen_socket(sockfd);
-
-		listen_sockets.push_back(sockfd);
-		FD_SET(sockfd, &current_sockets);
-
-		if (sockfd > max_socket_so_far) {
-			max_socket_so_far = sockfd;
+	FD_ZERO(&this->read_fds);
+	FD_ZERO(&this->write_fds);
+	int serveSocket;
+	for (std::map<int, ServerData>::const_iterator it = conf.getServersData().begin(); it != conf.getServersData().end(); ++it)
+	{
+		int port = it->first;
+		serveSocket = createSocket();
+		setSocketReusable(serveSocket);
+		sockaddr_in sockaddr = createSockaddr(port);
+		bindSocket(serveSocket, sockaddr);
+		listenSocket(serveSocket);
+		if (Utils::check(fcntl(serveSocket, F_SETFL, O_NONBLOCK)))
+		{
+			close(serveSocket);
+			break ;
 		}
+		FD_SET(serveSocket, &this->read_fds);
+		this->listenSockets.push_back(serveSocket);
 	}
 	signal(SIGINT, Server::signalHandler);
 	while (!gSignalInterrupted)
 	{
-		fd_set read_sockets = current_sockets;
+		fd_set read_sockets = this->read_fds;
+		fd_set write_sockets = this->write_fds;
 
-		if (Utils::check(select(FD_SETSIZE, &read_sockets, NULL,NULL, NULL)))
+		if (Utils::check(select(FD_SETSIZE, &read_sockets, &write_sockets,NULL, NULL)))
 		{
 			break ;
 		}
-
-		for (std::vector<int>::iterator it = listen_sockets.begin(); it != listen_sockets.end(); ++it)
+		for (std::vector<int>::iterator it = this->listenSockets.begin(); it != this->listenSockets.end(); ++it)
 		{
 			int sockfd = *it;
 			if (FD_ISSET(sockfd, &read_sockets))
 			{
 				sockaddr_in client_addr;
 				socklen_t addr_len = sizeof(client_addr);
-				int new_socket = accept(sockfd, (struct sockaddr*)&client_addr, &addr_len);
+				int client_sock = accept(sockfd, (struct sockaddr*)&client_addr, &addr_len);
 
-				if (new_socket != -1)
+				if (client_sock != -1)
 				{
-					std::cout << "Accepted connection on port " << ntohs(client_addr.sin_port) << std::endl;
-					Request request = Request().create_parsed_message(new_socket);
-					std::cout << request.get_mensage_request() << std::string(42, '-') << '\n' << std::endl;
-					RequestValidator request_validator = RequestValidator().request_validator(this->conf, request);
-
-					Response response(new ResponseBuilder(request, request_validator));
-
-					send(new_socket, response.get_response(), response.get_size(), 0);
-					if (response.has_body())
-					{
-						send(new_socket, response.get_body(), response.body_size(), 0);
-					}
-					close(new_socket);
-					FD_CLR(new_socket, &current_sockets);
-
+					FD_SET(client_sock, &read_sockets);
+					this->clienstSocks.push_back(client_sock);
 				}
 			}
 		}
+		for (size_t i = 0; i < this->clienstSocks.size(); ++i)
+		{
+			int client_sock = this->clienstSocks[i];
+			if (FD_ISSET(client_sock, &read_sockets))
+			{
+				this->request = Request().createParsedMessage(client_sock);
+				std::cout << this->request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
+				this->requestValidator = RequestValidator().requestValidator(this->conf.getServersData()[std::atoi(request.getHeader("Host").substr(10).c_str())], request);
+				FD_CLR(client_sock, &read_sockets);
+				FD_SET(client_sock, &write_sockets);
+			}
+			if (FD_ISSET(client_sock, &write_sockets))
+			{
+				Response response(new ResponseBuilder(request, this->requestValidator));
+
+				if (Utils::check(send(client_sock, response.getResponse(), response.getSize(), 0)))
+				{
+					break;
+				}
+				if (response.hasBody())
+				{
+					if (Utils::check(send(client_sock, response.getBody(), response.bodySize(), 0)))
+					{
+						break;
+					}
+				}
+				FD_CLR(client_sock, &write_sockets);
+				FD_SET(client_sock, &read_sockets);
+				close(client_sock);
+				clienstSocks.erase(clienstSocks.begin() + i);
+				--i;
+			}
+
+		}
+	}
+	for (size_t i = 0; i < this->listenSockets .size(); ++i)
+	{
+		close(listenSockets[i]);
+	}
+	for (size_t i = 0; i < clienstSocks.size(); ++i)
+	{
+		close(clienstSocks[i]);
 	}
 	this->conf.deleteConfParser();
 }
