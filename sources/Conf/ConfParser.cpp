@@ -1,8 +1,10 @@
 #include "classes/ConfParser.hpp"
+#include <sstream>
 
 ConfParser::ConfParser(std::string file)
 {
     readConfigFile(file);
+    createServers();
 }
 
 ConfParser::~ConfParser()
@@ -21,3 +23,53 @@ void ConfParser::readConfigFile(std::string file)
     }
 }
 
+void ConfParser::createServers()
+{
+    std::string line;
+    while (std::getline(this->_configFile, line))
+    {
+        char *token = std::strtok(const_cast<char *>(line.c_str()), " \n");
+        std::vector<std::string> tokens;
+        if (token != NULL)
+        {
+            while (token != NULL)
+            {
+                tokens.push_back(token);
+                token = std::strtok(NULL, " \n");
+            }
+            this->_succeed = assignTokens(tokens);
+            if (tokens.size() > 0 && !this->_succeed)
+            {
+                break ;
+            }
+        }
+    }
+}
+
+bool ConfParser::assignTokens(std::vector<std::string> tokens)
+{
+    size_t tokensSize = tokens.size();
+    if (tokensSize > 3 || tokensSize <= 0)
+    {
+        return false;
+    }
+    else if (tokensSize == 1)
+    {
+        return (tokens[0].compare("}") == 0);
+    }
+    else if (tokensSize == 2)
+    {
+        return (tokens[0].compare("location") != 0);
+    }
+    else if (tokensSize == 3)
+    {
+        return (tokens[0].compare("location") == 0 &&
+                tokens[2].compare("{") == 0);
+    }
+    return false;
+}
+
+bool ConfParser::succeed()
+{
+    return this->_succeed;
+}

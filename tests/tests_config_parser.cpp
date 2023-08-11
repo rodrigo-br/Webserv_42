@@ -1,46 +1,25 @@
 #include "tests.hpp"
 
-TEST_CASE ("Existe um arquivo de configuração disponível")
+TEST_CASE("Config parser succeed retorna TRUE para arquivos VÁLIDOS")
 {
+    std::string confPath = GENERATE("tests/confs/validos/valid_01.conf",
+                                    "tests/confs/validos/valid_02.conf",
+                                    "tests/confs/validos/valid_03.conf",
+                                    "tests/confs/validos/valid_04.conf");
 
+    ConfParser confParser(confPath);
+
+    REQUIRE(confParser.succeed() == true);
 }
 
-TEST_CASE ("O arquivo de configuração está sendo aberto corretamente")
+TEST_CASE("Config parser succeed retorna FALSE para arquivos INVÁLIDOS")
 {
-    
-}
+    std::string confPath = GENERATE("tests/confs/invalidos/invalid_01.conf",
+                                    "tests/confs/invalidos/invalid_02.conf",
+                                    "tests/confs/invalidos/invalid_03.conf",
+                                    "tests/confs/invalidos/invalid_04.conf");
 
-TEST_CASE ("O arquivo de configuração possui bloco server")
-{
+    ConfParser confParser(confPath);
 
-}
-
-TEST_CASE ("A leitura das portas e hosts")
-{
-
-}
-
-TEST_CASE ("A leitura dos server_names")
-{
-
-}
-
-TEST_CASE ("O primeiro server para seu host:port é o padrão")
-{
-
-}
-
-TEST_CASE ("Páginas de erro padrão configuradas")
-{
-
-}
-
-TEST_CASE ("O limite do client body size")
-{
-
-}
-
-TEST_CASE ("Leitura da configuração das rotas")
-{
-
+    REQUIRE(confParser.succeed() == false);
 }
