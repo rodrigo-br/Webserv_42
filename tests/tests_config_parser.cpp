@@ -17,7 +17,8 @@ TEST_CASE("Config parser succeed retorna FALSE para arquivos INVÁLIDOS")
     std::string confPath = GENERATE("tests/confs/invalidos/invalid_01.conf",
                                     "tests/confs/invalidos/invalid_02.conf",
                                     "tests/confs/invalidos/invalid_03.conf",
-                                    "tests/confs/invalidos/invalid_04.conf");
+                                    "tests/confs/invalidos/invalid_04.conf",
+                                    "tests/confs/invalidos/invalid_05.conf");
 
     ConfParser confParser(confPath);
 

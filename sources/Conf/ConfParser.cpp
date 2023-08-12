@@ -1,7 +1,8 @@
 #include "classes/ConfParser.hpp"
 #include <sstream>
 
-ConfParser::ConfParser(std::string file)
+ConfParser::ConfParser(std::string file) :
+    _succeed(false), _inServerBrackets(false), _inLocationBrackets(false)
 {
     readConfigFile(file);
     createServers();
@@ -55,16 +56,38 @@ bool ConfParser::assignTokens(std::vector<std::string> tokens)
     }
     else if (tokensSize == 1)
     {
-        return (tokens[0].compare("}") == 0);
+        if (tokens[0].compare("}") == 0)
+        {
+            if (this->_inLocationBrackets)
+            {
+                this->_inLocationBrackets = false;
+                return true;
+            }
+            else if (this->_inServerBrackets)
+            {
+                this->_inServerBrackets = false;
+                return true;
+            }
+        }
+        return false;
     }
     else if (tokensSize == 2)
     {
+        if (tokens[0].compare("server") == 0)
+        {
+            this->_inServerBrackets = !this->_inServerBrackets;
+            return this->_inServerBrackets;
+        }
         return (tokens[0].compare("location") != 0);
     }
     else if (tokensSize == 3)
     {
-        return (tokens[0].compare("location") == 0 &&
-                tokens[2].compare("{") == 0);
+        if (tokens[0].compare("location") == 0 &&
+                tokens[2].compare("{") == 0)
+        {
+            this->_inLocationBrackets = !this->_inLocationBrackets;
+            return this->_inLocationBrackets;
+        }
     }
     return false;
 }

@@ -18,6 +18,8 @@ class ConfParser
     private:
         std::ifstream _configFile;
         bool _succeed;
+        bool _inServerBrackets;
+        bool _inLocationBrackets;
 
         void readConfigFile(std::string file);
         void createServers();
