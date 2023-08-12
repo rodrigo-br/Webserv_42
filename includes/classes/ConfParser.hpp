@@ -7,6 +7,7 @@
 # include <vector>
 # include <cstring>
 # include <cstdlib>
+# include "classes/ValidConfigurations.hpp"
 
 class ConfParser
 {

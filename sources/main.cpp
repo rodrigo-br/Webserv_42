@@ -2,6 +2,7 @@
 
 int main(int argc, char *argv[])
 {
+    ValidConfigurations validConfigurations;
     if (argc < 1 || argc > 2)
     {
         std::cout << "Erro nos argumentos informados. Enviar apenas 1 arquivo conf." << std::endl;

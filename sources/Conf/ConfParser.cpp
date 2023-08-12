@@ -23,10 +23,11 @@ static bool switchMe(bool &me)
     return me;
 }
 
-// static bool invalidTokensSize(size_t size)
-// {
-//     return (size > 3) || (size <= 0);
-// }
+static bool isValidConfiguration(std::vector<std::string> tokens)
+{
+    // Need to check for valid configurations
+    return tokens[0].compare("location") != 0;
+}
 
 ConfParser::ConfParser(std::string file) :
     _succeed(false), _inServerBrackets(false), _inLocationBrackets(false)
@@ -104,8 +105,7 @@ bool ConfParser::assignTokens(std::vector<std::string> tokens)
             {
                 return switchMe(this->_inServerBrackets);
             }
-            // Need to check for valid configurations
-            return (tokens[0].compare("location") != 0);
+            return (isValidConfiguration(tokens));
         case 3:
             if (isLocationBlock(tokens))
             {
