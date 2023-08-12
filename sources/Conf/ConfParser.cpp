@@ -47,6 +47,35 @@ void ConfParser::createServers()
     }
 }
 
+static bool isServerBlock(std::vector<std::string> tokens)
+{
+    return (tokens[0].compare("server") == 0) && (tokens[1].compare("{") == 0);
+}
+
+static bool isLocationBlock(std::vector<std::string> tokens)
+{
+    // Need to verify token[1] for a valid location path
+    return (tokens[0].compare("location") == 0 && tokens[2].compare("{") == 0);
+}
+
+bool ConfParser::isValidClosingBracket(std::string token)
+{
+    if (token.compare("}") == 0)
+    {
+        if (this->_inLocationBrackets)
+        {
+            this->_inLocationBrackets = false;
+            return true;
+        }
+        else if (this->_inServerBrackets)
+        {
+            this->_inServerBrackets = false;
+            return true;
+        }
+    }
+    return false;
+}
+
 bool ConfParser::assignTokens(std::vector<std::string> tokens)
 {
     size_t tokensSize = tokens.size();
@@ -56,34 +85,21 @@ bool ConfParser::assignTokens(std::vector<std::string> tokens)
     }
     else if (tokensSize == 1)
     {
-        if (tokens[0].compare("}") == 0)
-        {
-            if (this->_inLocationBrackets)
-            {
-                this->_inLocationBrackets = false;
-                return true;
-            }
-            else if (this->_inServerBrackets)
-            {
-                this->_inServerBrackets = false;
-                return true;
-            }
-        }
-        return false;
+        return isValidClosingBracket(tokens[0]);
     }
     else if (tokensSize == 2)
     {
-        if (tokens[0].compare("server") == 0)
+        if (isServerBlock(tokens))
         {
             this->_inServerBrackets = !this->_inServerBrackets;
             return this->_inServerBrackets;
         }
+        // Need to check for valid configurations
         return (tokens[0].compare("location") != 0);
     }
     else if (tokensSize == 3)
     {
-        if (tokens[0].compare("location") == 0 &&
-                tokens[2].compare("{") == 0)
+        if (isLocationBlock(tokens))
         {
             this->_inLocationBrackets = !this->_inLocationBrackets;
             return this->_inLocationBrackets;

@@ -24,6 +24,7 @@ class ConfParser
         void readConfigFile(std::string file);
         void createServers();
         bool assignTokens(std::vector<std::string> tokens);
+        bool isValidClosingBracket(std::string token);
 };
 
 #endif
