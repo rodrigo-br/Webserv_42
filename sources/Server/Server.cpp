@@ -98,22 +98,32 @@ Server::Server(Conf &config) : conf(config)
 					FD_SET(client_sock, &read_sockets);
 					this->clienstSocks.push_back(client_sock);
 				}
+				else
+                {
+                    std::cout << "Falha ao aceitar novo cliente" << std::endl;
+                }
 			}
 		}
 		for (size_t i = 0; i < this->clienstSocks.size(); ++i)
 		{
+			RequestValidator requestValidator;
+	   		Request request ;
 			int client_sock = this->clienstSocks[i];
 			if (FD_ISSET(client_sock, &read_sockets))
 			{
-				this->request = Request().createParsedMessage(client_sock);
-				std::cout << this->request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
-				this->requestValidator = RequestValidator().requestValidator(this->conf.getServersData()[std::atoi(request.getHeader("Host").substr(10).c_str())], request);
+				 std::cout << "Lendo requisição do cliente" << std::endl;
+
+				request = Request().createParsedMessage(client_sock);
+				std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
+				requestValidator = RequestValidator().requestValidator(this->conf.getServersData()[std::atoi(request.getHeader("Host").substr(10).c_str())], request);
 				FD_CLR(client_sock, &read_sockets);
 				FD_SET(client_sock, &write_sockets);
 			}
 			if (FD_ISSET(client_sock, &write_sockets))
 			{
-				Response response(new ResponseBuilder(request, this->requestValidator));
+					std::cout << "Enviando resposta para o cliente" << std::endl;
+
+				Response response(new ResponseBuilder(request, requestValidator));
 
 				if (Utils::check(send(client_sock, response.getResponse(), response.getSize(), 0)))
 				{
