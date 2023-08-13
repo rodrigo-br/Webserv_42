@@ -49,7 +49,8 @@ TEST_CASE("Testa roots inválidos dão false na configuração de server")
 {
     ValidConfigurations validConfigurations;
     std::string key = "root";
-    std::string value = GENERATE("wwwroot1","wwwroot//api","/wwwroot/assets",".wwwroot/images/images.html","confi","sourrces", "..");
+    std::string value = GENERATE("wwwroot1","wwwroot//api","/wwwroot/assets",".wwwroot/images/images.html","confi"
+                                ,"sourrces", "..", "../", "../Webserv_42/wwwroot");
 
     bool isValidConfiguration = validConfigurations.ValidateAServerConfiguration(key, value);
 
