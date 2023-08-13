@@ -7,8 +7,8 @@ ValidConfigurations::ValidConfigurations()
     this->_serverConfigurations["listen"] = new ValidatePortIsSafe<numberOfPorts>(unsafePortsAsInt);
     this->_serverConfigurations["root"] = new ValidateDirectoryExist();
     // this->_serverConfigurations["location"] = new ValidateLocation<>();
-    // this->_locationConfigurations["http_methods"] = new ValidateMethods<>();
-    // this->_locationConfigurations["index"] = new ValidateLocationIndex<>();
+    this->_locationConfigurations["http_methods"] = new ValidateMethods();
+    this->_locationConfigurations["index"] = new ValidateLocationIndex();
     // this->_locationConfigurations["directory_listing"] = new ValidateDirectoryListing<>();
 }
 
@@ -34,46 +34,15 @@ bool ValidConfigurations::ValidateAServerConfiguration(std::string &key, std::st
     return false;
 }
 
-/*
-server {
-    listen 8000
-    root wwwroot
-
-    location / {
-        http_methods 4
-        index index.html
+bool ValidConfigurations::ValidateALocationConfiguration(std::string &key, std::string &value)
+{
+    std::map<std::string, IValidateFunction*>::iterator it = this->_locationConfigurations.find(key);
+    if (it != this->_locationConfigurations.end())
+    {
+        if (it->second != NULL)
+        {
+            return (*(it->second))(value);
+        }
     }
-
-    location /api {
-        index api.html
-    }
-
-    location api/upload {
-        http_methods 7
-        index upload.html
-    }
-
-    location /images {
-        index images.html
-    }
-
-    location /images/random {
-        directory_listing on
-        index index.html
-    }
+    return false;
 }
-
-server {
-    listen 4000
-    root wwwroot
-
-    location / {
-        http_methods 4
-        index index.html
-    }
-
-    location api/upload {
-        http_methods 4
-        index upload.html
-    }
-}*/

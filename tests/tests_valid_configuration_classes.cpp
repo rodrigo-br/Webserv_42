@@ -50,9 +50,55 @@ TEST_CASE("Testa roots inválidos dão false na configuração de server")
     ValidConfigurations validConfigurations;
     std::string key = "root";
     std::string value = GENERATE("wwwroot1","wwwroot//api","/wwwroot/assets",".wwwroot/images/images.html","confi"
-                                ,"sourrces", "..", "../", "../Webserv_42/wwwroot");
+                                ,"sourrces", "..", "../", "../Webserv_42/wwwroot", "wwwroot/index.html");
 
     bool isValidConfiguration = validConfigurations.ValidateAServerConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == false);
+}
+
+TEST_CASE("Testa http_methods válidos dão true na configuração de location")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "http_methods";
+    std::string value = GENERATE("1","2","3","4","5","6","7");
+
+    bool isValidConfiguration = validConfigurations.ValidateALocationConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == true);
+}
+
+TEST_CASE("Testa http_methods inválidos dão false na configuração de location")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "http_methods";
+    std::string value = GENERATE("wwwroot1","0","-1","8","8000"
+                                ,"..","../","cavalinho");
+
+    bool isValidConfiguration = validConfigurations.ValidateALocationConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == false);
+}
+
+TEST_CASE("Testa index válidos dão true na configuração de location")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "index";
+    std::string value = GENERATE("wwwroot/index.html","wwwroot/404.html","Makefile","README.md");
+
+    bool isValidConfiguration = validConfigurations.ValidateALocationConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == true);
+}
+
+TEST_CASE("Testa index inválidos dão false na configuração de location")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "index";
+    std::string value = GENERATE("wwwroot1","0","-1","8","8000"
+                                ,"..","../","cavalinho");
+
+    bool isValidConfiguration = validConfigurations.ValidateALocationConfiguration(key, value);
 
     REQUIRE(isValidConfiguration == false);
 }

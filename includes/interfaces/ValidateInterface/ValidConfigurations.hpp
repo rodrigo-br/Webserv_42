@@ -9,22 +9,8 @@
 # include "interfaces/ValidateInterface/IValidateFunction.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidatePortIsSafe.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidateDirectoryExist.hpp"
-
-template <typename T>
-class ValidateFunction : public IValidateFunction
-{
-    private:
-        T _value;
-
-    public:
-        ValidateFunction(T value) : _value(value) {}
-
-        virtual bool operator()(std::string &str) const
-        {
-            (void)str;
-            return true;
-        }
-};
+# include "interfaces/ValidateInterface/Validators/ValidateMethods.hpp"
+# include "interfaces/ValidateInterface/Validators/ValidateLocationIndex.hpp"
 
 class ValidConfigurations
 {
@@ -36,6 +22,7 @@ class ValidConfigurations
         ValidConfigurations();
         ~ValidConfigurations();
         bool ValidateAServerConfiguration(std::string &key, std::string &value);
+        bool ValidateALocationConfiguration(std::string &key, std::string &value);
 };
 
 #endif
