@@ -1,15 +1,15 @@
-#include "classes/ValidConfigurations.hpp"
+#include "interfaces/ValidateInterface/ValidConfigurations.hpp"
 
 ValidConfigurations::ValidConfigurations()
 {
     int unsafePortsAsInt[] = {1719,1720,1723,2049,3659,4045,5060,5061,6000,6566,6665,6666,6667,6668,6669,6697,10080};
     const size_t numberOfPorts = sizeof(unsafePortsAsInt)/sizeof(unsafePortsAsInt[0]);
     this->_serverConfigurations["listen"] = new ValidatePortIsSafe<numberOfPorts>(unsafePortsAsInt);
-    // this->_serverConfigurations["root"] = ;
-    // this->_serverConfigurations["location"] = ;
-    // this->_locationConfigurations["http_methods"] = ;
-    // this->_locationConfigurations["index"] = ;
-    // this->_locationConfigurations["directory_listing"] = ;
+    // this->_serverConfigurations["root"] = new ValidatePath<>();
+    // this->_serverConfigurations["location"] = new ValidateLocation<>();
+    // this->_locationConfigurations["http_methods"] = new ValidateMethods<>();
+    // this->_locationConfigurations["index"] = new ValidateLocationIndex<>();
+    // this->_locationConfigurations["directory_listing"] = new ValidateDirectoryListing<>();
 }
 
 ValidConfigurations::~ValidConfigurations()
@@ -20,7 +20,6 @@ ValidConfigurations::~ValidConfigurations()
         delete it->second;
     }
 }
-
 
 bool ValidConfigurations::ValidateAServerConfiguration(std::string &key, std::string &value)
 {
@@ -78,4 +77,3 @@ server {
         index upload.html
     }
 }*/
-

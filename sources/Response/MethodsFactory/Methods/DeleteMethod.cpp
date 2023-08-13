@@ -1,4 +1,4 @@
-#include "interfaces/DeleteMethod.hpp"
+#include "interfaces/MethodsFactory/Methods/DeleteMethod.hpp"
 
 const char* DeleteMethod::buildResponse()
 {

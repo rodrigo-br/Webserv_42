@@ -1,4 +1,4 @@
-#include "interfaces/GetMethod.hpp"
+#include "interfaces/MethodsFactory/Methods/GetMethod.hpp"
 #include <sstream> // Precisa ficar neste arquivo para evitar erro de incomplete type no test (C++11)
 
 #define ROOT "wwwroot"

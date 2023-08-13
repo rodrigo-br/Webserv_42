@@ -1,4 +1,4 @@
-#include "interfaces/PostMethod.hpp"
+#include "interfaces/MethodsFactory/Methods/PostMethod.hpp"
 
 const char* PostMethod::buildResponse()
 {
