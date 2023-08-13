@@ -20,7 +20,6 @@ class Server
         void setClients();
         std::vector<int> listenSockets;
         std::vector<int> clienstSocks;
-
         fd_set read_fds;
         fd_set write_fds;
 
