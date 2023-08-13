@@ -27,5 +27,6 @@
 # include "classes/ConfParser.hpp"
 # include "enums/HttpMethodsEnum.hpp"
 # include "enums/StatusCodesEnum.hpp"
+# include "classes/ValidConfigurations.hpp"
 
 #endif
