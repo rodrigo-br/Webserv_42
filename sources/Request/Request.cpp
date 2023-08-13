@@ -11,7 +11,7 @@ const char*    Request::getMensageRequest( void ) const
 
 Request			&Request::createParsedMessage(int fdConnection)
 {
-	if (Utils::check(read(fdConnection,this->_request, BUFFER_SIZE), 0))
+	if (Utils::check(read(fdConnection,this->_request, BUFFER_SIZE),  "Read request"))
 	{
 		exit(EXIT_FAILURE);
 	}

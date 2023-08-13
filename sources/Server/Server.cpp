@@ -1,50 +1,4 @@
 #include "classes/Server.hpp"
-#include <vector>
-#include <algorithm>
-
-static int createSocket(void)
-{
-	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (Utils::check(sockfd))
-	{
-		exit(EXIT_FAILURE);
-	}
-	return sockfd;
-}
-
-static sockaddr_in createSockaddr(int port)
-{
-	sockaddr_in _sockaddr;
-	_sockaddr.sin_family = AF_INET;
-	_sockaddr.sin_addr.s_addr = INADDR_ANY;
-	_sockaddr.sin_port = htons(port);
-	return (_sockaddr);
-}
-
-static void bindSocket(int &sockfd, sockaddr_in &sockaddr)
-{
-	if (Utils::check(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr))))
-	{
-		exit(EXIT_FAILURE);
-	}
-}
-
-static void listenSocket(int &sockfd)
-{
-	if (Utils::check(listen(sockfd, 10)))
-	{
-		exit(EXIT_FAILURE);
-	}
-}
-
-static void setSocketReusable(int sockfd)
-{
-	int optval = 1;
-	if (Utils::check(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval))))
-	{
-		exit(EXIT_FAILURE);
-	}
-}
 
 void Server::signalHandler(int signum)
 {
@@ -52,39 +6,20 @@ void Server::signalHandler(int signum)
 	Server::gSignalInterrupted = true;
 }
 
-
-Server::Server(Conf &config) : conf(config)
+void Server::runServer(Socket socket)
 {
-	FD_ZERO(&this->read_fds);
-	FD_ZERO(&this->write_fds);
-	int serveSocket;
-	for (std::map<int, ServerData>::const_iterator it = conf.getServersData().begin(); it != conf.getServersData().end(); ++it)
-	{
-		int port = it->first;
-		serveSocket = createSocket();
-		setSocketReusable(serveSocket);
-		sockaddr_in sockaddr = createSockaddr(port);
-		bindSocket(serveSocket, sockaddr);
-		listenSocket(serveSocket);
-		if (Utils::check(fcntl(serveSocket, F_SETFL, O_NONBLOCK)))
-		{
-			close(serveSocket);
-			break ;
-		}
-		FD_SET(serveSocket, &this->read_fds);
-		this->listenSockets.push_back(serveSocket);
-	}
+	listenSockets = socket.getlistenSockets();
 	signal(SIGINT, Server::signalHandler);
 	while (!gSignalInterrupted)
 	{
-		fd_set read_sockets = this->read_fds;
-		fd_set write_sockets = this->write_fds;
+		fd_set read_sockets = socket.getReadFds();
+		fd_set write_sockets = socket.getWriteFds();
 
-		if (Utils::check(select(FD_SETSIZE, &read_sockets, &write_sockets,NULL, NULL)))
+		if (Utils::check(select(FD_SETSIZE, &read_sockets, &write_sockets,NULL, NULL), "Select"))
 		{
 			break ;
 		}
-		for (std::vector<int>::iterator it = this->listenSockets.begin(); it != this->listenSockets.end(); ++it)
+		for (std::vector<int>::iterator it = listenSockets.begin(); it != listenSockets.end(); ++it)
 		{
 			int sockfd = *it;
 			if (FD_ISSET(sockfd, &read_sockets))
@@ -125,13 +60,13 @@ Server::Server(Conf &config) : conf(config)
 
 				Response response(new ResponseBuilder(request, requestValidator));
 
-				if (Utils::check(send(client_sock, response.getResponse(), response.getSize(), 0)))
+				if (Utils::check(send(client_sock, response.getResponse(), response.getSize(), 0), "Send"))
 				{
 					break;
 				}
 				if (response.hasBody())
 				{
-					if (Utils::check(send(client_sock, response.getBody(), response.bodySize(), 0)))
+					if (Utils::check(send(client_sock, response.getBody(), response.bodySize(), 0), "Send body"))
 					{
 						break;
 					}
@@ -154,6 +89,15 @@ Server::Server(Conf &config) : conf(config)
 		close(clienstSocks[i]);
 	}
 	this->conf.deleteConfParser();
+
+}
+
+Server::Server(Conf &config) : conf(config)
+{
+	Socket socket(conf.getServersData());
+	if(!socket.succeed())
+		return;
+	runServer(socket);
 }
 
 bool Server::gSignalInterrupted = false;

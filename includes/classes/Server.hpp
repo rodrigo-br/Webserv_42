@@ -5,7 +5,6 @@
 
 # define BUFFER_SIZE 30000
 
-
 class Server
 {
     public:
@@ -14,15 +13,9 @@ class Server
         Server(Conf &config);
         static void signalHandler(int signum);
 
-
-        void initializeSockets();
-        void run();
-        void setClients();
+        void runServer(Socket socket);
         std::vector<int> listenSockets;
         std::vector<int> clienstSocks;
-        fd_set read_fds;
-        fd_set write_fds;
-
 };
 
 #endif
