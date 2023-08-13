@@ -23,11 +23,33 @@ TEST_CASE("Testa se portas inválidas dão false na configuração de server")
     REQUIRE(isValidConfiguration == false);
 }
 
-TEST_CASE("Testa keys inválidas dão false na configuração de server")
+TEST_CASE("Testa keys inválidas dão false na configuração de server no geral")
 {
     ValidConfigurations validConfigurations;
     std::string key = GENERATE("0","8000","-1","cavalinho","serv","camilla","lucas","do","mal","listenm");
     std::string value = "8000";
+
+    bool isValidConfiguration = validConfigurations.ValidateAServerConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == false);
+}
+
+TEST_CASE("Testa roots válidos dão true na configuração de server")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "root";
+    std::string value = GENERATE("wwwroot","wwwroot/api","wwwroot/assets","wwwroot/images","conf","sources");
+
+    bool isValidConfiguration = validConfigurations.ValidateAServerConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == true);
+}
+
+TEST_CASE("Testa roots inválidos dão false na configuração de server")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "root";
+    std::string value = GENERATE("wwwroot1","wwwroot//api","/wwwroot/assets",".wwwroot/images/images.html","confi","sourrces", "..");
 
     bool isValidConfiguration = validConfigurations.ValidateAServerConfiguration(key, value);
 

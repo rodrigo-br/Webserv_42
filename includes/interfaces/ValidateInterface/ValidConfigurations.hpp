@@ -8,6 +8,7 @@
 # include <cstdlib>
 # include "interfaces/ValidateInterface/IValidateFunction.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidatePortIsSafe.hpp"
+# include "interfaces/ValidateInterface/Validators/ValidateDirectoryExist.hpp"
 
 template <typename T>
 class ValidateFunction : public IValidateFunction
@@ -18,7 +19,7 @@ class ValidateFunction : public IValidateFunction
     public:
         ValidateFunction(T value) : _value(value) {}
 
-        virtual bool operator()(const std::string &str) const
+        virtual bool operator()(std::string &str) const
         {
             (void)str;
             return true;
