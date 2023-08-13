@@ -19,6 +19,7 @@
 # include "classes/RequestValidator.hpp"
 # include "classes/ContentTypes.hpp"
 # include "classes/StatusCodes.hpp"
+# include "classes/Socket.hpp"
 # include "classes/Response.hpp"
 # include "classes/Conf.hpp"
 # include "classes/ResponseBuilder.hpp"

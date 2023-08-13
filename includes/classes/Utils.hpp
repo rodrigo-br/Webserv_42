@@ -11,7 +11,7 @@
 class Utils {
 
     public:
-        static bool check(ssize_t result, int erro = -1);
+        static bool check(ssize_t result, std::string functionToBeChecked, int erro = -1);
         static bool hasMethodInInput(int input, HttpMethodEnum::httpMethod method);
 
 };
