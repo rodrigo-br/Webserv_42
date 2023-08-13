@@ -1,4 +1,4 @@
-#include "interfaces/MethodCreator.hpp"
+#include "interfaces/MethodsFactory/MethodCreator.hpp"
 
 IMethod *MethodCreator::createMethodObject(HttpMethodEnum::httpMethod method)
 {

@@ -9,7 +9,7 @@
 # include <cstring>
 # include <stdlib.h>
 # include <vector>
-# include "interfaces/MethodCreator.hpp"
+# include "interfaces/MethodsFactory/MethodCreator.hpp"
 # include "classes/Request.hpp"
 # include "classes/RequestValidator.hpp"
 

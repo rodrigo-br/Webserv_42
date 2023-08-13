@@ -1,4 +1,4 @@
-#include "interfaces/UnknownMethod.hpp"
+#include "interfaces/MethodsFactory/Methods/UnknownMethod.hpp"
 
 const char* UnknownMethod::buildResponse()
 {
