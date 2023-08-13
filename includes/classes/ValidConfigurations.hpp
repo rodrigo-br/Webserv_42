@@ -47,8 +47,6 @@ class ValidatePortIsSafe : public IValidateFunction
                 }
             }
             return false;
-
-            // Parse the value and return a boolean for this operator
         }
 };
 
@@ -65,7 +63,6 @@ class ValidateFunction : public IValidateFunction
         {
             (void)str;
             return true;
-            // Parse the value and return a boolean for this operator
         }
 };
 

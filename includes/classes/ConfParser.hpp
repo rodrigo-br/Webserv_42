@@ -7,8 +7,9 @@
 # include <vector>
 # include <cstring>
 # include <cstdlib>
+# include "classes/ValidConfigurations.hpp"
 
-class ConfParser
+class ConfParser : public ValidConfigurations
 {
     public:
         ConfParser(std::string file);
@@ -25,6 +26,7 @@ class ConfParser
         void createServers();
         bool assignTokens(std::vector<std::string> tokens);
         bool isValidClosingBracket(std::string token);
+        bool isValidConfiguration(std::vector<std::string> tokens);
 };
 
 #endif

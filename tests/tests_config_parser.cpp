@@ -19,7 +19,8 @@ TEST_CASE("Config parser succeed retorna FALSE para arquivos INVÁLIDOS")
                                     "tests/confs/invalidos/invalid_03.conf",
                                     "tests/confs/invalidos/invalid_04.conf",
                                     "tests/confs/invalidos/invalid_05.conf",
-                                    "tests/confs/invalidos/invalid_06.conf");
+                                    "tests/confs/invalidos/invalid_06.conf",
+                                    "tests/confs/invalidos/invalid_07.conf");
 
     ConfParser confParser(confPath);
 

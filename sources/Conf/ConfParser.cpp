@@ -23,10 +23,18 @@ static bool switchMe(bool &me)
     return me;
 }
 
-static bool isValidConfiguration(std::vector<std::string> tokens)
+bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
 {
-    // Need to check for valid configurations
-    return tokens[0].compare("location") != 0;
+    if (tokens[0].compare("location") != 0)
+    {
+        if (tokens[0].compare("listen") == 0 && this->_inServerBrackets && !this->_inLocationBrackets)
+        {
+            return this->ValidateAServerConfiguration(tokens[0], tokens[1]);
+        }
+        // criar o restante das config
+        return true;
+    }
+    return false;
 }
 
 ConfParser::ConfParser(std::string file) :
