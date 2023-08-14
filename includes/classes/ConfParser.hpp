@@ -8,6 +8,7 @@
 # include <cstring>
 # include <cstdlib>
 # include "interfaces/ValidateInterface/ValidConfigurations.hpp"
+# include "classes/ServerData.hpp"
 
 class ConfParser
 {
@@ -17,17 +18,20 @@ class ConfParser
         bool succeed();
 
     private:
-        std::ifstream       _configFile;
-        bool                _succeed;
-        bool                _inServerBrackets;
-        bool                _inLocationBrackets;
-        ValidConfigurations _validConfigurations;
+        std::ifstream                   _configFile;
+        bool                            _succeed;
+        bool                            _inServerBrackets;
+        bool                            _inLocationBrackets;
+        ValidConfigurations             _validConfigurations;
+        std::map<int, ServerData>       _serversData;
+        int                             _currentServerConfig;
 
         void readConfigFile(std::string file);
         void createServers();
         bool assignTokens(std::vector<std::string> tokens);
         bool isValidClosingBracket(std::string token);
         bool isValidConfiguration(std::vector<std::string> tokens);
+        void createOrUpdateServerData(std::vector<std::string> tokens);
 };
 
 #endif

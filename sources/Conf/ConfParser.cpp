@@ -23,13 +23,30 @@ static bool switchMe(bool &me)
     return me;
 }
 
+void ConfParser::createOrUpdateServerData(std::vector<std::string> tokens)
+{
+    if (tokens[0].compare("listen"))
+    {
+        this->_currentServerConfig = std::atoi(tokens[1].c_str());
+        this->_serversData[this->_currentServerConfig] = ServerData();
+    }
+    else if (tokens[0].compare("root"))
+    {
+        this->_serversData[this->_currentServerConfig].setRoot(tokens[1]);
+    }
+}
+
 bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
 {
     if (tokens[0].compare("location") != 0)
     {
         if (this->_inServerBrackets && !this->_inLocationBrackets)
         {
-            return this->_validConfigurations.ValidateAServerConfiguration(tokens[0], tokens[1]);
+            if (this->_validConfigurations.ValidateAServerConfiguration(tokens[0], tokens[1])
+                && this->_currentServerConfig != -1)
+            {
+                createOrUpdateServerData(tokens);
+            }
         }
         return true;
     }
@@ -37,7 +54,7 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
 }
 
 ConfParser::ConfParser(std::string file) :
-    _succeed(false), _inServerBrackets(false), _inLocationBrackets(false)
+    _succeed(false), _inServerBrackets(false), _inLocationBrackets(false), _currentServerConfig(-1)
 {
     readConfigFile(file);
     createServers();
@@ -94,6 +111,7 @@ bool ConfParser::isValidClosingBracket(std::string token)
         else if (this->_inServerBrackets)
         {
             this->_inServerBrackets = false;
+            this->_currentServerConfig = -1;
             return true;
         }
     }

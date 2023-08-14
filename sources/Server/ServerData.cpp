@@ -20,6 +20,16 @@ std::map<std::string, Location> ServerData::getLocations() const
     return this->_location;
 }
 
+void ServerData::setRoot(std::string root)
+{
+    this->_root = root;
+}
+
+void ServerData::setLocation(std::string path, Location location)
+{
+    this->_location[path] = location;
+}
+
 std::string ServerData::getLocation(std::string locationName) const
 {
     std::map<std::string, Location>::const_iterator it = this->_location.find(locationName);
