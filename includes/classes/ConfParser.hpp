@@ -9,7 +9,7 @@
 # include <cstdlib>
 # include "interfaces/ValidateInterface/ValidConfigurations.hpp"
 
-class ConfParser : public ValidConfigurations
+class ConfParser
 {
     public:
         ConfParser(std::string file);
@@ -17,10 +17,11 @@ class ConfParser : public ValidConfigurations
         bool succeed();
 
     private:
-        std::ifstream _configFile;
-        bool _succeed;
-        bool _inServerBrackets;
-        bool _inLocationBrackets;
+        std::ifstream       _configFile;
+        bool                _succeed;
+        bool                _inServerBrackets;
+        bool                _inLocationBrackets;
+        ValidConfigurations _validConfigurations;
 
         void readConfigFile(std::string file);
         void createServers();

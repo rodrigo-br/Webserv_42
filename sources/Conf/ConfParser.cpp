@@ -27,11 +27,10 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
 {
     if (tokens[0].compare("location") != 0)
     {
-        if (tokens[0].compare("listen") == 0 && this->_inServerBrackets && !this->_inLocationBrackets)
+        if (this->_inServerBrackets && !this->_inLocationBrackets)
         {
-            return this->ValidateAServerConfiguration(tokens[0], tokens[1]);
+            return this->_validConfigurations.ValidateAServerConfiguration(tokens[0], tokens[1]);
         }
-        // criar o restante das config
         return true;
     }
     return false;
