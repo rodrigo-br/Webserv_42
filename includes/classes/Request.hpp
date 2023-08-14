@@ -28,8 +28,6 @@ class Request
 		std::string					getHeader(std::string headerName) const;
 		void        				setPath(std::string newPath);
 
-		// RequestValidator			_validator;
-
 	private:
 		RequestParser				_parser;
 		char            			_request[BUFFER_SIZE];

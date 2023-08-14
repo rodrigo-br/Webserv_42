@@ -49,7 +49,8 @@ bool createAndConfigureSocket(int& socketFd, int optval)
 }
 
 
-bool bindSocket(int socketFd, const sockaddr_in& sockaddr) {
+bool bindSocket(int socketFd, const sockaddr_in& sockaddr) 
+{
     if (Utils::check(bind(socketFd, (const struct sockaddr*)&sockaddr, sizeof(sockaddr)), "Bind")) 
     {
         close(socketFd);
@@ -58,7 +59,8 @@ bool bindSocket(int socketFd, const sockaddr_in& sockaddr) {
     return false;
 }
 
-bool listenOnSocket(int socketFd) {
+bool listenOnSocket(int socketFd) 
+{
     if (Utils::check(listen(socketFd, 10), "Listen")) 
     {
         close(socketFd);
@@ -81,7 +83,8 @@ std::vector<int>  Socket::getlistenSockets()
     return this->_listenSockets;
 }
 
-bool Socket::initializeSockets(std::map<int, ServerData>& conf) {
+bool Socket::initializeSockets(std::map<int, ServerData>& conf) 
+{
 
 	FD_ZERO(&this->_readFds);
     FD_ZERO(&this->_writeFds);

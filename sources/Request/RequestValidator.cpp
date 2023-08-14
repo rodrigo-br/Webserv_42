@@ -6,14 +6,14 @@ RequestValidator::~RequestValidator(void) {}
 
 RequestValidator &RequestValidator::requestValidator(ServerData &serverData, Request& request)
 {
-	_methodValidator(request);
-	_pathValidator(serverData, request);
-	_bodyValidator(request);
-	_httpVersionValidator(request);
+	methodValidator(request);
+	pathValidator(serverData, request);
+	bodyValidator(request);
+	httpVersionValidator(request);
 	return *this;
 }
 
-HttpMethodEnum::httpMethod RequestValidator::_methodValidator(Request& request)
+HttpMethodEnum::httpMethod RequestValidator::methodValidator(Request& request)
 {
 	std::string method = request.getMethod();
 	if (method.compare("GET") == 0)
@@ -25,7 +25,7 @@ HttpMethodEnum::httpMethod RequestValidator::_methodValidator(Request& request)
 	return this->_method;
 }
 
-void RequestValidator::_pathValidator(ServerData &serverData, Request& request)
+void RequestValidator::pathValidator(ServerData &serverData, Request& request)
 {
     std::string path = request.getPath();
     std::string root = serverData.getRoot();
@@ -34,11 +34,17 @@ void RequestValidator::_pathValidator(ServerData &serverData, Request& request)
 
 
     if (isRootPath(path, len))
+	{
         handleRootPath(serverData, request, path, root);
+	}
     else if (endsWithSlash(position, len))
+	{
         handlePathWithTrailingSlash(serverData, request, path, root);
+	}
     else
+	{
         handleNonTrailingSlashPath(serverData, request, path, root, position);
+	}
     handleAssetsPath(request, path, root);
 }
 
@@ -110,13 +116,13 @@ void RequestValidator::handleAssetsPath(Request& request, const std::string& pat
     }
 }
 
-void RequestValidator::_bodyValidator(Request& request)
+void RequestValidator::bodyValidator(Request& request)
 {
 	if (!request.getBody().empty())
 		this->_requestBody = true;
 }
 
-void RequestValidator::_httpVersionValidator(Request& request)
+void RequestValidator::httpVersionValidator(Request& request)
 {
 	if (request.getHttpVersion().compare("HTTP/1.1") == 0)
 		this->_httpVersion = true;
