@@ -18,7 +18,20 @@ void    RequestParser::parserHttpRequest(char *request)
 	parseRequestHeader(line, iss);
 	parseRequestBody(line, iss);
     parseRequestPort();
+    parseRquestQuery();
 }
+
+void    RequestParser::parseRquestQuery()
+{	
+    
+	// size_t queryStart = this->_path.find_first_of('?');
+    // std::string path = _path;
+    // if (queryStart != std::string::npos)
+	// {
+	// 	this->_query =  path.substr(queryStart + 1);
+	// }
+}
+
 void    RequestParser::parseRequestPort()
 {   
     std::string port = getHeader("Host");

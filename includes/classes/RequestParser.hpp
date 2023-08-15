@@ -26,6 +26,7 @@ class RequestParser
 
 	private:
 		void								parseRequestPort(void);
+		void  								parseRquestQuery();
 		void 								parseRequestStartLine(std::string &line, std::istringstream &iss);
 		void 								parseRequestHeader(std::string &line, std::istringstream &iss);
 		void 								parseRequestBody(std::string &line, std::istringstream &iss);
@@ -37,6 +38,7 @@ class RequestParser
 		std::string							_requestBody;
 		std::string							_port;
 		int									_portNumber;
+		std::string							_query;
 };
 
 #endif
