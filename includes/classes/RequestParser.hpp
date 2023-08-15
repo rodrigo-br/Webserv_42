@@ -5,6 +5,7 @@
 # include "enums/HttpMethodsEnum.hpp"
 # include <iostream>
 # include <map>
+# include <cstdlib>
 
 class RequestParser
 {
@@ -19,12 +20,15 @@ class RequestParser
 		std::string							getHttpVersion(void) const;
 		std::string							getBody(void) const;
 		std::string							getHeader(std::string headerName) const;
+		std::string							getPort(void) const;
+		int									getPortNumber(void) const;
 		void								setPath(std::string newPath);
 
 	private:
-		void 								_parseRequestStartLine(std::string &line, std::istringstream &iss);
-		void 								_parseRequestHeader(std::string &line, std::istringstream &iss);
-		void 								_parseRequestBody(std::string &line, std::istringstream &iss);
+		void								parseRequestPort(void);
+		void 								parseRequestStartLine(std::string &line, std::istringstream &iss);
+		void 								parseRequestHeader(std::string &line, std::istringstream &iss);
+		void 								parseRequestBody(std::string &line, std::istringstream &iss);
 
     	std::map<std::string, std::string> 	_headers;
 		std::string  						_method;
@@ -32,6 +36,7 @@ class RequestParser
 		std::string                			_httpVersion;
 		std::string							_requestBody;
 		std::string							_port;
+		int									_portNumber;
 };
 
 #endif
