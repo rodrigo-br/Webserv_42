@@ -44,6 +44,17 @@ std::string Request::getHeader(std::string headerName ) const
     return this->_parser.getHeader(headerName);
 }
 
+
+std::string Request::getPort(void) const
+{
+    return this->_parser.getPort();
+}
+
+int Request::getPortNumber(void) const
+{
+    return _parser.getPortNumber();
+}
+
 void Request::setPath(std::string newPath)
 {
     this->_parser.setPath(newPath);
