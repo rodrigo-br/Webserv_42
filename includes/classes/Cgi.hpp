@@ -3,6 +3,8 @@
 
 # include "classes/RequestValidator.hpp"
 # include "classes/Request.hpp"
+# include <string>
+#include <sstream> 
 
 class Cgi
 {
@@ -12,6 +14,7 @@ class Cgi
 	private:
 		Cgi(void);
 		void								initEnv(Request &request, RequestValidator &validator);
+		char **								createEnvironmentArray() const;
 
 		std::map<std::string, std::string>	_env;
 };

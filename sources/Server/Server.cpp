@@ -35,6 +35,7 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 			return;
 		}
 	}
+	Cgi(request, validator);
 
 	FD_CLR(clientSocket, &this->writeSocket);
 	FD_SET(clientSocket, &this->readSocket);

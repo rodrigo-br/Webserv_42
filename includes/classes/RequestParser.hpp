@@ -6,6 +6,10 @@
 # include <iostream>
 # include <map>
 # include <cstdlib>
+// # include <sstream>
+# include <string>
+# include <typeinfo>
+# include <vector>
 
 class RequestParser
 {
@@ -21,6 +25,7 @@ class RequestParser
 		std::string							getBody(void) const;
 		std::string							getHeader(std::string headerName) const;
 		std::string							getPort(void) const;
+		std::string							getQuery(void) const;
 		int									getPortNumber(void) const;
 		void								setPath(std::string newPath);
 

@@ -1,5 +1,5 @@
 #include "classes/Request.hpp"
-
+              
 Request::Request( ) : _request() {	}
 
 Request::~Request( void ) { }
@@ -52,10 +52,16 @@ std::string Request::getPort(void) const
 
 int Request::getPortNumber(void) const
 {
-    return _parser.getPortNumber();
+    return  this->_parser.getPortNumber();
+}
+
+std::string Request::getQuery(void) const
+{
+    return this->_parser.getQuery();
 }
 
 void Request::setPath(std::string newPath)
 {
     this->_parser.setPath(newPath);
 }
+

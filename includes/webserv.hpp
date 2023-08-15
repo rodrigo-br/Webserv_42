@@ -21,6 +21,7 @@
 # include "classes/StatusCodes.hpp"
 # include "classes/Socket.hpp"
 # include "classes/Response.hpp"
+# include "classes/Cgi.hpp"
 # include "classes/Conf.hpp"
 # include "classes/ResponseBuilder.hpp"
 # include "classes/Request.hpp"

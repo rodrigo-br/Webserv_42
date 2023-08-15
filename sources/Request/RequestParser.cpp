@@ -1,9 +1,7 @@
 #include "classes/RequestParser.hpp"
-#include <sstream>
-#include <iostream>
-#include <string>
-#include <typeinfo>
-#include <vector>
+# include <sstream>
+
+
 
 RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVersion(""), _requestBody("") { }
 
@@ -23,13 +21,11 @@ void    RequestParser::parserHttpRequest(char *request)
 
 void    RequestParser::parseRquestQuery()
 {	
-    
-	// size_t queryStart = this->_path.find_first_of('?');
-    // std::string path = _path;
-    // if (queryStart != std::string::npos)
-	// {
-	// 	this->_query =  path.substr(queryStart + 1);
-	// }
+    size_t queryStart = this->_path.find_first_of('?');
+    if (queryStart != std::string::npos)
+	{
+		this->_query =  this->_path.substr(queryStart + 1);
+	}
 }
 
 void    RequestParser::parseRequestPort()
@@ -126,6 +122,11 @@ std::string RequestParser::getHeader(std::string headerName) const
     {
         return "";
     }
+}
+
+std::string RequestParser::getQuery(void) const
+{
+    return this->_query;
 }
 
 void RequestParser::setPath(std::string newPath)
