@@ -134,3 +134,7 @@ void RequestParser::setPath(std::string newPath)
     this->_path = newPath;
 }
 
+void RequestParser::setBody(std::string newBody)
+{
+    this->_path = newBody;
+}

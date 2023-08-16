@@ -60,6 +60,12 @@ std::string Request::getQuery(void) const
     return this->_parser.getQuery();
 }
 
+
+void Request::setBody(std::string newBody)
+{
+    this->_parser.setBody(newBody);
+}
+
 void Request::setPath(std::string newPath)
 {
     this->_parser.setPath(newPath);

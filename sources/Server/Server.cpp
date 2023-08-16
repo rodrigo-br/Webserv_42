@@ -17,10 +17,26 @@ void Server::closeSockets()
 		close(clienstSocks[i]);
 	}
 }
-
+bool endsWith(const std::string &str, const std::string &suffix) {
+    if (str.length() < suffix.length()) {
+        return false;
+    }
+    return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
+}
 void Server::sendClientResponse(int clientSocket, int i, Request &request, RequestValidator &validator) 
 {
-	std::cout << "Sending response to client" << std::endl;
+	ServerData server2;
+	std::string cgi = "/cgi-bin";
+	 if (!server2.getLocation(cgi).empty())
+	 {
+		if (endsWith(request.getPath() , ".php")) {
+			Cgi CgiRequest(request, validator);
+			std::string result = CgiRequest.executeCgi();
+			request.setBody(result);
+		}
+	 }
+	 std::cout << "Sending response to client" << std::endl;
+	
 
 	Response response(new ResponseBuilder(request, validator));
 
@@ -35,7 +51,6 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 			return;
 		}
 	}
-	Cgi(request, validator);
 
 	FD_CLR(clientSocket, &this->writeSocket);
 	FD_SET(clientSocket, &this->readSocket);

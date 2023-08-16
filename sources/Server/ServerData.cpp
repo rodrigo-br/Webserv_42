@@ -8,6 +8,8 @@ ServerData::ServerData()
     this->_location["/api/upload"] = Location("upload.html");
     this->_location["/images"] = Location("images.html");
     this->_location["/images/random"] = Location("index.html");
+    this->_location["/cgi-bin"] = Location("index.php");
+
 }
 
 std::string ServerData::getRoot() const

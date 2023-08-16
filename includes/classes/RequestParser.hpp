@@ -28,6 +28,8 @@ class RequestParser
 		std::string							getQuery(void) const;
 		int									getPortNumber(void) const;
 		void								setPath(std::string newPath);
+		void								setBody(std::string newBody);
+
 
 	private:
 		void								parseRequestPort(void);

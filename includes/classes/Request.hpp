@@ -30,6 +30,7 @@ class Request
 		int							getPortNumber(void) const;
 		void        				setPath(std::string newPath);
 		std::string 				getQuery(void) const;
+		void						setBody(std::string newBody);
 
 	private:
 		RequestParser				_parser;
