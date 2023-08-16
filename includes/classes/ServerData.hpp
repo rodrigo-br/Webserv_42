@@ -3,6 +3,7 @@
 
 # include <map>
 # include <string>
+# include <vector>
 # include "classes/Location.hpp"
 
 class ServerData
@@ -19,6 +20,7 @@ class ServerData
         std::map<std::string, Location> getLocations() const;
         void setRoot(std::string root);
         void setLocation(std::string path, Location location);
+        void setConfiguration(std::vector<std::string> tokens);
 };
 
 #endif

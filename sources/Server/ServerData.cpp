@@ -39,3 +39,15 @@ std::string ServerData::getLocation(std::string locationName) const
     else
         return  "";
 }
+
+void ServerData::setConfiguration(std::vector<std::string> tokens)
+{
+    if (tokens[0].compare("location") == 0)
+    {
+        setLocation(tokens[1], Location());
+    }
+    else if (tokens[0].compare("root") == 0)
+    {
+        setRoot(tokens[1]);
+    }
+}

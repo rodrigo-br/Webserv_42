@@ -11,10 +11,12 @@ static bool isServerBlock(std::vector<std::string> tokens)
     return (tokens[0].compare("server") == 0) && (tokens[1].compare("{") == 0);
 }
 
-static bool isLocationBlock(std::vector<std::string> tokens)
+bool ConfParser::isLocationBlock(std::vector<std::string> tokens)
 {
-    // Need to verify token[1] for a valid location path
-    return (tokens[0].compare("location") == 0 && tokens[2].compare("{") == 0);
+    std::string value = this->_serversData[this->_currentServerConfig].getRoot() + tokens[1];
+    return (tokens[0].compare("location") == 0 && tokens[2].compare("{") == 0
+            && (this->_validConfigurations.ValidateAServerConfiguration(tokens[0],
+            value) || tokens[1].compare("/") == 0));
 }
 
 static bool switchMe(bool &me)
@@ -93,8 +95,10 @@ void ConfParser::createServers()
             this->_succeed = assignTokens(tokens);
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed))
             {
+                std::cout << "falhô" << std::endl;
                 break ;
             }
+            this->_serversData[this->_currentServerConfig].setConfiguration(tokens);
         }
     }
 }
@@ -146,3 +150,41 @@ bool ConfParser::succeed()
 {
     return this->_succeed;
 }
+
+
+std::string ConfParser::getRoot(int port) const
+{
+    std::map<int, ServerData>::const_iterator it = this->_serversData.find(port);
+
+    if (it != this->_serversData.end())
+        return it->second.getRoot();
+    else
+        throw std::invalid_argument("Porta não encontrada");
+}
+
+std::map<std::string, Location> ConfParser::getLocations(int port) const
+{
+    std::map<int, ServerData>::const_iterator it = this->_serversData.find(port);
+
+    if (it != this->_serversData.end())
+        return it->second.getLocations();
+    else
+        throw std::invalid_argument("Porta não encontrada");
+}
+
+
+std::map<int, ServerData>& ConfParser::getServersData()
+{
+    return this->_serversData;
+}
+
+std::string ConfParser::getLocation(int port, std::string locationName) const
+{
+    std::map<int, ServerData>::const_iterator it = this->_serversData.find(port);
+
+    if (it != this->_serversData.end())
+        return it->second.getLocation(locationName);
+    else
+        throw std::invalid_argument("Porta não encontrada");
+}
+

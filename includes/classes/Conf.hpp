@@ -13,7 +13,6 @@ class Conf
         std::string                      _root;
         std::map<std::string, Location>  _location;
         ConfParser                       *_parser;
-        std::map<int, ServerData>        _serversData;
 
     public:
         Conf(ConfParser *parser);
