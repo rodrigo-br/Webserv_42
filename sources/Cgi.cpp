@@ -12,11 +12,13 @@ Cgi::Cgi(Request &request, RequestValidator &validator)
 {
 	this->initEnv(request, validator);
 	_envp= createEnvironmentArray();
-	initScriptArguments(request);
 	// printEnvArray(envArray);
+        printEnvArray(_args);
+
 	this->_fileScript = request.getPath();
-	this->_body = request.getBody();\
+	this->_body = request.getBody();
 	this->_scriptName = request.getPath().substr(request.getPath().find_last_of("/") + 1);
+	initScriptArguments(request);
 	// exec();request
 
 }
@@ -43,9 +45,9 @@ void		Cgi::initEnv(Request &request, RequestValidator &validator) {
 	this->_env["SERVER_PORT"] = request.getPort();
 	this->_env["REQUEST_METHOD"] = request.getMethod();
 	// this->_env["PATH_INFO"] = request.getPath();
-		this->_env["PATH_INFO"] =  "/cgi-bin/index.php";
+		this->_env["PATH_INFO"] =  "/cgi-bin/index.py";
 	// this->_env["PATH_TRANSLATED"] = request.getPath();
-	this->_env["SCRIPT_NAME"] =  "index.php";
+	this->_env["SCRIPT_NAME"] =  "index.py";
 	this->_env["QUERY_STRING"] = request.getQuery();
 	this->_env["REMOTEaddr"] =  "127.0.0.1"; ////////////////// TA MANUAL PRECISA CRIAR FUNCAO
 	// this->_env["AUTH_TYPE"] = request.getHeader("Authorization");
@@ -54,7 +56,7 @@ void		Cgi::initEnv(Request &request, RequestValidator &validator) {
 	// this->_env["CONTENT_TYPE"] = request.getHeader("Content-Type");
 	this->_env["CONTENT_LENGTH"] = intToString(request.getBody().length());
 	this->_env["REDIRECT_STATUS"] = "200";
-	std::string const path = "/cgi-bin/index.php";
+	std::string const path = "/cgi-bin/index.py";
 	// std::string const scriptName = path.substr(path.find_last_of("/") + 1);
 	// this->_env["SCRIPT_FILENAME"] = 
 	this->_env["REQUEST_URI"] = path + request.getQuery();
@@ -86,10 +88,12 @@ char **Cgi::createEnvironmentArray() const
 char      **Cgi::createArrayOfStrings(std::vector<std::string> const &argsVars) const
 {
 	char **arg = new char *[argsVars.size() + 1];
+        std::cout <<  "-------------------------------------- " << std::endl;
 
 	for (std::size_t i = 0; i < argsVars.size(); ++i)
 	{
 		arg[i] = new char[argsVars[i].size() + 1];
+        std::cout <<  "arg[i] " <<  arg[i] << std::endl;
 		std::strcpy(arg[i], argsVars[i].c_str());
 	}
 	arg[argsVars.size()] = NULL;
@@ -99,13 +103,14 @@ char      **Cgi::createArrayOfStrings(std::vector<std::string> const &argsVars) 
 
 void Cgi::initScriptArguments(Request &request)
 {
+            std::cout <<  "arg[i] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"  << _fileScript << std::endl;
+            std::cout <<  "arg[i] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"  << request.getBody() << std::endl;
+
 	std::vector<std::string> argmunts;
 
-	int         i = this->_fileScript.find_last_of(".");
-	std::string ext = std::string(this->_fileScript.begin() + i + 1, this->_fileScript.end());
 
-	if (ext == "php")
-		this->_script = "php";
+
+	this->_script = "py";
 
 	argmunts.push_back(this->_script);
 	argmunts.push_back(this->_fileScript);
@@ -151,9 +156,9 @@ std::string		Cgi::executeCgi()
 
         // Execute the CGI script
         char *const *nll = NULL;
-		std::string  novo = "/usr/bin/php";
+		std::string  novo = "/usr/bin/" + _script;
         execve(novo.c_str(), nll, _envp);
- 	std::cerr << "Error executing CGI script" << std::endl;
+ 	std::cerr << "-----------------------Error executing CGI script-----------------" << std::endl;
         // If execve fails, write an error response
         write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
         exit(1);

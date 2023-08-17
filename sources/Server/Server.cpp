@@ -17,25 +17,29 @@ void Server::closeSockets()
 		close(clienstSocks[i]);
 	}
 }
-bool endsWith(const std::string &str, const std::string &suffix) {
+
+bool endsWith(const std::string &str, const std::string &suffix) 
+{
     if (str.length() < suffix.length()) {
         return false;
     }
-    return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
+    return str.substr(str.length() - suffix.length()) == suffix;
 }
+
 void Server::sendClientResponse(int clientSocket, int i, Request &request, RequestValidator &validator) 
 {
-	ServerData server2;
 	std::string cgi = "/cgi-bin";
-	 if (!server2.getLocation(cgi).empty())
-	 {
-		if (endsWith(request.getPath() , ".php")) {
+	
+	if (!conf.getLocation(request.getPortNumber(), cgi).empty())
+	{
+		if (endsWith(request.getPath() , ".py")) 
+		{
 			Cgi CgiRequest(request, validator);
 			std::string result = CgiRequest.executeCgi();
 			request.setBody(result);
 		}
-	 }
-	 std::cout << "Sending response to client" << std::endl;
+	}
+	std::cout << "Sending response to client" << std::endl;
 	
 
 	Response response(new ResponseBuilder(request, validator));
