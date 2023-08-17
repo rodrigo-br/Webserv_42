@@ -33,7 +33,23 @@ int Location::getAllowedMethods(void) const
     return this->_allowedMethods;
 }
 
-bool Location::directoryListening(void) const
+bool Location::getDirectoryListening(void) const
 {
     return this->_directoryListening;
 }
+
+void Location::setIndex(std::string index)
+{
+    this->_index = index;
+}
+
+void Location::setAllowedMethods(int allowedMethods)
+{
+    this->_allowedMethods = allowedMethods;
+}
+
+void Location::setDirectoryListening(bool directoryListening)
+{
+    this->_directoryListening = directoryListening;
+}
+

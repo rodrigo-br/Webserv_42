@@ -6,16 +6,22 @@ ValidConfigurations::ValidConfigurations()
     const size_t numberOfPorts = sizeof(unsafePortsAsInt)/sizeof(unsafePortsAsInt[0]);
     this->_serverConfigurations["listen"] = new ValidatePortIsSafe<numberOfPorts>(unsafePortsAsInt);
     this->_serverConfigurations["root"] = new ValidateDirectoryExist();
-    // this->_serverConfigurations["location"] = new ValidateLocation<>();
+    this->_serverConfigurations["location"] = new ValidateDirectoryExist();
     this->_locationConfigurations["http_methods"] = new ValidateMethods();
     this->_locationConfigurations["index"] = new ValidateLocationIndex();
-    // this->_locationConfigurations["directory_listing"] = new ValidateDirectoryListing<>();
+    this->_locationConfigurations["directory_listing"] = new ValidateGenericConfiguration("on");
+    this->_locationConfigurations["cgi_pass"] = new ValidateGenericConfiguration(".php");
 }
 
 ValidConfigurations::~ValidConfigurations()
 {
     for (std::map<std::string, IValidateFunction*>::iterator it = this->_serverConfigurations.begin();
         it != this->_serverConfigurations.end(); ++it)
+    {
+        delete it->second;
+    }
+    for (std::map<std::string, IValidateFunction*>::iterator it = this->_locationConfigurations.begin();
+        it != this->_locationConfigurations.end(); ++it)
     {
         delete it->second;
     }
