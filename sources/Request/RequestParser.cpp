@@ -14,12 +14,21 @@ void    RequestParser::parserHttpRequest(char *request)
 	std::string			line;
 	std::istringstream	iss(request);
 
-	_parseRequestStartLine(line, iss);
-	_parseRequestHeader(line, iss);
-	_parseRequestBody(line, iss);
+	parseRequestStartLine(line, iss);
+	parseRequestHeader(line, iss);
+	parseRequestBody(line, iss);
+    parseRequestPort();
+}
+void    RequestParser::parseRequestPort()
+{   
+    std::string port = getHeader("Host");
+    if (!port.empty())
+        this->_port = port.substr(10).c_str();
+    if (!this->_port.empty())
+        this->_portNumber = std::atoi(this->_port.c_str());
 }
 
-void RequestParser::_parseRequestBody(std::string& line, std::istringstream& iss)
+void RequestParser::parseRequestBody(std::string& line, std::istringstream& iss)
 {
     while (std::getline(iss, line)) 
     {
@@ -27,7 +36,7 @@ void RequestParser::_parseRequestBody(std::string& line, std::istringstream& iss
     }
 }
 
-void 	RequestParser::_parseRequestHeader( std::string &line, std::istringstream &iss )
+void 	RequestParser::parseRequestHeader( std::string &line, std::istringstream &iss )
 {
 	while (std::getline(iss, line) && !line.empty())
     {
@@ -53,7 +62,7 @@ void 	RequestParser::_parseRequestHeader( std::string &line, std::istringstream 
 	}
 }
 
-void	RequestParser::_parseRequestStartLine(std::string &line, std::istringstream &iss)
+void	RequestParser::parseRequestStartLine(std::string &line, std::istringstream &iss)
 {
 	if (std::getline(iss, line))
 	{
@@ -80,6 +89,16 @@ std::string RequestParser::getHttpVersion(void) const
 std::string RequestParser::getBody(void) const
 {
     return this->_requestBody;
+}
+
+std::string RequestParser::getPort(void) const
+{
+    return this->_port;
+}
+
+int RequestParser::getPortNumber(void) const
+{
+    return this->_portNumber;
 }
 
 std::string RequestParser::getHeader(std::string headerName) const

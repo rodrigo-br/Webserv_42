@@ -48,7 +48,7 @@ void Server::processClientRequest(int clientSocket, Request &request, RequestVal
 	request = Request().createParsedMessage(clientSocket);
 	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
 
-	validator = RequestValidator().requestValidator(this->conf.getServersData()[std::atoi(request.getHeader("Host").substr(10).c_str())], request);
+	validator = RequestValidator().requestValidator(this->conf.getServersData()[request.getPortNumber()], request);
 	FD_CLR(clientSocket, &this->readSocket);
 	FD_SET(clientSocket, &this->writeSocket);
 }
@@ -56,10 +56,10 @@ void Server::processClientRequest(int clientSocket, Request &request, RequestVal
 
 void Server::processClients()
 {
-	RequestValidator requestValidator;
-	Request request;
 	for (size_t i = 0; i < this->clienstSocks.size(); ++i)
 	{
+		RequestValidator requestValidator;
+		Request request;
 		int clientSocket = this->clienstSocks[i];
 		if (FD_ISSET(clientSocket, &this->readSocket))
 		{
