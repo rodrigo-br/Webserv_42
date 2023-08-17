@@ -6,10 +6,11 @@ ValidConfigurations::ValidConfigurations()
     const size_t numberOfPorts = sizeof(unsafePortsAsInt)/sizeof(unsafePortsAsInt[0]);
     this->_serverConfigurations["listen"] = new ValidatePortIsSafe<numberOfPorts>(unsafePortsAsInt);
     this->_serverConfigurations["root"] = new ValidateDirectoryExist();
-    // this->_serverConfigurations["location"] = new ValidateLocation<>();
+    this->_serverConfigurations["location"] = new ValidateDirectoryExist();
     this->_locationConfigurations["http_methods"] = new ValidateMethods();
     this->_locationConfigurations["index"] = new ValidateLocationIndex();
-    // this->_locationConfigurations["directory_listing"] = new ValidateDirectoryListing<>();
+    this->_locationConfigurations["directory_listing"] = new ValidateGenericConfiguration("on");
+    this->_locationConfigurations["cgi_pass"] = new ValidateGenericConfiguration(".py");
 }
 
 ValidConfigurations::~ValidConfigurations()

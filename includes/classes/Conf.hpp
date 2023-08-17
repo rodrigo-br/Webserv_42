@@ -10,10 +10,9 @@
 class Conf
 {
     private:
-        std::string                     _root;
-        std::map<std::string, Location> _location;
-        ConfParser                      *_parser;
-        std::map<int, ServerData>        _serversData;
+        std::string                      _root;
+        std::map<std::string, Location>  _location;
+        ConfParser                       *_parser;
 
     public:
         Conf(ConfParser *parser);

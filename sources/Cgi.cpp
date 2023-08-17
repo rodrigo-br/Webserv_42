@@ -1,4 +1,6 @@
 #include "classes/Cgi.hpp"
+#include <sstream> 
+
 
 
 #define CGI_BUFSIZE 3000

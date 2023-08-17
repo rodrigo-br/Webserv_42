@@ -6,17 +6,18 @@ void Server::signalHandler(int signum)
 	Server::gSignalInterrupted = true;
 }
 
-void Server::closeSockets() 
+void Server::closeSockets()
 {
-	for (size_t i = 0; i < this->listenSockets.size(); ++i) 
+	for (size_t i = 0; i < this->listenSockets.size(); ++i)
 	{
 		close(listenSockets[i]);
 	}
-	for (size_t i = 0; i < clienstSocks.size(); ++i) 
+	for (size_t i = 0; i < clienstSocks.size(); ++i)
 	{
 		close(clienstSocks[i]);
 	}
 }
+///////////////////////////////////////////////////
 
 bool endsWith(const std::string &str, const std::string &suffix) 
 {
@@ -32,6 +33,7 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 	
 	if (!conf.getLocation(request.getPortNumber(), cgi).empty())
 	{
+			std::cout <<  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" << request.getPath()<<std::endl;
 		if (endsWith(request.getPath() , ".py")) 
 		{
 			Cgi CgiRequest(request, validator);
@@ -44,13 +46,13 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 
 	Response response(new ResponseBuilder(request, validator));
 
-	if (Utils::check(send(clientSocket, response.getResponse(), response.getSize(), 0), "Send")) 
+	if (Utils::check(send(clientSocket, response.getResponse(), response.getSize(), 0), "Send"))
 	{
 		return;
 	}
-	if (response.hasBody()) 
+	if (response.hasBody())
 	{
-		if (Utils::check(send(clientSocket, response.getBody(), response.bodySize(), 0), "Send body")) 
+		if (Utils::check(send(clientSocket, response.getBody(), response.bodySize(), 0), "Send body"))
 		{
 			return;
 		}
@@ -62,78 +64,76 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 	clienstSocks.erase(clienstSocks.begin() + i);
 }
 
-void Server::processClientRequest(int clientSocket, Request &request, RequestValidator &validator) 
+void Server::processClientRequest(int clientSocket, Request &request, RequestValidator &validator)
 {
-
 	std::cout << "Reading client request" << std::endl;
 	request = Request().createParsedMessage(clientSocket);
 	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
-	
+
 	validator = RequestValidator().requestValidator(this->conf.getServersData()[request.getPortNumber()], request);
 	FD_CLR(clientSocket, &this->readSocket);
 	FD_SET(clientSocket, &this->writeSocket);
 }
 
 
-void Server::processClients() 
+void Server::processClients()
 {
 	for (size_t i = 0; i < this->clienstSocks.size(); ++i)
 	{
 		RequestValidator requestValidator;
 		Request request;
 		int clientSocket = this->clienstSocks[i];
-		if (FD_ISSET(clientSocket, &this->readSocket)) 
+		if (FD_ISSET(clientSocket, &this->readSocket))
 		{
 			processClientRequest(clientSocket, request, requestValidator);
 		}
-		if (FD_ISSET(clientSocket, &writeSocket)) 
+		if (FD_ISSET(clientSocket, &writeSocket))
 		{
 			sendClientResponse(clientSocket, i, request, requestValidator);
 		}
 	}
 }
 
-void Server::acceptNewClient(int sockfd) 
+void Server::acceptNewClient(int sockfd)
 {
 	sockaddr_in client_addr;
 	socklen_t addr_len = sizeof(client_addr);
 	int clientSocket = accept(sockfd, (struct sockaddr*)&client_addr, &addr_len);
 
-	if (clientSocket != -1) 
+	if (clientSocket != -1)
 	{
 		FD_SET(clientSocket, &this->readSocket);
 		this->clienstSocks.push_back(clientSocket);
-	} 
-	else 
+	}
+	else
 	{
 		std::cout << "Failed to accept new client" << std::endl;
 	}
 }
 
-void Server::handleNewClients() 
+void Server::handleNewClients()
 {
-	for (std::vector<int>::iterator it = listenSockets.begin(); it != listenSockets.end(); ++it) 
+	for (std::vector<int>::iterator it = listenSockets.begin(); it != listenSockets.end(); ++it)
 	{
 		int sockfd = *it;
-		if (FD_ISSET(sockfd, &this->readSocket)) 
+		if (FD_ISSET(sockfd, &this->readSocket))
 		{
 			acceptNewClient(sockfd);
 		}
 	}
 }
 
-void Server::runServer(Socket socket) 
+void Server::runServer(Socket socket)
 {
-
 	listenSockets = socket.getlistenSockets();
 	signal(SIGINT, Server::signalHandler);
 
-	while (!gSignalInterrupted) 
+	while (!gSignalInterrupted)
 	{
 		this->readSocket = socket.getReadFds();
 		this->writeSocket = socket.getWriteFds();
 
-		if (Utils::check(select(FD_SETSIZE, &this->readSocket, &this->writeSocket, NULL, NULL), "Select")) 
+		if (Utils::check(select(FD_SETSIZE, &this->readSocket, &this->writeSocket, NULL, NULL), "Select"))
 		{
 			break;
 		}

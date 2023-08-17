@@ -12,10 +12,11 @@ class ValidateDirectoryExist : public IValidateFunction
         virtual bool operator()(std::string &path) const
         {
             struct stat info;
-            return (path.find("..") == std::string::npos
+            return (path.compare("/") == 0
+                    || (path.find("..") == std::string::npos
                     && path.find("//") == std::string::npos
                     && stat(path.c_str(), &info) == 0
-                    && S_ISDIR(info.st_mode));
+                    && S_ISDIR(info.st_mode)));
         }
 };
 

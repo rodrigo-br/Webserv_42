@@ -17,7 +17,10 @@ class Location
         Location    &operator=(Location const &rhs);
         std::string getIndex(void) const;
         int         getAllowedMethods(void) const;
-        bool        directoryListening(void) const;
+        bool        getDirectoryListening(void) const;
+        void        setIndex(std::string index);
+        void        setAllowedMethods(int allowedMethods);
+        void        setDirectoryListening(bool directoryListening);
 };
 
 #endif

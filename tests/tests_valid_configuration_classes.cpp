@@ -102,3 +102,27 @@ TEST_CASE("Testa index inválidos dão false na configuração de location")
 
     REQUIRE(isValidConfiguration == false);
 }
+
+TEST_CASE("Testa se locations válidas dão true na configuração de server")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "location";
+    std::string value = GENERATE("wwwroot/","wwwroot/api","wwwroot/assets","wwwroot/images",
+                                "wwwroot/api/upload","wwwroot/images/random");
+
+    bool isValidConfiguration = validConfigurations.ValidateAServerConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == true);
+}
+
+TEST_CASE("Testa se locations inválidas dão true na configuração de server")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "location";
+    std::string value = GENERATE("wwwroot//", "wwwroot//api","wwwroot/assets/404.png","wwwroot/images/images.html",
+                                "wwwroot/api/uploada","wwwroot/images/randon","../Webserv_42");
+
+    bool isValidConfiguration = validConfigurations.ValidateAServerConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == false);
+}
