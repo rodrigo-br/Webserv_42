@@ -27,14 +27,10 @@ static bool switchMe(bool &me)
 
 void ConfParser::createOrUpdateServerData(std::vector<std::string> tokens)
 {
-    if (tokens[0].compare("listen"))
+    if (tokens[0].compare("listen") == 0)
     {
         this->_currentServerConfig = std::atoi(tokens[1].c_str());
         this->_serversData[this->_currentServerConfig] = ServerData();
-    }
-    else if (tokens[0].compare("root"))
-    {
-        this->_serversData[this->_currentServerConfig].setRoot(tokens[1]);
     }
 }
 
@@ -44,8 +40,7 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
     {
         if (this->_inServerBrackets && !this->_inLocationBrackets)
         {
-            if (this->_validConfigurations.ValidateAServerConfiguration(tokens[0], tokens[1])
-                && this->_currentServerConfig != -1)
+            if (this->_validConfigurations.ValidateAServerConfiguration(tokens[0], tokens[1]))
             {
                 createOrUpdateServerData(tokens);
             }
@@ -98,7 +93,10 @@ void ConfParser::createServers()
                 std::cout << "falhô" << std::endl;
                 break ;
             }
-            this->_serversData[this->_currentServerConfig].setConfiguration(tokens);
+            if (this->_currentServerConfig > 0)
+            {
+                this->_serversData[this->_currentServerConfig].setConfiguration(tokens);
+            }
         }
     }
 }

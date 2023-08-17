@@ -2,12 +2,10 @@
 
 ServerData::ServerData()
 {
-    this->_root = "wwwroot";
-    this->_location["/"] = Location("index.html");
-    this->_location["/api"] = Location("api.html");
-    this->_location["/api/upload"] = Location("upload.html");
-    this->_location["/images"] = Location("images.html");
-    this->_location["/images/random"] = Location("index.html");
+    this->_configurations["root"] = &ServerData::setRoot;
+    this->_configurations["index"] = &ServerData::setLocationIndex;
+    this->_configurations["directory_listing"] = &ServerData::setLocationDirectoryListening;
+    this->_configurations["http_methods"] = &ServerData::setLocationAllowedMethods;
 }
 
 std::string ServerData::getRoot() const
@@ -44,10 +42,30 @@ void ServerData::setConfiguration(std::vector<std::string> tokens)
 {
     if (tokens[0].compare("location") == 0)
     {
-        setLocation(tokens[1], Location());
+        this->_currentLocation = tokens[1];
+        this->setLocation(tokens[1], Location());
+        return ;
     }
-    else if (tokens[0].compare("root") == 0)
+
+    std::map<std::string, void (ServerData::*)(std::string)>::iterator it = _configurations.find(tokens[0]);
+    if (it != _configurations.end())
     {
-        setRoot(tokens[1]);
+        (this->*(it->second))(tokens[1]);
     }
 }
+
+void ServerData::setLocationIndex(std::string index)
+{
+    this->_location[this->_currentLocation].setIndex(index);
+}
+
+void ServerData::setLocationAllowedMethods(std::string allowedMethods)
+{
+    this->_location[this->_currentLocation].setAllowedMethods(std::atoi(allowedMethods.c_str()));
+}
+
+void ServerData::setLocationDirectoryListening(std::string directoryListening)
+{
+    this->_location[this->_currentLocation].setDirectoryListening((directoryListening.compare("on") == 0));
+}
+

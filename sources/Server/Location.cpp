@@ -33,7 +33,7 @@ int Location::getAllowedMethods(void) const
     return this->_allowedMethods;
 }
 
-bool Location::directoryListening(void) const
+bool Location::getDirectoryListening(void) const
 {
     return this->_directoryListening;
 }
