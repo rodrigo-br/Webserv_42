@@ -90,7 +90,6 @@ void ConfParser::createServers()
             this->_succeed = assignTokens(tokens);
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed))
             {
-                std::cout << "falhô" << std::endl;
                 break ;
             }
             if (this->_currentServerConfig > 0)
