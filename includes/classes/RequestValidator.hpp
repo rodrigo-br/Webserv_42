@@ -22,6 +22,7 @@ class RequestValidator
 		bool				        getHttpVersion(void) const;
 		bool				        getBody(void) const;
 		bool				        getHeader(std::string headerName) const;
+		void 						setBody(bool  newBody);
 
 	private:
 		HttpMethodEnum::httpMethod	methodValidator(Request& request);

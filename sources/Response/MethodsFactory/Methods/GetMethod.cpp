@@ -61,6 +61,7 @@ std::string GetMethod::build_headers() const
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
+
     if (this->validator.getPath())
     {
         file = this->request.getPath();

@@ -29,18 +29,6 @@ bool endsWith(const std::string &str, const std::string &suffix)
 
 void Server::sendClientResponse(int clientSocket, int i, Request &request, RequestValidator &validator) 
 {
-	std::string cgi = "/cgi-bin";
-	
-	if (!conf.getLocation(request.getPortNumber(), cgi).empty())
-	{
-			std::cout <<  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" << request.getPath()<<std::endl;
-		if (endsWith(request.getPath() , ".py")) 
-		{
-			Cgi CgiRequest(request, validator);
-			std::string result = CgiRequest.executeCgi();
-			request.setBody(result);
-		}
-	}
 	std::cout << "Sending response to client" << std::endl;
 	
 
@@ -69,8 +57,15 @@ void Server::processClientRequest(int clientSocket, Request &request, RequestVal
 	std::cout << "Reading client request" << std::endl;
 	request = Request().createParsedMessage(clientSocket);
 	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
+	
+	Cgi CgiRequest(request);
+	std::string result = CgiRequest.executeCgi();
+	std::cout <<  "result ======= " << result;
+	request.setBody(result);
 
+	
 	validator = RequestValidator().requestValidator(this->conf.getServersData()[request.getPortNumber()], request);
+	
 	FD_CLR(clientSocket, &this->readSocket);
 	FD_SET(clientSocket, &this->writeSocket);
 }
