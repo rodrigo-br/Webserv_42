@@ -10,7 +10,7 @@ ValidConfigurations::ValidConfigurations()
     this->_locationConfigurations["http_methods"] = new ValidateMethods();
     this->_locationConfigurations["index"] = new ValidateLocationIndex();
     this->_locationConfigurations["directory_listing"] = new ValidateGenericConfiguration("on");
-    this->_locationConfigurations["cgi_pass"] = new ValidateGenericConfiguration(".php");
+    this->_locationConfigurations["cgi_pass"] = new ValidateGenericConfiguration(".py");
 }
 
 ValidConfigurations::~ValidConfigurations()

@@ -37,6 +37,7 @@ class ConfParser
         bool isValidConfiguration(std::vector<std::string> tokens);
         void createOrUpdateServerData(std::vector<std::string> tokens);
         bool isLocationBlock(std::vector<std::string> tokens);
+        void createOrUpdateLocationData(std::vector<std::string> tokens);
 };
 
 #endif

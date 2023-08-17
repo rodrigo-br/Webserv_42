@@ -1,3 +1,7 @@
+#include "tests.hpp"
+
+/*
+    valid_01.conf:
 server {
     listen 8000
     root wwwroot
@@ -5,7 +9,6 @@ server {
     location / {
         http_methods 4
         index index.html
-        cgi_pass .py
     }
 
     location /api {
@@ -40,4 +43,13 @@ server {
         http_methods 4
         index upload.html
     }
+}
+
+*/
+
+TEST_CASE("Testa se configurações do conf/default.conf são passadas corretamente aos ServersData")
+{
+    Conf conf = Conf(new ConfParser("./tests/confs/validos/valid_01.conf"));
+
+    REQUIRE(conf.getServersData()[8000].getRoot() == "wwwroot");
 }

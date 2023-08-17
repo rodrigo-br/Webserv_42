@@ -14,6 +14,7 @@ class ValidateGenericConfiguration : public IValidateFunction
 
         virtual bool operator()(std::string &input) const
         {
+            std::cout << "input : " << input << " = " << (input.compare(this->_expected) == 0) <<  std::endl;
             return input.compare(this->_expected) == 0;
         }
 };
