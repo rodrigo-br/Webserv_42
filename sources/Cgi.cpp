@@ -1,12 +1,6 @@
 #include "classes/Cgi.hpp"\
 
 #define CGI_BUFSIZE 3000
-void printEnvArray(char **env) 
-{
-    for (int i = 0; env[i] != NULL; i++) {
-        std::cout << env[i] << std::endl;
-    }
-}
 
 Cgi::Cgi(Request &request)
 {
@@ -22,8 +16,7 @@ Cgi::Cgi(Request &request)
 }
 Cgi::~Cgi(void)
 {
-    freeArrayOfStrings(_args);
-    freeArrayOfStrings(_envp);
+  
 }
 
 void		Cgi::initEnv(Request &request) 
@@ -122,6 +115,8 @@ std::string Cgi::executeCgi()
         std::cerr << "-----------------------Error executing CGI-----------------" << std::endl;
     }
     close(tempFile);
+    freeArrayOfStrings(_args);
+    freeArrayOfStrings(_envp);
     return "Status: 200\r\n\r\n";
 }
 

@@ -16,7 +16,6 @@ bool Utils::hasMethodInInput(int input, HttpMethodEnum::httpMethod method)
             input >= 1 && input <= 8;
 }
 
-
 bool Utils::endsWith(const std::string &str, const std::string &suffix) 
 {
     if (str.length() < suffix.length()) 
