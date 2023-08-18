@@ -70,3 +70,7 @@ void Request::setPath(std::string newPath)
     this->_parser.setPath(newPath);
 }
 
+void Request::buildCGI(void)
+{
+    setPath( "wwwroot/assets/cgi_temp.html");
+}

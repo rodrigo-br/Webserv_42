@@ -52,20 +52,28 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 	clienstSocks.erase(clienstSocks.begin() + i);
 }
 
+
 void Server::processClientRequest(int clientSocket, Request &request, RequestValidator &validator)
 {
 	std::cout << "Reading client request" << std::endl;
 	request = Request().createParsedMessage(clientSocket);
+	
+	std::string cgi = "/cgi-bin";
+	if (!this->conf.getLocation(request.getPortNumber(), cgi).empty())
+	{
+		if (endsWith(request.getPath() , ".py")) 
+		{
+			std::cout <<  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" <<std::endl;
+			Cgi CgiRequest(request);
+			std::string result = CgiRequest.executeCgi();
+			request.buildCGI();
+			// request.setBody(result);
+		}
+		// std::cout <<  "result ======= " << result;
+	}
 	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
-	
-	Cgi CgiRequest(request);
-	std::string result = CgiRequest.executeCgi();
-	std::cout <<  "result ======= " << result;
-	request.setBody(result);
 
-	
 	validator = RequestValidator().requestValidator(this->conf.getServersData()[request.getPortNumber()], request);
-	
 	FD_CLR(clientSocket, &this->readSocket);
 	FD_SET(clientSocket, &this->writeSocket);
 }

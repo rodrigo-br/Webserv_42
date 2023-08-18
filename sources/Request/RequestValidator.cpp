@@ -130,8 +130,7 @@ void RequestValidator::httpVersionValidator(Request& request)
 
 bool RequestValidator::getPath(void) const
 {
-	// return this->_path;
-	return true;
+	return this->_path;
 }
 
 bool RequestValidator::getHttpVersion(void) const

@@ -62,6 +62,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
 
+    // std::cout <<   "path =======  " << this->request.getPath() << std::endl; 
     if (this->validator.getPath())
     {
         file = this->request.getPath();

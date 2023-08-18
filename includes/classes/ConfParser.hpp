@@ -29,6 +29,7 @@ class ConfParser
         ValidConfigurations             _validConfigurations;
         std::map<int, ServerData>       _serversData;
         int                             _currentServerConfig;
+        std::string                     _currentLocationBlock;
 
         void readConfigFile(std::string file);
         void createServers();
@@ -37,6 +38,7 @@ class ConfParser
         bool isValidConfiguration(std::vector<std::string> tokens);
         void createOrUpdateServerData(std::vector<std::string> tokens);
         bool isLocationBlock(std::vector<std::string> tokens);
+        void createOrUpdateLocationData(std::vector<std::string> tokens);
 };
 
 #endif

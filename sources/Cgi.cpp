@@ -99,12 +99,13 @@ void Cgi::initScriptArguments(Request &request)
 }
 
 
-int fileSize(std::FILE *temp_file)
-{
-	fseek(temp_file , 0 , SEEK_END);
-	int size = ftell(temp_file);
-	rewind(temp_file);
-	return (size);
+off_t fileSize(int fileDescriptor) {
+    struct stat fileStat;
+    if (fstat(fileDescriptor, &fileStat) == -1) {
+        // Trate o erro de fstat conforme necessário
+        return -1;
+    }
+    return fileStat.st_size;
 }
 
 std::string Cgi::executeCgi() 
@@ -113,8 +114,8 @@ std::string Cgi::executeCgi()
 
     std::string newBody;
     int status;
-    std::FILE *temp_file = std::tmpfile();
-	int tempFile = fileno(temp_file);
+    int tempFile = open("wwwroot/assets/cgi_temp.html", O_CREAT | O_RDWR | O_TRUNC, 0644);
+
 
     if (tempFile == -1) {
         return "Status: 500\r\n\r\n";
@@ -141,11 +142,17 @@ std::string Cgi::executeCgi()
         std::cerr << "-----------------------Error executing CGI-----------------" << std::endl;
     }
     
-	int size = fileSize(temp_file);
+	int size = fileSize(tempFile);
 	char* buffer = new char[size + 1];
 
-	memset(buffer, 0, size + 1);
-	fread(buffer, 1, size, temp_file);
+	lseek(tempFile, 0, SEEK_SET);
+	ssize_t bytesRead = read(tempFile, buffer, size);
+	if (bytesRead == -1) {
+		delete[] buffer;
+		close(tempFile);
+		return "Status: 500\r\n\r\n";
+	}
+	buffer[bytesRead] = '\0';
     close(tempFile);
-    return buffer;
+    return  buffer;
 }

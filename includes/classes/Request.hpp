@@ -31,7 +31,7 @@ class Request
 		void        				setPath(std::string newPath);
 		std::string 				getQuery(void) const;
 		void						setBody(std::string newBody);
-
+		void						buildCGI(void);
 	private:
 		RequestParser				_parser;
 		char            			_request[BUFFER_SIZE];

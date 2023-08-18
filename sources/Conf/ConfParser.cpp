@@ -19,6 +19,12 @@ bool ConfParser::isLocationBlock(std::vector<std::string> tokens)
             value) || tokens[1].compare("/") == 0));
 }
 
+
+void ConfParser::createOrUpdateLocationData(std::vector<std::string> tokens)
+{
+    this->_serversData[this->_currentServerConfig].setConfiguration(tokens);
+}
+
 static bool switchMe(bool &me)
 {
     me = !me;
@@ -32,6 +38,7 @@ void ConfParser::createOrUpdateServerData(std::vector<std::string> tokens)
         this->_currentServerConfig = std::atoi(tokens[1].c_str());
         this->_serversData[this->_currentServerConfig] = ServerData();
     }
+    this->_serversData[this->_currentServerConfig].setConfiguration(tokens);
 }
 
 bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
@@ -43,9 +50,22 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
             if (this->_validConfigurations.ValidateAServerConfiguration(tokens[0], tokens[1]))
             {
                 createOrUpdateServerData(tokens);
+                return true;
             }
         }
-        return true;
+        else if (this->_inServerBrackets && this->_inLocationBrackets)
+        {
+            if (tokens[0].compare("index") == 0)
+            {
+                ServerData server = this->_serversData[this->_currentServerConfig];
+                tokens[1] = server.getRoot() + this->_currentLocationBlock + "/" + tokens[1];
+            }
+            if (this->_validConfigurations.ValidateALocationConfiguration(tokens[0], tokens[1]))
+            {
+                createOrUpdateLocationData(tokens);
+                return true;
+            }
+        }
     }
     return false;
 }
@@ -90,6 +110,7 @@ void ConfParser::createServers()
             this->_succeed = assignTokens(tokens);
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed))
             {
+                std::cout << "Falhô" << std::endl;
                 break ;
             }
             if (this->_currentServerConfig > 0)
@@ -135,6 +156,7 @@ bool ConfParser::assignTokens(std::vector<std::string> tokens)
         case 3:
             if (isLocationBlock(tokens))
             {
+                this->_currentLocationBlock = tokens[1].compare("/") != 0 ? tokens[1] : "" ;
                 return switchMe(this->_inLocationBrackets);
             }
             return false;
@@ -168,7 +190,6 @@ std::map<std::string, Location> ConfParser::getLocations(int port) const
     else
         throw std::invalid_argument("Porta não encontrada");
 }
-
 
 std::map<int, ServerData>& ConfParser::getServersData()
 {
