@@ -9,10 +9,6 @@ std::vector<char> MethodsUtils::openFileAsVector(std::string path)
     {
         path += "index.html";
     }
-    else if (path ==  "/cgi-bin")
-    {
-        path = "wwwroot" + path + "/index.py";
-    }
     std::ifstream file(path.c_str(), std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {
@@ -37,10 +33,6 @@ std::string MethodsUtils::getExtension(std::string path) const
     if (path == ROOT)
     {
         path += "index.html";
-    }
-    else if (path ==  "/cgi-bin")
-    {
-        path = "wwwroot" + path + "/index.py";
     }
     size_t pos = path.find_last_of('.');
     if (pos == std::string::npos)
