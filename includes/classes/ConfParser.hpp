@@ -29,6 +29,7 @@ class ConfParser
         ValidConfigurations             _validConfigurations;
         std::map<int, ServerData>       _serversData;
         int                             _currentServerConfig;
+        std::string                     _currentLocationBlock;
 
         void readConfigFile(std::string file);
         void createServers();

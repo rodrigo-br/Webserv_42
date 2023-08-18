@@ -55,6 +55,11 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
         }
         else if (this->_inServerBrackets && this->_inLocationBrackets)
         {
+            if (tokens[0].compare("index") == 0)
+            {
+                ServerData server = this->_serversData[this->_currentServerConfig];
+                tokens[1] = server.getRoot() + this->_currentLocationBlock + "/" + tokens[1];
+            }
             if (this->_validConfigurations.ValidateALocationConfiguration(tokens[0], tokens[1]))
             {
                 createOrUpdateLocationData(tokens);
@@ -105,6 +110,8 @@ void ConfParser::createServers()
             this->_succeed = assignTokens(tokens);
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed))
             {
+                std::cout << "Falhô" << std::endl;
+                std::cout << tokens[0] << std::endl;
                 break ;
             }
             if (this->_currentServerConfig > 0)
@@ -150,6 +157,7 @@ bool ConfParser::assignTokens(std::vector<std::string> tokens)
         case 3:
             if (isLocationBlock(tokens))
             {
+                this->_currentLocationBlock = tokens[1].compare("/") != 0 ? tokens[1] : "" ;
                 return switchMe(this->_inLocationBrackets);
             }
             return false;
