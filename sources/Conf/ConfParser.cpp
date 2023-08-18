@@ -111,7 +111,6 @@ void ConfParser::createServers()
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed))
             {
                 std::cout << "Falhô" << std::endl;
-                std::cout << tokens[0] << std::endl;
                 break ;
             }
             if (this->_currentServerConfig > 0)
@@ -191,7 +190,6 @@ std::map<std::string, Location> ConfParser::getLocations(int port) const
     else
         throw std::invalid_argument("Porta não encontrada");
 }
-
 
 std::map<int, ServerData>& ConfParser::getServersData()
 {

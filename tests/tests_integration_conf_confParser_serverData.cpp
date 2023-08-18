@@ -52,4 +52,7 @@ TEST_CASE("Testa se configurações do conf/default.conf são passadas corretame
     Conf conf = Conf(new ConfParser("./tests/confs/validos/valid_01.conf"));
 
     REQUIRE(conf.getServersData()[8000].getRoot() == "wwwroot");
+    REQUIRE(conf.getServersData()[8000].getLocation("/cgi-bin") == "index.py");
+
+    conf.deleteConfParser();
 }
