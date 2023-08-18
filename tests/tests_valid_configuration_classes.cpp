@@ -126,3 +126,26 @@ TEST_CASE("Testa se locations inválidas dão true na configuração de server")
 
     REQUIRE(isValidConfiguration == false);
 }
+
+TEST_CASE("Testa cgi_pass válidos dão true na configuração de location")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "cgi_pass";
+    std::string value = ".py";
+
+    bool isValidConfiguration = validConfigurations.ValidateALocationConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == true);
+}
+
+TEST_CASE("Testa cgi_pass inválidos dão false na configuração de location")
+{
+    ValidConfigurations validConfigurations;
+    std::string key = "cgi_pass";
+    std::string value = GENERATE("wwwroot1","0","-1","8","8000"
+                                ,"..","../","cavalinho");
+
+    bool isValidConfiguration = validConfigurations.ValidateALocationConfiguration(key, value);
+
+    REQUIRE(isValidConfiguration == false);
+}
