@@ -17,15 +17,6 @@ void Server::closeSockets()
 		close(clienstSocks[i]);
 	}
 }
-///////////////////////////////////////////////////
-
-bool endsWith(const std::string &str, const std::string &suffix) 
-{
-    if (str.length() < suffix.length()) {
-        return false;
-    }
-    return str.substr(str.length() - suffix.length()) == suffix;
-}
 
 void Server::sendClientResponse(int clientSocket, int i, Request &request, RequestValidator &validator) 
 {
@@ -61,15 +52,12 @@ void Server::processClientRequest(int clientSocket, Request &request, RequestVal
 	std::string cgi = "/cgi-bin";
 	if (!this->conf.getLocation(request.getPortNumber(), cgi).empty())
 	{
-		if (endsWith(request.getPath() , ".py")) 
+		if (Utils::endsWith(request.getPath() , ".py")) 
 		{
-			std::cout <<  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" <<std::endl;
 			Cgi CgiRequest(request);
-			std::string result = CgiRequest.executeCgi();
+			CgiRequest.executeCgi();
 			request.buildCGI();
-			// request.setBody(result);
 		}
-		// std::cout <<  "result ======= " << result;
 	}
 	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
 

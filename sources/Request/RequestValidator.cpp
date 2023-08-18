@@ -61,6 +61,9 @@ bool RequestValidator::endsWithSlash(size_t position, size_t len)
 void RequestValidator::handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root)
 {
     std::string location = serverData.getLocation(path);
+	// std::cerr << "#------" << location  << "-------#" << std::endl;
+	// std::cerr << "#--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa---#" << std::endl;
+
     if (!location.empty())
     {
         this->_path = true;
@@ -92,6 +95,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	{
 		if (location.compare(path.substr(position + 1)) == 0)// verifica se o arquivo está ok
 		{
+
 			this->_path = true;
 			request.setPath(root + path);
 		}

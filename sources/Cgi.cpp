@@ -1,7 +1,4 @@
-#include "classes/Cgi.hpp"
-#include <sstream> 
-
-
+#include "classes/Cgi.hpp"\
 
 #define CGI_BUFSIZE 3000
 void printEnvArray(char **env) 
@@ -14,40 +11,36 @@ void printEnvArray(char **env)
 Cgi::Cgi(Request &request)
 {
 	this->initEnv(request);
-	_envp= createEnvironmentArray();
-	// printEnvArray(envArray);
-    _pathTemp =  "wwwroot/cgi-bin/index.py";  // mudar o para getPath
+	_envp = createEnvironmentArray();
+    _pathTemp =  "wwwroot" + request.getPath();
+    std::cout << request.getPath()<< std::endl;
 	this->_fileScript = _pathTemp;
 	this->_body = request.getBody();
 	this->_scriptName = _pathTemp.substr(_pathTemp.find_last_of("/") + 1);
 	initScriptArguments(request);
-	// exec();request
 
 }
-
-std::string intToString(int value) 
+Cgi::~Cgi(void)
 {
-    std::stringstream ss;
-    ss << value;
-    return ss.str();
+    freeArrayOfStrings(_args);
+    freeArrayOfStrings(_envp);
 }
 
-
-
-void		Cgi::initEnv(Request &request) {
-
+void		Cgi::initEnv(Request &request) 
+{
 	this->_env["SERVER_SOFTWARE"] = "Weebserv/1.0";
 	this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
 	this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->_env["SERVER_PORT"] = request.getPort();
 	this->_env["REQUEST_METHOD"] = request.getMethod();
-	this->_env["PATH_INFO"] =  "/cgi-bin/index.py"; // mudar o para getPath
-	this->_env["SCRIPT_NAME"] =  "index.py";  // mudar o para getPath
+	this->_env["PATH_INFO"] =  _pathTemp;
+    std::string const scriptName =_pathTemp.substr(_pathTemp.find_last_of("/") + 1);
+	std::cout << scriptName << std::endl;
+	this->_env["SCRIPT_NAME"] =  scriptName;
 	this->_env["QUERY_STRING"] = request.getQuery();
-	this->_env["REMOTEaddr"] =  "127.0.0.1"; ////////////////// TA MANUAL PRECISA CRIAR FUNCAO
-	this->_env["CONTENT_LENGTH"] = intToString(request.getBody().length());
+	this->_env["CONTENT_LENGTH"] = Utils::intToString(request.getBody().length());
 	this->_env["REDIRECT_STATUS"] = "200";
-	std::string const path = "/cgi-bin/index.py";  // mudar o para getPath
+	std::string const path = _pathTemp;
 	this->_env["REQUEST_URI"] = path + request.getQuery();
 	this->_env["HTTP_ACCEPT"] = request.getHeader("Accept");
 	this->_env["REQUEST_METHOD"] = request.getMethod();
@@ -57,20 +50,18 @@ void		Cgi::initEnv(Request &request) {
 
 char **Cgi::createEnvironmentArray() const 
 {
+    std::string element;
     char	**env = new char*[this->_env.size() + 1];
     int		j = 0;
 
     for (std::map<std::string, std::string>::const_iterator i = this->_env.begin(); i != this->_env.end(); i++) 
 	{
-        std::string element = i->first + "=" + i->second;
-        
+        element = i->first + "=" + i->second;
         env[j] = new char[element.size() + 1];
         strcpy(env[j], element.c_str());
-        
         j++;
     }
     env[j] = NULL;
-    
     return env;
 }
 
@@ -84,7 +75,6 @@ char      **Cgi::createArrayOfStrings(std::vector<std::string> const &argsVars) 
 		std::strcpy(arg[i], argsVars[i].c_str());
 	}
 	arg[argsVars.size()] = NULL;
-
 	return arg;
 }
 
@@ -98,40 +88,30 @@ void Cgi::initScriptArguments(Request &request)
 	this->_args = createArrayOfStrings(argmunts);
 }
 
-
-off_t fileSize(int fileDescriptor) {
-    struct stat fileStat;
-    if (fstat(fileDescriptor, &fileStat) == -1) {
-        // Trate o erro de fstat conforme necessário
-        return -1;
-    }
-    return fileStat.st_size;
-}
-
 std::string Cgi::executeCgi() 
 {
-    pid_t pid;
+    std::string fullNameScript;
+    pid_t       pid;
+    int         status;
+    int         tempFile;
 
-    std::string newBody;
-    int status;
-    int tempFile = open("wwwroot/assets/cgi_temp.html", O_CREAT | O_RDWR | O_TRUNC, 0644);
-
-
-    if (tempFile == -1) {
+    tempFile = open("wwwroot/assets/cgi_temp.html", O_CREAT | O_RDWR | O_TRUNC, 0644);
+    if (tempFile == -1) 
+    {
+        close(tempFile);
         return "Status: 500\r\n\r\n";
     }
     pid = fork();
-
-    if (pid == -1) {
+    if (pid == -1) 
+    {
         close(tempFile);
         return "Status: 500\r\n\r\n";
     }
     else if (pid == 0)
     {
-
         dup2(tempFile, STDOUT_FILENO);
 
-        std::string fullNameScript = "/usr/bin/" + this->_script;
+        fullNameScript = "/usr/bin/" + this->_script;
         execve(fullNameScript.c_str(), _args, _envp);
         close (tempFile);
         std::cerr << "-----------------------Error executing CGI script-----------------" << std::endl;
@@ -141,18 +121,18 @@ std::string Cgi::executeCgi()
     {
         std::cerr << "-----------------------Error executing CGI-----------------" << std::endl;
     }
-    
-	int size = fileSize(tempFile);
-	char* buffer = new char[size + 1];
-
-	lseek(tempFile, 0, SEEK_SET);
-	ssize_t bytesRead = read(tempFile, buffer, size);
-	if (bytesRead == -1) {
-		delete[] buffer;
-		close(tempFile);
-		return "Status: 500\r\n\r\n";
-	}
-	buffer[bytesRead] = '\0';
     close(tempFile);
-    return  buffer;
+    return "Status: 200\r\n\r\n";
+}
+
+void Cgi::freeArrayOfStrings(char **arg)
+{
+    if (arg) 
+    {
+        for (int i = 0; arg[i] != NULL; ++i) 
+        {
+            delete[] arg[i];
+        }
+        delete[] arg;
+    }
 }
