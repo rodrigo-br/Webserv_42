@@ -6,6 +6,10 @@
 # include <iostream>
 # include <map>
 # include <cstdlib>
+// # include <sstream>
+# include <string>
+# include <typeinfo>
+# include <vector>
 
 class RequestParser
 {
@@ -21,15 +25,20 @@ class RequestParser
 		std::string							getBody(void) const;
 		std::string							getHeader(std::string headerName) const;
 		std::string							getPort(void) const;
+		std::string							getQuery(void) const;
+		std::string							getFileExec(void) const;
 		int									getPortNumber(void) const;
 		void								setPath(std::string newPath);
+		void								setBody(std::string newBody);
+		void								setFileExec(std::string newFileExec);
+
 
 	private:
 		void								parseRequestPort(void);
+		void  								parseRquestQuery();
 		void 								parseRequestStartLine(std::string &line, std::istringstream &iss);
 		void 								parseRequestHeader(std::string &line, std::istringstream &iss);
 		void 								parseRequestBody(std::string &line, std::istringstream &iss);
-
     	std::map<std::string, std::string> 	_headers;
 		std::string  						_method;
 		std::string                 		_path;
@@ -37,6 +46,10 @@ class RequestParser
 		std::string							_requestBody;
 		std::string							_port;
 		int									_portNumber;
+		std::string							_query;
+		std::string							_fileExec;
+
+
 };
 
 #endif

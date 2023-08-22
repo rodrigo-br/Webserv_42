@@ -92,6 +92,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	{
 		if (location.compare(path.substr(position + 1)) == 0)// verifica se o arquivo está ok
 		{
+
 			this->_path = true;
 			request.setPath(root + path);
 		}
@@ -126,6 +127,11 @@ void RequestValidator::httpVersionValidator(Request& request)
 {
 	if (request.getHttpVersion().compare("HTTP/1.1") == 0)
 		this->_httpVersion = true;
+}
+
+void RequestValidator::setBody(bool body)
+{
+	this->_requestBody = body;
 }
 
 bool RequestValidator::getPath(void) const

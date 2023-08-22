@@ -1,9 +1,5 @@
 #include "classes/RequestParser.hpp"
-#include <sstream>
-#include <iostream>
-#include <string>
-#include <typeinfo>
-#include <vector>
+# include <sstream>
 
 RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVersion(""), _requestBody("") { }
 
@@ -18,7 +14,18 @@ void    RequestParser::parserHttpRequest(char *request)
 	parseRequestHeader(line, iss);
 	parseRequestBody(line, iss);
     parseRequestPort();
+    parseRquestQuery();
 }
+
+void    RequestParser::parseRquestQuery()
+{	
+    size_t queryStart = this->_path.find_first_of('?');
+    if (queryStart != std::string::npos)
+	{
+		this->_query =  this->_path.substr(queryStart + 1);
+	}
+}
+
 void    RequestParser::parseRequestPort()
 {   
     std::string port = getHeader("Host");
@@ -115,8 +122,27 @@ std::string RequestParser::getHeader(std::string headerName) const
     }
 }
 
+std::string RequestParser::getQuery(void) const
+{
+    return this->_query;
+}
+
 void RequestParser::setPath(std::string newPath)
 {
     this->_path = newPath;
 }
 
+void RequestParser::setBody(std::string newBody)
+{
+    this->_requestBody = newBody;
+}
+
+std::string RequestParser::getFileExec(void) const
+{
+    return this->_fileExec;
+}
+
+void RequestParser::setFileExec(std::string fileExec)
+{
+    this->_fileExec = fileExec;
+}

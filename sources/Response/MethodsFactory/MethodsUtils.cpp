@@ -12,7 +12,7 @@ std::vector<char> MethodsUtils::openFileAsVector(std::string path)
     std::ifstream file(path.c_str(), std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {
-        std::cout << "Failed to open image file " << path << std::endl;
+        std::cout << "Failed to open file " << path << std::endl;
         return std::vector<char>();
     }
     std::streamsize size = file.tellg();

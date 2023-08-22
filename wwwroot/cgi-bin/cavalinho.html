@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>CGIs</title>
+  <style>
+    * {
+      overflow: hidden;
+      margin: 0;
+    }
+
+    body {
+      background: #192222;
+    }
+
+    .content {
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: justify;
+      color: #333;
+      font-family: "Lucida Console", monospace;
+      position: relative;
+      z-index: 1;
+      background-color: rgba(240, 236, 236, 0.9);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    p {
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #305d8d;
+      color: #fff;
+      font-size: 20px;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #012246;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <h1>Seja bem-vindo ao mundo das CGIs!</h1>
+    <p>
+      CGI, ou Common Gateway Interface, é uma especificação de interface que permite que um servidor execute programas externos, como scripts, e processe requisições. Esses programas podem receber informações através do standard input ou de variáveis de ambiente.
+    </p>
+    <p>
+      Nosso servidor web pode executar scripts em Python proporcionando flexibilidade na criação de páginas dinâmicas.
+    </p>
+    <div class="button-container">
+      <a href="http://localhost:8000/cgi-bin/index.py" class="button">Explorar CGIs em Python</a>
+    </div>
+  </div>
+</body>
+</html>

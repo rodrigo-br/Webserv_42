@@ -44,7 +44,6 @@ std::string Request::getHeader(std::string headerName ) const
     return this->_parser.getHeader(headerName);
 }
 
-
 std::string Request::getPort(void) const
 {
     return this->_parser.getPort();
@@ -52,10 +51,35 @@ std::string Request::getPort(void) const
 
 int Request::getPortNumber(void) const
 {
-    return _parser.getPortNumber();
+    return  this->_parser.getPortNumber();
+}
+
+std::string Request::getQuery(void) const
+{
+    return this->_parser.getQuery();
+}
+
+std::string Request::getFileExec(void) const
+{
+    return  this->_parser.getFileExec();
+}
+
+void Request::setFileExec(std::string fileExec)
+{
+    this->_parser.setFileExec(fileExec);
+}
+
+void Request::setBody(std::string newBody)
+{
+    this->_parser.setBody(newBody);
 }
 
 void Request::setPath(std::string newPath)
 {
     this->_parser.setPath(newPath);
+}
+
+void Request::buildCGI(void)
+{
+    setPath("/assets/cgi_temp.html");
 }

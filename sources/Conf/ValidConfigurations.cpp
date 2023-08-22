@@ -20,7 +20,7 @@ ValidConfigurations::~ValidConfigurations()
     {
         delete it->second;
     }
-    for (std::map<std::string, IValidateFunction*>::iterator it = this->_locationConfigurations.begin();
+        for (std::map<std::string, IValidateFunction*>::iterator it = this->_locationConfigurations.begin();
         it != this->_locationConfigurations.end(); ++it)
     {
         delete it->second;

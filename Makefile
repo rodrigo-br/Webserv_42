@@ -47,6 +47,6 @@ test:	$(TEST)
 		$(CC) $(INCLUDES) -g3 $(TEST_SRC) $(TEST) -o $(DIR_TESTS)/cavalinho -lcurl -pthread
 		valgrind --leak-check=full --show-leak-kinds=all --log-file="leaks.txt" $(DIR_TESTS)/cavalinho $(TEST_FLAG)
 val: all
-	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --track-origins=yes --trace-children=yes  --log-file="web_leaks.txt" ./webserv
+	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --track-origins=yes --log-file="web_leaks.txt" ./webserv
 
 .PHONY: all clean fclean re test
