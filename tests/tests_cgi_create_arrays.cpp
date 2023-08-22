@@ -5,8 +5,9 @@ char request_cgi[] = "GET /cgi-bin/index.py HTTP/1.1\r\nHost: localhost:8000\r\n
 TEST_CASE("Cgi::createEnvironmentArray()")
 {   
 	Request request;
-	ServerData serverData;
-	Cgi cgi(request, serverData.getPort());
+	Conf conf = Conf(new ConfParser("./tests/confs/validos/valid_01.conf"));
+	request._parser.parserHttpRequest(request_cgi);
+	Cgi cgi(request, conf.getRoot(request.getPortNumber()));
 	cgi.createEnvironmentArray();
 
 	REQUIRE(cgi._envp != nullptr);
@@ -19,13 +20,15 @@ TEST_CASE("Cgi::createEnvironmentArray()")
 	}
 	REQUIRE(cgi._envp [i] == nullptr); 
 	cgi.freeArrayOfStrings(cgi._envp );
+	conf.deleteConfParser();
 }
 
 TEST_CASE("Cgi::createArrayOfStrings()")
 {   
 	Request request;
+	Conf conf = Conf(new ConfParser("./tests/confs/validos/valid_01.conf"));
 	request._parser.parserHttpRequest(request_cgi);
-	Cgi cgi(request);
+	Cgi cgi(request, conf.getRoot(request.getPortNumber()));
 	cgi.initScriptArguments(request);
 
 	REQUIRE(std::string(cgi._args[0]) == "python3");
@@ -33,4 +36,5 @@ TEST_CASE("Cgi::createArrayOfStrings()")
 	REQUIRE(std::string(cgi._args[2]) == request.getBody());
 	REQUIRE(cgi._args[3] == NULL);
 	cgi.freeArrayOfStrings(cgi._args);
+	conf.deleteConfParser();
 }
