@@ -20,6 +20,8 @@ class Socket
         fd_set getReadFds();
         fd_set getWriteFds();
         bool succeed();
+        bool createSockaddr(int port);
+
 
 
     private:
@@ -29,6 +31,8 @@ class Socket
         fd_set _readFds;
         fd_set _writeFds;
         bool _succeed;
+        sockaddr_in _sockaddr;
+
 
 
 
