@@ -30,11 +30,16 @@ class Request
 		int							getPortNumber(void) const;
 		void        				setPath(std::string newPath);
 		std::string 				getQuery(void) const;
+		std::string					getFileExec(void) const;
+		void						setFileExec(std::string fileExec);
 		void						setBody(std::string newBody);
 		void						buildCGI(void);
+
 	private:
 		RequestParser				_parser;
 		char            			_request[BUFFER_SIZE];
+		std::string					_fileExec;
+
 
 
 

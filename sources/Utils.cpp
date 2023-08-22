@@ -1,4 +1,5 @@
 #include "classes/Utils.hpp"
+#include <sstream> 
 
 bool Utils::check(ssize_t result, std::string functionToBeChecked, int erro)
 {

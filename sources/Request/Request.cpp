@@ -60,6 +60,16 @@ std::string Request::getQuery(void) const
     return this->_parser.getQuery();
 }
 
+std::string Request::getFileExec(void) const
+{
+    return this->_fileExec;
+}
+
+void Request::setFileExec(std::string fileExec)
+{
+    this->_fileExec = fileExec;
+}
+
 void Request::setBody(std::string newBody)
 {
     this->_parser.setBody(newBody);

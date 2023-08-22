@@ -1,8 +1,6 @@
 #include "classes/RequestParser.hpp"
 # include <sstream>
 
-
-
 RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVersion(""), _requestBody("") { }
 
 RequestParser::~RequestParser(void) {}

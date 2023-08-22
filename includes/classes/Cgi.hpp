@@ -5,24 +5,25 @@
 # include "classes/Request.hpp"
 # include "classes/Utils.hpp"
 # include <string>
-#include <sys/wait.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include "classes/Utils.hpp"
-#include <fcntl.h>
+# include <sys/wait.h>
+# include <sys/socket.h>
+# include <unistd.h>
+# include "classes/Utils.hpp"
+# include <fcntl.h>
+# include <cstdio>
 
 class Cgi
 {
 	public:
-		Cgi(Request &request);
+		Cgi(Request &request, std::string root);
 		std::string executeCgi() ;
 		~Cgi();
 
 	private:
 		void		initEnv(Request &request);
-		char **		createEnvironmentArray() const;
+		void		createEnvironmentArray() ;
 		void		initScriptArguments(Request &request);
-		char **     createArrayOfStrings(std::vector<std::string> const &argsVars) const;
+		void	    createArgumentsArray(std::vector<std::string> const &argsVars);
 		void 		freeArrayOfStrings(char **arg);
 		std::string	exec(int &socket);
 		
@@ -30,11 +31,14 @@ class Cgi
 		std::string 						_fileScript;
 		std::string							_scriptName;
 		std::string							_script;
-		char								**_args;
-		char								**_envp;
 		std::string							_body;
 		std::string							_fileName;
 		std::string							_pathTemp;
+		std::string							_root;
+		std::string							_fileExec;
+		char								**_args;
+		char								**_envp;
+		int									_fdExec;
 };
 
 
