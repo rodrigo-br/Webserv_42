@@ -129,6 +129,11 @@ void RequestValidator::httpVersionValidator(Request& request)
 		this->_httpVersion = true;
 }
 
+void RequestValidator::setBody(bool body)
+{
+	this->_requestBody = body;
+}
+
 bool RequestValidator::getPath(void) const
 {
 	return this->_path;

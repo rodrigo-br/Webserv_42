@@ -39,7 +39,6 @@ class RequestParser
 		void 								parseRequestStartLine(std::string &line, std::istringstream &iss);
 		void 								parseRequestHeader(std::string &line, std::istringstream &iss);
 		void 								parseRequestBody(std::string &line, std::istringstream &iss);
-		// void								parserRequestFileExec;
     	std::map<std::string, std::string> 	_headers;
 		std::string  						_method;
 		std::string                 		_path;
@@ -49,6 +48,7 @@ class RequestParser
 		int									_portNumber;
 		std::string							_query;
 		std::string							_fileExec;
+
 
 };
 

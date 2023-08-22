@@ -136,3 +136,13 @@ void RequestParser::setBody(std::string newBody)
 {
     this->_requestBody = newBody;
 }
+
+std::string RequestParser::getFileExec(void) const
+{
+    return this->_fileExec;
+}
+
+void RequestParser::setFileExec(std::string fileExec)
+{
+    this->_fileExec = fileExec;
+}

@@ -5,8 +5,8 @@ char request_cgi[] = "GET /cgi-bin/index.py HTTP/1.1\r\nHost: localhost:8000\r\n
 TEST_CASE("Cgi::createEnvironmentArray()")
 {   
 	Request request;
-	request._parser.parserHttpRequest(request_cgi);
-	Cgi cgi(request);
+	ServerData serverData;
+	Cgi cgi(request, serverData.getPort());
 	cgi.createEnvironmentArray();
 
 	REQUIRE(cgi._envp != nullptr);

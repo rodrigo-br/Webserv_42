@@ -44,7 +44,6 @@ std::string Request::getHeader(std::string headerName ) const
     return this->_parser.getHeader(headerName);
 }
 
-
 std::string Request::getPort(void) const
 {
     return this->_parser.getPort();
@@ -62,12 +61,12 @@ std::string Request::getQuery(void) const
 
 std::string Request::getFileExec(void) const
 {
-    return this->_fileExec;
+    return  this->_parser.getFileExec();
 }
 
 void Request::setFileExec(std::string fileExec)
 {
-    this->_fileExec = fileExec;
+    this->_parser.setFileExec(fileExec);
 }
 
 void Request::setBody(std::string newBody)

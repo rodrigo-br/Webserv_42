@@ -38,10 +38,6 @@ class Request
 	private:
 		RequestParser				_parser;
 		char            			_request[BUFFER_SIZE];
-		std::string					_fileExec;
-
-
-
 
 };
 
