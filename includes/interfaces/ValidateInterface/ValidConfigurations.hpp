@@ -12,6 +12,7 @@
 # include "interfaces/ValidateInterface/Validators/ValidateMethods.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidateLocationIndex.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidateGenericConfiguration.hpp"
+# include "interfaces/ValidateInterface/Validators/ValidateServerNames.hpp"
 
 class ValidConfigurations
 {
