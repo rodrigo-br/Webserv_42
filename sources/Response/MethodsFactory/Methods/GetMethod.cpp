@@ -1,5 +1,6 @@
 #include "interfaces/MethodsFactory/Methods/GetMethod.hpp"
 #include <sstream> // Precisa ficar neste arquivo para evitar erro de incomplete type no test (C++11)
+#include <dirent.h>
 
 #define ROOT "wwwroot"
 
@@ -58,14 +59,103 @@ std::string GetMethod::build_headers() const
     return headers;
 }
 
+
+char *GetMethod::getDirectoryListing() 
+{
+    DIR *dir;
+    struct dirent *ent;
+    struct stat filestat;
+    std::string fullFilePath, modifiedTime;
+    std::string directoryPath = this->request.getPath();
+    if (!directoryPath.empty() && directoryPath[directoryPath.length() - 1] != '/')
+    {
+        directoryPath += '/';
+    }
+
+    std::stringstream listing;
+    listing << "<html>"
+        << "<head>"
+        << "<title>Index of " << directoryPath << "</title>"
+        << "<link rel=\"stylesheet\" "
+        << "href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css\">"
+        << "<style>"
+        << "body { font-family: Arial, sans-serif; margin: 0; padding: 0; }"
+        << "h1 { font-size: 24px; margin: 20px 0; }"
+        << "table { width: 100%; border-collapse: collapse; }"
+        << "th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }"
+        << "th { background-color: #f2f2f2; }"
+        << "tr:hover { background-color: #f5f5f5; }"
+        << "a { text-decoration: none; color: #007bff; display: flex; align-items: center; }"
+        << ".icon { margin-right: 10px; font-size: 18px; }"
+        << ".folder { color: #FF5733; }"
+        << ".file { color: #333; }"
+        << "</style>"
+        << "</head>"
+        << "<body>"
+        << "<div class=\"container\">"
+        << "<h1>Index of " << directoryPath << "</h1>"
+        << "<table>"
+        << "<tr><th>Icon</th><th>Name</th><th>Size</th><th>Date Modified</th></tr>";
+
+        std::string dirPath = ROOT + directoryPath;
+        dir = opendir(dirPath.c_str());
+        while ((ent = readdir(dir)) != NULL) 
+        {
+            if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+                continue;
+            fullFilePath = dirPath + "/" + ent->d_name;
+            if (stat(fullFilePath.c_str(), &filestat) == -1) 
+            {
+                perror(ent->d_name);
+                continue;
+            }
+            modifiedTime = ctime(&filestat.st_mtime);
+            listing << "<tr>";
+            listing << "<td>";
+            if (S_ISDIR(filestat.st_mode)) 
+            {
+                listing << "<i class=\"fas fa-folder\"></i>"; // Ícone de pasta
+                    ent->d_name[strlen(ent->d_name)] = '/';
+            } 
+            else 
+            {
+                listing << "<i class=\"far fa-file\"></i>"; // Ícone de arquivo
+            }
+            listing << "</td>";
+            listing << "<td><a href=\"" << directoryPath << ent->d_name << "\">" << ent->d_name << "</a></td>";
+            listing << "<td>" << filestat.st_size << "</td>";
+            listing << "<td>" << modifiedTime << "</td>";
+            listing << "</tr>";
+        }
+        closedir(dir);
+
+    listing << "</table>"
+            << "</body>"
+            << "</html>";
+
+    this->_bodySize = listing.str().length() ;
+    char* listingCStr = new char[_bodySize + 1];
+    strcpy(listingCStr, listing.str().c_str());
+    if (this->_bodySize > 0)
+    {
+        this->_hasBody = true;
+    }
+    return listingCStr;
+}
+
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
 
-    // std::cout <<   "path =======  " << this->request.getPath() << std::endl; 
+    std::string mockarDirectory =  "on";
+    
     if (this->validator.getPath())
     {
         file = this->request.getPath();
+    }
+    else if (mockarDirectory ==  "on")
+    {
+        return getDirectoryListing();
     }
     else
     {

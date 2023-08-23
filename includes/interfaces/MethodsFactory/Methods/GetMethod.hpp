@@ -31,6 +31,7 @@ class GetMethod : public IMethod
         std::string get_status_code() const;
         std::string get_status_msg() const;
         std::string get_content_type() const;
+        char* getDirectoryListing() ;
 };
 
 #endif
