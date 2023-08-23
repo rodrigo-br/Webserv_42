@@ -29,6 +29,11 @@ std::string Request::getPath(void) const
     return this->_parser.getPath();
 }
 
+std::string Request::getServerName(void) const
+{
+    return this->_parser.getServerName();
+}
+
 std::string Request::getHttpVersion(void) const
 {
     return this->_parser.getHttpVersion();

@@ -1,5 +1,8 @@
 
 #include "classes/Socket.hpp"
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
 Socket::Socket(std::map<int, ServerData>& conf)
 {
@@ -21,15 +24,13 @@ bool Socket::succeed()
     return _succeed;
 }
 
-static sockaddr_in createSockaddr(int port)
+bool  Socket::createSockaddr(int port)
 {
-	sockaddr_in _sockaddr;
-	_sockaddr.sin_family = AF_INET;
-	_sockaddr.sin_addr.s_addr = INADDR_ANY;
-	_sockaddr.sin_port = htons(port);
-	return (_sockaddr);
+    _sockaddr.sin_family = AF_INET;
+    _sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    _sockaddr.sin_port = htons(port);
+    return (false);
 }
-
 
 bool createAndConfigureSocket(int& socketFd, int optval) 
 {
@@ -98,10 +99,12 @@ bool Socket::initializeSockets(std::map<int, ServerData>& conf)
         {
             return false;
         }
+        if (createSockaddr(port))
+        {
+            return false;
+        }
 
-        sockaddr_in sockaddr = createSockaddr(port);
-
-        if (bindSocket(serverSocket, sockaddr)) 
+        if (bindSocket(serverSocket, _sockaddr)) 
         {
             return false;
         }

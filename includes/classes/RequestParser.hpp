@@ -25,6 +25,7 @@ class RequestParser
 		std::string							getBody(void) const;
 		std::string							getHeader(std::string headerName) const;
 		std::string							getPort(void) const;
+		std::string							getServerName(void) const;
 		std::string							getQuery(void) const;
 		std::string							getFileExec(void) const;
 		int									getPortNumber(void) const;
@@ -34,7 +35,8 @@ class RequestParser
 
 
 	private:
-		void								parseRequestPort(void);
+		void								parseRequestPort();
+		void								parserServerName();
 		void  								parseRquestQuery();
 		void 								parseRequestStartLine(std::string &line, std::istringstream &iss);
 		void 								parseRequestHeader(std::string &line, std::istringstream &iss);
@@ -48,6 +50,7 @@ class RequestParser
 		int									_portNumber;
 		std::string							_query;
 		std::string							_fileExec;
+		std::string							_serverName;
 
 
 };

@@ -26,6 +26,7 @@ class Request
 		std::string					getHttpVersion(void) const;
 		std::string					getBody(void) const;
 		std::string					getHeader(std::string headerName) const;
+		std::string					getServerName(void) const;
 		std::string					getPort(void) const;
 		int							getPortNumber(void) const;
 		void        				setPath(std::string newPath);

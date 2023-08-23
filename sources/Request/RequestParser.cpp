@@ -14,6 +14,7 @@ void    RequestParser::parserHttpRequest(char *request)
 	parseRequestHeader(line, iss);
 	parseRequestBody(line, iss);
     parseRequestPort();
+    parserServerName();
     parseRquestQuery();
 }
 
@@ -28,11 +29,25 @@ void    RequestParser::parseRquestQuery()
 
 void    RequestParser::parseRequestPort()
 {   
-    std::string port = getHeader("Host");
-    if (!port.empty())
-        this->_port = port.substr(10).c_str();
-    if (!this->_port.empty())
-        this->_portNumber = std::atoi(this->_port.c_str());
+    std::string host = getHeader("Host");
+    size_t      colonPos = host.find(':');
+    if (colonPos != std::string::npos)
+    {
+        std::string portSubstring = host.substr(colonPos + 1);
+        if (!portSubstring.empty())
+        {
+            this->_port = portSubstring;
+            this->_portNumber = std::atoi(portSubstring.c_str());
+        }
+        
+    }
+
+}
+
+void RequestParser::parserServerName(void)
+{
+	std::string host = getHeader("Host");
+	this->_serverName = host.substr(0, host.find(':'));
 }
 
 void RequestParser::parseRequestBody(std::string& line, std::istringstream& iss)
@@ -125,6 +140,11 @@ std::string RequestParser::getHeader(std::string headerName) const
 std::string RequestParser::getQuery(void) const
 {
     return this->_query;
+}
+
+std::string RequestParser::getServerName(void) const
+{
+    return this->_serverName;;
 }
 
 void RequestParser::setPath(std::string newPath)

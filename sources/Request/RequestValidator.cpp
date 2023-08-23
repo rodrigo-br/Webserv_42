@@ -1,6 +1,6 @@
 #include "classes/RequestValidator.hpp"
 
-RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _httpVersion(false), _requestBody(false)  { }
+RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _httpVersion(false), _requestBody(false), _serverName(false)  { }
 
 RequestValidator::~RequestValidator(void) {}
 
@@ -10,6 +10,7 @@ RequestValidator &RequestValidator::requestValidator(ServerData &serverData, Req
 	pathValidator(serverData, request);
 	bodyValidator(request);
 	httpVersionValidator(request);
+	serverNamesValidator(serverData, request);
 	return *this;
 }
 
@@ -149,7 +150,25 @@ bool RequestValidator::getBody(void) const
 	return this->_requestBody;
 }
 
+bool RequestValidator::getServerName(void) const
+{
+	return this->_serverName;
+}
+
 HttpMethodEnum::httpMethod RequestValidator::getMethod(void) const
 {
 	return this->_method;
+}
+
+void	RequestValidator::serverNamesValidator(ServerData &serverData, Request& request)
+{
+	std::vector<std::string> serverNames = serverData.getServerNames();
+	for (std::vector<std::string>::const_iterator it = serverNames.begin(); it != serverNames.end(); ++it)
+	{
+		if ((*it).compare(request.getServerName()) == 0)
+		{
+			_serverName = true;
+			return ;
+		}
+	}
 }
