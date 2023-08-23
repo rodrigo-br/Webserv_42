@@ -2,7 +2,7 @@
 
 #define CGI_BUFSIZE 3000
 
-Cgi::Cgi(Request &request, std::string root)
+Cgi::Cgi(Request &request, std::string root) : _fdExec(0)
 {
 	this->initEnv(request);
 	createEnvironmentArray();
