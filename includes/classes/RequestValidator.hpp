@@ -22,6 +22,8 @@ class RequestValidator
 		bool				        getHttpVersion(void) const;
 		bool				        getBody(void) const;
 		bool				        getHeader(std::string headerName) const;
+		bool 						getServerName(void) const;
+
 		void 						setBody(bool body);
 
 	private:
@@ -29,6 +31,7 @@ class RequestValidator
 		void 						pathValidator(ServerData &serverData, Request& request);
 		void						bodyValidator(Request& request);
 		void						httpVersionValidator(Request& request);
+		void						serverNamesValidator(ServerData &serverData, Request& request);
 		void 						fileExecValidator(std::string root, Request& request);
 		bool						isRootPath(const std::string& path, size_t	len);
 		bool 						endsWithSlash(size_t position, size_t len);
@@ -43,7 +46,7 @@ class RequestValidator
 		bool                 		_path;
 		bool                		_httpVersion;
 		bool						_requestBody;
-
+		bool						_serverName;
 };
 
 #endif
