@@ -6,6 +6,12 @@ ServerData::ServerData()
     this->_configurations["index"] = &ServerData::setLocationIndex;
     this->_configurations["directory_listing"] = &ServerData::setLocationDirectoryListening;
     this->_configurations["http_methods"] = &ServerData::setLocationAllowedMethods;
+    this->_configurations["server_names"] = &ServerData::setServerNames;
+}
+
+std::vector<std::string> ServerData::getServerNames() const
+{
+    return this->_serverNames;
 }
 
 std::string ServerData::getRoot() const
@@ -26,6 +32,11 @@ void ServerData::setRoot(std::string root)
 void ServerData::setLocation(std::string path, Location location)
 {
     this->_location[path] = location;
+}
+
+void ServerData::setServerNames(std::string name)
+{
+    this->_serverNames.push_back(name);
 }
 
 std::string ServerData::getLocation(std::string locationName) const
