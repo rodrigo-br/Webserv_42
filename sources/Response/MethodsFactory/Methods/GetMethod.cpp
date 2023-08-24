@@ -59,7 +59,7 @@ std::string GetMethod::build_headers() const
     return headers;
 }
 
-void addHeader(std::stringstream& listing, const std::string& directoryPath) 
+void addHeader(std::stringstream& listing, const std::string& directoryPath)
 {
     listing << "<html>"
             << "<head>"
@@ -77,19 +77,19 @@ void addHeader(std::stringstream& listing, const std::string& directoryPath)
             << "<tbody>";
 }
 
-void addItemToTable(std::stringstream& listing, const std::string& itemName, struct stat &filestat, std::string directoryPath) 
+void addItemToTable(std::stringstream& listing, const std::string& itemName, struct stat &filestat, std::string directoryPath)
 {
     std::string fullFilePath, modifiedTime;
 
     modifiedTime = ctime(&filestat.st_mtime);
     listing << "<tr>";
     listing << "<td>";
-    if (S_ISDIR(filestat.st_mode)) 
+    if (S_ISDIR(filestat.st_mode))
     {
-        listing << "<i class=\"fas fa-folder\"></i>  "; 
+        listing << "<i class=\"fas fa-folder\"></i>  ";
         listing << "<a href=\"" << directoryPath << itemName + "/" << "\">" << itemName + "/" << "</a>";
-    } 
-    else 
+    }
+    else
     {
         listing << "<i class=\"far fa-file\"></i>  ";
         listing << "<a href=\"" << directoryPath << itemName << "\">" << itemName << "</a>";
@@ -102,7 +102,7 @@ void addItemToTable(std::stringstream& listing, const std::string& itemName, str
 
 
 
-char *GetMethod::getDirectoryListing() 
+char *GetMethod::getDirectoryListing()
 {
     DIR             *dir;
     struct dirent   *ent;
@@ -111,13 +111,8 @@ char *GetMethod::getDirectoryListing()
     std::stringstream listing;
     std::string     directoryPath = this->request.getPath();
 
-    if (!directoryPath.empty() && directoryPath[directoryPath.length() - 1] != '/')
-    {
-        directoryPath += '/';
-    }
     addHeader(listing, directoryPath);
-    std::string dirPath = ROOT + directoryPath;
-    dir = opendir(dirPath.c_str());
+    dir = opendir(directoryPath.c_str());
     if (!dir)
     {
         this->_isDirectoryList   = false;
@@ -126,12 +121,12 @@ char *GetMethod::getDirectoryListing()
         strcpy(errorCStr, file.c_str());
         return errorCStr;
     }
-    while ((ent = readdir(dir)) != NULL) 
+    while ((ent = readdir(dir)) != NULL)
     {
         if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
             continue;
-        fullFilePath = dirPath + "/" + ent->d_name;
-        if (stat(fullFilePath.c_str(), &filestat) == -1) 
+        fullFilePath = directoryPath + "/" + ent->d_name;
+        if (stat(fullFilePath.c_str(), &filestat) == -1)
         {
             perror(ent->d_name);
             continue;
@@ -157,14 +152,13 @@ char *GetMethod::getDirectoryListing()
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
-    std::string mockarDirectory = "on";
     char * body;
 
     if (this->validator.getPath())
     {
         file = this->request.getPath();
     }
-    else if (mockarDirectory ==  "on")
+    else if (this->validator.isDirectoryListing())
     {
         body = getDirectoryListing();
     }
@@ -172,14 +166,14 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     {
         file = ROOT + std::string("/404.html");
     }
-    if (this->_isDirectoryList == false )
+    if (this->_isDirectoryList == false)
     {
         std::vector<char> buffer = this->openFileAsVector(file);
         this->_bodySize = buffer.size();
         body = new char[this->_bodySize];
         std::copy(buffer.begin(), buffer.end(), body);
     }
-  
+
     if (this->_bodySize > 0)
     {
         this->_hasBody = true;

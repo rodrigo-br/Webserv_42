@@ -1,6 +1,6 @@
 #include "classes/RequestValidator.hpp"
 
-RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _httpVersion(false), _requestBody(false), _serverName(false)  { }
+RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _httpVersion(false), _requestBody(false), _serverName(false), _isDirectoryListing(false)  { }
 
 RequestValidator::~RequestValidator(void) {}
 
@@ -47,6 +47,7 @@ void RequestValidator::pathValidator(ServerData &serverData, Request& request)
         handleNonTrailingSlashPath(serverData, request, path, root, position);
 	}
     handleAssetsPath(request, path, root);
+	handleDirectoryListing(request, path, root, serverData);
 }
 
 bool RequestValidator::isRootPath(const std::string& path, size_t len)
@@ -77,6 +78,11 @@ void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Reque
         this->_path = true;
         request.setPath(root + path + location);
     }
+	else if (serverData.isDirectoryListingLocation(path.substr(0, path.length() - 1)))
+	{
+		this->_isDirectoryListing = true;
+		request.setPath(root + path);
+	}
 }
 
 void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root, size_t position)
@@ -109,12 +115,42 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 
 }
 
+void RequestValidator::handleDirectoryListing(Request& request, std::string& path, const std::string& root, ServerData &serverData)
+{
+	if (!this->_path && !this->_isDirectoryListing && serverData.isDirectoryListingLocation(path))
+	{
+		this->_isDirectoryListing = true;
+		request.setPath(root + path + "/");
+	}
+	else if (!this->_path && !request.getHeader("Referer").empty() && path.find(root) != std::string::npos)
+	{
+		request.setPath(path.substr(1));
+		if (path[path.length() - 1] == '/')
+		{
+			this->_isDirectoryListing = true;
+		}
+		else
+		{
+			this->_path = true;
+		}
+	}
+}
+
+bool RequestValidator::isDirectoryListing()
+{
+	return this->_isDirectoryListing;
+}
+
 void RequestValidator::handleAssetsPath(Request& request, const std::string& path, const std::string& root)
 {
     if (path.find("/assets") != std::string::npos && !request.getHeader("Referer").empty())
     {
         this->_path = true;
         request.setPath(root + path);
+		if (request.getHeader("Referer").empty())
+		{
+			this->_path = true;
+		}
     }
 }
 

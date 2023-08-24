@@ -39,6 +39,18 @@ void ServerData::setServerNames(std::string name)
     this->_serverNames.push_back(name);
 }
 
+
+bool ServerData::isDirectoryListingLocation(std::string locationPath)
+{
+    std::map<std::string, Location>::const_iterator it = this->_location.find(locationPath);
+
+    if (it != this->_location.end())
+    {
+        return it->second.getDirectoryListening();
+    }
+    return false;
+}
+
 std::string ServerData::getLocation(std::string locationName) const
 {
     std::map<std::string, Location>::const_iterator it = this->_location.find(locationName);
