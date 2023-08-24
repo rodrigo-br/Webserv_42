@@ -93,7 +93,6 @@ void addItemToTable(std::stringstream& listing, const std::string& itemName, str
     {
         listing << "<i class=\"far fa-file\"></i>  ";
         listing << "<a href=\"" << directoryPath << itemName << "\">" << itemName << "</a>";
-
     }
     listing << "</td>";
     listing << "<td>" << filestat.st_size << "</td>";
@@ -121,7 +120,7 @@ char *GetMethod::getDirectoryListing()
     dir = opendir(dirPath.c_str());
     if (!dir)
     {
-        this->_isDirectoryList = false;
+        this->_isDirectoryList   = false;
         std::string file = ROOT + std::string("/404.html");
         char* errorCStr = new char[file.size() + 1];
         strcpy(errorCStr, file.c_str());
