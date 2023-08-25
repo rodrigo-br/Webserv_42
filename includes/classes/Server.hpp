@@ -11,6 +11,7 @@ class Server
         static bool gSignalInterrupted;
         Server(Conf &config);
         static void signalHandler(int signum);
+        time_t getLastTime();
 
     private:
         void handleNewClients();
@@ -21,12 +22,17 @@ class Server
         void closeSockets();
         void runServer(Socket socket);
         void setClientesSockets();
+        void checkTimeout();
+        void closeConnection(const int &i);
+void             updateTime();
+
 
         Conf conf;
         std::vector<int> listenSockets;
-        std::vector<int> clienstSocks;
+        std::map<time_t, int> clienstSocks;
         fd_set readSocket;
 		fd_set writeSocket;
+        time_t              _last_msg_time;
 };
 
 #endif

@@ -13,6 +13,7 @@ Request			&Request::createParsedMessage(int fdConnection)
 {
 	if (Utils::check(read(fdConnection,this->_request, BUFFER_SIZE),  "Read request"))
 	{
+        close (fdConnection);
 		exit(EXIT_FAILURE);
 	}
 	this->_parser.parserHttpRequest(this->_request);
