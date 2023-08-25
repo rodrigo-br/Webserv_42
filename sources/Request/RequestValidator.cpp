@@ -122,7 +122,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 		this->_isDirectoryListing = true;
 		request.setPath(root + path + "/");
 	}
-	else if (!this->_path && !request.getHeader("Referer").empty() && path.find(root) != std::string::npos)
+	else if (!this->_path && !request.getHeader("Referer").empty())
 	{
 		request.setPath(path.substr(1));
 		if (path[path.length() - 1] == '/')

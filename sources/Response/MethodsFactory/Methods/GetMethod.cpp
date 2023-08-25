@@ -45,6 +45,7 @@ std::string GetMethod::build_start_line() const
     start_line.append(" ");
     start_line.append(this->get_status_msg());
     start_line.append("\r\n");
+    std::cout << "START LINE : " << start_line << std::endl;
 
     return start_line;
 }
@@ -55,6 +56,8 @@ std::string GetMethod::build_headers() const
     headers.append("Content-Type: ");
     headers.append(this->get_content_type());
     headers.append("\r\n\n");
+
+    std::cout << "HEADER : " << headers << std::endl;
 
     return headers;
 }
@@ -87,12 +90,12 @@ void addItemToTable(std::stringstream& listing, const std::string& itemName, str
     if (S_ISDIR(filestat.st_mode))
     {
         listing << "<i class=\"fas fa-folder\"></i>  ";
-        listing << "<a href=\"" << directoryPath << itemName + "/" << "\">" << itemName + "/" << "</a>";
+        listing << "<a href=\"" << directoryPath.substr(std::string(ROOT).length()) << itemName + "/" << "\">" << itemName + "/" << "</a>";
     }
     else
     {
         listing << "<i class=\"far fa-file\"></i>  ";
-        listing << "<a href=\"" << directoryPath << itemName << "\">" << itemName << "</a>";
+        listing << "<a href=\"" << directoryPath.substr(std::string(ROOT).length()) << itemName << "\">" << itemName << "</a>";
     }
     listing << "</td>";
     listing << "<td>" << filestat.st_size << "</td>";
@@ -111,6 +114,11 @@ char *GetMethod::getDirectoryListing()
     std::stringstream listing;
     std::string     directoryPath = this->request.getPath();
 
+    if (!this->request.getHeader("Referer").empty())
+    {
+        std::cout << "entrou no if do referer" << std::endl;
+        directoryPath = std::string(ROOT) + "/" + directoryPath;
+    }
     addHeader(listing, directoryPath);
     dir = opendir(directoryPath.c_str());
     if (!dir)
