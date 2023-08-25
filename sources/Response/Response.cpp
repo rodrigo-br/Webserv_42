@@ -4,7 +4,10 @@ Response::Response(ResponseBuilder *builder) : _builder(builder), _response(NULL
 {
     this->_response = _builder->buildResponse();
     this->_body = _builder->buildBody();
-    this->_size = std::strlen(this->_response);
+    if (this->_response != NULL)
+    {
+        this->_size = std::strlen(this->_response);
+    }
 }
 
 Response::~Response()

@@ -131,6 +131,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 		}
 		else
 		{
+			request.setPath(root + path);
 			this->_path = true;
 		}
 	}
