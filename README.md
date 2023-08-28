@@ -4,13 +4,17 @@
 
 a project to put pictures of our dogs on the web
 
+<h4 align=center>
+	<b>Nico e Emily</b>
+</h4>
 <p align="center">
-    <h4 style="text-align: center;">Nico e Emily</h4>
     <img src="wwwroot/assets/Dogs.png" alt="Dogs" style="display: block; margin: auto;">
 </p>
 
+<h4 align=center>
+	<b>Arya</b>
+</h4>
 <p align="center">
-    <h4 style="text-align: center;">Arya</h4>
     <img src="wwwroot/assets/arya2.png" alt="Arya" style="display: block; margin: auto;">
 </p>
 
