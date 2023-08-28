@@ -1,10 +1,15 @@
 #include "classes/Server.hpp"
-#define CONNECTION_TIMEOUT 1 
+#define CONNECTION_TIMEOUT 60
 
 void Server::signalHandler(int signum)
 {
 	(void)signum;
 	Server::gSignalInterrupted = true;
+}
+
+Server::~Server()
+{
+	closeSockets();
 }
 
 time_t Server::getLastTime()
@@ -19,9 +24,14 @@ void             Server::updateTime()
 
 void Server::closeSockets()
 {
-	for (size_t i = 0; i < this->listenSockets.size(); ++i)
-	{
-		close(listenSockets[i]);
+	if (!listenSockets.empty())
+    {
+		for (int i = this->listenSockets.size() -1; i >= 0; --i)
+		{
+			close(listenSockets[i]);
+			
+		}
+		listenSockets.clear();
 	}
 	// for (size_t i = 0; i < clienstSocks.size(); ++i)
 	// {
@@ -101,6 +111,7 @@ void Server::processClients()
         std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa " << std::endl;
         RequestValidator requestValidator;
         Request request;
+		 	checkTimeout();
         int clientSocket = it->second; // Obtém o socket do cliente do mapa
         if (FD_ISSET(clientSocket, &this->readSocket))
         {
@@ -109,7 +120,6 @@ void Server::processClients()
         if (FD_ISSET(clientSocket, &writeSocket))
         {
             sendClientResponse(clientSocket, i, request, requestValidator);
-		 	checkTimeout();
         }
 		i++;
 

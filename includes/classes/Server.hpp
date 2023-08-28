@@ -12,6 +12,7 @@ class Server
         Server(Conf &config);
         static void signalHandler(int signum);
         time_t getLastTime();
+        ~Server();
 
     private:
         void handleNewClients();
@@ -24,7 +25,7 @@ class Server
         void setClientesSockets();
         void checkTimeout();
         void closeConnection(const int &i);
-void             updateTime();
+        void             updateTime();
 
 
         Conf conf;
