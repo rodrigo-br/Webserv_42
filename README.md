@@ -2,10 +2,17 @@
 
 ## About the implementation
 
-a project to put photos of my dogs on the web
+a project to put pictures of our dogs on the web
 
-![](wwwroot/assets/Dogs.png)
+<p align="center">
+    <h4 style="text-align: center;">Nico e Emily</h4>
+    <img src="wwwroot/assets/Dogs.png" alt="Dogs" style="display: block; margin: auto;">
+</p>
 
+<p align="center">
+    <h4 style="text-align: center;">Arya</h4>
+    <img src="wwwroot/assets/arya2.png" alt="Arya" style="display: block; margin: auto;">
+</p>
 
 ## Requirements
 
