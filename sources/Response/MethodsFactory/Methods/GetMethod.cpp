@@ -116,7 +116,6 @@ char *GetMethod::getDirectoryListing()
 
     if (!this->request.getHeader("Referer").empty())
     {
-        std::cout << "entrou no if do referer" << std::endl;
         directoryPath = std::string(ROOT) + "/" + directoryPath;
     }
     addHeader(listing, directoryPath);
@@ -164,6 +163,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (this->validator.getPath())
     {
+    
         file = this->request.getPath();
     }
     else if (this->validator.isDirectoryListing())

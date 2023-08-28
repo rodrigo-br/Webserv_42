@@ -16,6 +16,7 @@ std::vector<char> MethodsUtils::openFileAsVector(std::string path)
         return std::vector<char>();
     }
     std::streamsize size = file.tellg();
+    std::cout << "size ==== " << size <<std::endl;
     file.seekg(0, std::ios::beg);
     std::vector<char> imageBuffer(size);
     if (!file.read(imageBuffer.data(), size))
