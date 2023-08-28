@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete File Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Delete File Example</h1>
+
+<ul id="fileList">
+    <li>
+        <span>teste</span>
+        <button onclick="deleteFile('teste')">Excluir arquivo</button>
+    </li>
+    <li>
+        <span>teste2</span>
+        <button onclick="deleteFile('teste2')">Excluir arquivo</button>
+    </li>
+    <li>
+        <span>teste2</span>
+        <button onclick="deleteFile('teste2')">Excluir arquivo</button>
+    </li>
+    <!-- Adicione mais itens de arquivo aqui se necessário -->
+</ul>
+
+<script>
+// Código JavaScript permanece o mesmo
+
+function deleteFile(fileName) {
+    fetch(`http://localhost:8000/uploads/${fileName}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log(`Arquivo ${fileName} excluído com sucesso.`);
+            // Atualize a lista de arquivos após a exclusão
+     
+        } else {
+            console.error(`Falha ao excluir o arquivo ${fileName}.`);
+            
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+    });
+}
+
+
+
+</script>
+
+</body>
+</html>

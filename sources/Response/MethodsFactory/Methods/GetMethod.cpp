@@ -45,8 +45,6 @@ std::string GetMethod::build_start_line() const
     start_line.append(" ");
     start_line.append(this->get_status_msg());
     start_line.append("\r\n");
-    std::cout << "START LINE : " << start_line << std::endl;
-
     return start_line;
 }
 
@@ -56,9 +54,6 @@ std::string GetMethod::build_headers() const
     headers.append("Content-Type: ");
     headers.append(this->get_content_type());
     headers.append("\r\n\n");
-
-    std::cout << "HEADER : " << headers << std::endl;
-
     return headers;
 }
 
@@ -153,8 +148,6 @@ char *GetMethod::getDirectoryListing()
     this->_isDirectoryList = true;
     return listingCStr;
 }
-
-
 
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
