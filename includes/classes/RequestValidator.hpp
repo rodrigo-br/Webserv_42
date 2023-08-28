@@ -23,6 +23,7 @@ class RequestValidator
 		bool				        getBody(void) const;
 		bool				        getHeader(std::string headerName) const;
 		bool 						getServerName(void) const;
+		bool						isDirectoryListing();
 
 		void 						setBody(bool body);
 
@@ -42,11 +43,13 @@ class RequestValidator
     	void 						handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& root);
     	void 						handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root, size_t position);
     	void 						handleAssetsPath(Request& request, const std::string& path, const std::string& root);
+		void 						handleDirectoryListing(Request& request, std::string& path, const std::string& root, ServerData &serverData);
 		HttpMethodEnum::httpMethod	_method;
 		bool                 		_path;
 		bool                		_httpVersion;
 		bool						_requestBody;
 		bool						_serverName;
+		bool						_isDirectoryListing;
 };
 
 #endif

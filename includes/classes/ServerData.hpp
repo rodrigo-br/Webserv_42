@@ -30,6 +30,7 @@ class ServerData
         void setLocationAllowedMethods(std::string allowedMethods);
         void setLocationDirectoryListening(std::string directoryListening);
         void setServerNames(std::string directoryListening);
+        bool isDirectoryListingLocation(std::string locationPath);
 };
 
 #endif

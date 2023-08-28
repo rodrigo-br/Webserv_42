@@ -24,13 +24,15 @@ class GetMethod : public IMethod
         StatusCodes _statusCodes;
         bool        _hasBody;
         ssize_t     _bodySize;
-
+        bool        _isDirectoryList;
+        
         std::string build_start_line() const;
         std::string build_headers() const;
         char *BODY_BUILDER_BIIIIHHHHLLL();
         std::string get_status_code() const;
         std::string get_status_msg() const;
         std::string get_content_type() const;
+        char* getDirectoryListing() ;
 };
 
 #endif
