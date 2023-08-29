@@ -39,37 +39,49 @@
 
 <h1>Delete File Example</h1>
 
-<ul id="fileList">
-    <li>
-        <span>teste</span>
-        <button onclick="deleteFile('teste')">Excluir arquivo</button>
-    </li>
-    <li>
-        <span>teste2</span>
-        <button onclick="deleteFile('teste2')">Excluir arquivo</button>
-    </li>
-    <li>
-        <span>teste2</span>
-        <button onclick="deleteFile('teste2')">Excluir arquivo</button>
-    </li>
-    <!-- Adicione mais itens de arquivo aqui se necessário -->
-</ul>
+    <ul id="fileList">
+        <li id="fileItem1">
+            <span>teste</span>
+            <button onclick="deleteFile('teste', 'fileItem1')">Excluir arquivo</button>
+        </li>
+        <li id="fileItem2">
+            <span>teste2</span>
+            <button onclick="deleteFile('teste2', 'fileItem2')">Excluir arquivo</button>
+        </li>
+        <li id="fileItem3">
+            <span>teste3</span>
+            <button onclick="deleteFile('teste3', 'fileItem3')">Excluir arquivo</button>
+        </li>
+    </ul>
 
 <script>
-// Código JavaScript permanece o mesmo
 
-function deleteFile(fileName) {
-    fetch(`http://localhost:8000/uploads/${fileName}`, {
+function deleteFile(fileName, itemId) 
+{
+    const listItem = document.getElementById(itemId);
+    if (listItem && window.getComputedStyle(listItem).display === 'none') 
+    {
+        console.log(`Arquivo ${fileName} já foi excluído ou está oculto.`);
+        return;
+    }
+    fetch(`http://localhost:8000/uploads/${fileName}`, 
+    {
         method: 'DELETE'
-    })
+    })  
     .then(response => {
-        if (response.ok) {
+        if (response.ok) 
+        {
             console.log(`Arquivo ${fileName} excluído com sucesso.`);
-            // Atualize a lista de arquivos após a exclusão
-     
-        } else {
+            // Ocultar o item da lista após a exclusão
+            const listItem = document.getElementById(itemId);
+            if (listItem)
+            {
+                listItem.style.display = 'none';
+            }
+        } 
+        else 
+        {
             console.error(`Falha ao excluir o arquivo ${fileName}.`);
-            
         }
     })
     .catch(error => {
@@ -77,9 +89,6 @@ function deleteFile(fileName) {
     });
 }
 
-
-
 </script>
-
 </body>
 </html>

@@ -8,13 +8,10 @@ const char* GetMethod::buildResponse()
 {
     std::string response;
 
-    // Opening Line
     response.append(this->build_start_line());
 
-    // Headers
     response.append(this->build_headers());
 
-    // convert string to char ptr
     char *response_as_char = new char[(response.length() + 1)];
     std::strcpy(response_as_char, response.c_str());
 

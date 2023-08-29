@@ -53,18 +53,16 @@ std::string DeleteMethod::build_headers() const
 char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
-    char *body;
+    char        *body;
 
     if (request.getPath().compare("/uploads"))
     {
         std::string file2 = request.getPath();
-        std::cout << "file = " << file2 << std::endl;
         const char* filePath = file2.c_str();
 		if (remove(filePath) == 0)
             std::cout << "Arquivo removido com sucesso." << std::endl;
-        else 
+        else
         {
-        
             file = ROOT + std::string("/404.html");
         }
     }
@@ -95,8 +93,6 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
 std::string DeleteMethod::get_status_code() const
 {
-    std::cerr << "status code." << std::endl;
-
     std::stringstream ss_code;
     ss_code << StatusCodesEnum::OK;
     return ss_code.str();

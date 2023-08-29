@@ -38,7 +38,6 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 			return;
 		}
 	}
-
 	FD_CLR(clientSocket, &this->writeSocket);
 	FD_SET(clientSocket, &this->readSocket);
 	close(clientSocket);
