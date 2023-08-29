@@ -11,9 +11,11 @@ void Server::closeSockets()
 	for (size_t i = 0; i < this->listenSockets.size(); ++i)
 	{
 		close(listenSockets[i]);
+
 	}
 	for (size_t i = 0; i < clienstSocks.size(); ++i)
 	{
+		FD_CLR(clienstSocks[i], &this->writeSocket);
 		close(clienstSocks[i]);
 	}
 }
@@ -24,7 +26,7 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 	
 
 	Response response(new ResponseBuilder(request, validator));
-
+	std::cout << std::endl<< response.getResponse() << std::endl << std::endl;
 	if (Utils::check(send(clientSocket, response.getResponse(), response.getSize(), 0), "Send"))
 	{
 		return;
@@ -117,13 +119,16 @@ void Server::runServer(Socket socket)
 {
 	listenSockets = socket.getlistenSockets();
 	signal(SIGINT, Server::signalHandler);
+	struct timeval timer;
 
 	while (!gSignalInterrupted)
 	{
+		timer.tv_sec = 1;
+        timer.tv_usec = 0;
 		this->readSocket = socket.getReadFds();
 		this->writeSocket = socket.getWriteFds();
 
-		if (Utils::check(select(FD_SETSIZE, &this->readSocket, &this->writeSocket, NULL, NULL), "Select"))
+		if (Utils::check(select(FD_SETSIZE, &this->readSocket, &this->writeSocket, NULL, &timer), "Select"))
 		{
 			break;
 		}

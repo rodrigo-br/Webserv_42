@@ -160,6 +160,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (this->validator.getPath())
     {
+
         file = this->request.getPath();
     }
     else if (this->validator.isDirectoryListing())

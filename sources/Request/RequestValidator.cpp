@@ -88,16 +88,16 @@ void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Reque
 void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& _root, size_t position)
 {
 	std::string location = serverData.getLocation(path);
-	if (!location.empty())//verifica se não está dando o caminho SEM o arquivo (exemplo http://localhost:8000/api/upload)
+	if (!location.empty())
 	{
 		this->_path = true;
 		request.setPath(_root + path + "/" + location);
 		return ;
 	}
 	location = serverData.getLocation(path.substr(0, position));
-	if (!location.empty())// para casos em que tem um caminho válido com algum arquivo ainda não verificado
+	if (!location.empty())
 	{
-		if (location.compare(path.substr(position + 1)) == 0)// verifica se o arquivo está ok
+		if (location.compare(path.substr(position + 1)) == 0)
 		{
 
 			this->_path = true;
@@ -106,7 +106,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	}
 	else
 	{
-		if (path.compare("/index.html") == 0)// é simplesmente /index.html?
+		if (path.compare("/index.html") == 0)
 		{
 			this->_path = true;
 			request.setPath(_root + path);
@@ -209,8 +209,15 @@ void	RequestValidator::serverNamesValidator(ServerData &serverData, Request& req
 	{
 		if ((*it).compare(request.getServerName()) == 0)
 		{
-			_serverName = true;
+			if (this->_isDirectoryListing == false)
+				this->_path = true;
 			return ;
 		}
+	}
+	this->_path = false;
+	this->_isDirectoryListing = false;
+	if (request.getPath().find("/assets") != std::string::npos && !request.getHeader("Referer").empty())
+	{
+		this->_path = true;
 	}
 }
