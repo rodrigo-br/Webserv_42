@@ -2,8 +2,6 @@
 #include <sstream> // Precisa ficar neste arquivo para evitar erro de incomplete type no test (C++11)
 #include <dirent.h>
 
-#define ROOT "wwwroot"
-
 const char* GetMethod::buildResponse()
 {
     std::string response;
@@ -80,7 +78,7 @@ void addHeader(std::stringstream& listing, const std::string& directoryPath)
             << "<tbody>";
 }
 
-void addItemToTable(std::stringstream& listing, const std::string& itemName, struct stat &filestat, std::string directoryPath)
+void addItemToTable(std::stringstream& listing, const std::string& itemName, struct stat &filestat, std::string directoryPath, std::string root)
 {
     std::string fullFilePath, modifiedTime;
 
@@ -90,20 +88,18 @@ void addItemToTable(std::stringstream& listing, const std::string& itemName, str
     if (S_ISDIR(filestat.st_mode))
     {
         listing << "<i class=\"fas fa-folder\"></i>  ";
-        listing << "<a href=\"" << directoryPath.substr(std::string(ROOT).length()) << itemName + "/" << "\">" << itemName + "/" << "</a>";
+        listing << "<a href=\"" << directoryPath.substr(std::string(root).length()) << itemName + "/" << "\">" << itemName + "/" << "</a>";
     }
     else
     {
         listing << "<i class=\"far fa-file\"></i>  ";
-        listing << "<a href=\"" << directoryPath.substr(std::string(ROOT).length()) << itemName << "\">" << itemName << "</a>";
+        listing << "<a href=\"" << directoryPath.substr(std::string(root).length()) << itemName << "\">" << itemName << "</a>";
     }
     listing << "</td>";
     listing << "<td>" << filestat.st_size << "</td>";
     listing << "<td>" << modifiedTime << "</td>";
     listing << "</tr>";
 }
-
-
 
 char *GetMethod::getDirectoryListing()
 {
@@ -116,14 +112,15 @@ char *GetMethod::getDirectoryListing()
 
     if (!this->request.getHeader("Referer").empty())
     {
-        directoryPath = std::string(ROOT) + "/" + directoryPath;
+        std::cout << "entrou no if do referer" << std::endl;
+        directoryPath = std::string(this->root) + "/" + directoryPath;
     }
     addHeader(listing, directoryPath);
     dir = opendir(directoryPath.c_str());
     if (!dir)
     {
         this->_isDirectoryList   = false;
-        std::string file = ROOT + std::string("/404.html");
+        std::string file = this->root + std::string("/404.html");
         char* errorCStr = new char[file.size() + 1];
         strcpy(errorCStr, file.c_str());
         return errorCStr;
@@ -138,7 +135,7 @@ char *GetMethod::getDirectoryListing()
             perror(ent->d_name);
             continue;
         }
-        addItemToTable(listing, ent->d_name, filestat, directoryPath);
+        addItemToTable(listing, ent->d_name, filestat, directoryPath, this->root);
     }
     closedir(dir);
     listing << "</table>"
@@ -163,7 +160,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (this->validator.getPath())
     {
-    
+
         file = this->request.getPath();
     }
     else if (this->validator.isDirectoryListing())
@@ -172,7 +169,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
-        file = ROOT + std::string("/404.html");
+        file = this->root + std::string("/404.html");
     }
     if (this->_isDirectoryList == false)
     {
@@ -210,7 +207,7 @@ std::string GetMethod::get_content_type() const
     }
     else
     {
-        file = ROOT + std::string("/404.html");
+        file = this->root + std::string("/404.html");
     }
     return this->_contentTypes.getMimeType(this->getExtension(file));
 }

@@ -5,6 +5,7 @@ ResponseBuilder::ResponseBuilder(Request &request, RequestValidator &validator)
     this->_method = MethodCreator::createMethodObject(validator.getMethod());
     this->_method->request = request;
     this->_method->validator = validator;
+    this->_method->root = validator.getRoot();
 }
 
 ResponseBuilder::~ResponseBuilder()
