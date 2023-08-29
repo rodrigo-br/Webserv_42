@@ -44,7 +44,7 @@ std::string Request::getBody(void) const
     return this->_parser.getBody();
 }
 
-std::string Request::getHeader(std::string headerName ) const
+std::string Request::getHeader(std::string headerName) const
 {
     return this->_parser.getHeader(headerName);
 }

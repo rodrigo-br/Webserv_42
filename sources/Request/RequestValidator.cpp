@@ -29,7 +29,7 @@ HttpMethodEnum::httpMethod RequestValidator::methodValidator(Request& request)
 void RequestValidator::pathValidator(ServerData &serverData, Request& request)
 {
     std::string path = request.getPath();
-    std::string root = serverData.getRoot();
+    this->root = serverData.getRoot();
 	size_t		position = path.find_last_of("/");
 	size_t		len = path.length();
 
@@ -60,38 +60,38 @@ bool RequestValidator::endsWithSlash(size_t position, size_t len)
     return (len == position + 1);
 }
 
-void RequestValidator::handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root)
+void RequestValidator::handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& _root)
 {
     std::string location = serverData.getLocation(path);
     if (!location.empty())
     {
         this->_path = true;
-        request.setPath(root + path + location);
+        request.setPath(_root + path + location);
     }
 }
 
-void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& root)
+void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& _root)
 {
     std::string location = serverData.getLocation(path.substr(0, path.length() - 1));
     if (!location.empty())
     {
         this->_path = true;
-        request.setPath(root + path + location);
+        request.setPath(_root + path + location);
     }
 	else if (serverData.isDirectoryListingLocation(path.substr(0, path.length() - 1)))
 	{
 		this->_isDirectoryListing = true;
-		request.setPath(root + path);
+		request.setPath(_root + path);
 	}
 }
 
-void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root, size_t position)
+void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& _root, size_t position)
 {
 	std::string location = serverData.getLocation(path);
 	if (!location.empty())//verifica se não está dando o caminho SEM o arquivo (exemplo http://localhost:8000/api/upload)
 	{
 		this->_path = true;
-		request.setPath(root + path + "/" + location);
+		request.setPath(_root + path + "/" + location);
 		return ;
 	}
 	location = serverData.getLocation(path.substr(0, position));
@@ -101,7 +101,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 		{
 
 			this->_path = true;
-			request.setPath(root + path);
+			request.setPath(_root + path);
 		}
 	}
 	else
@@ -109,18 +109,18 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 		if (path.compare("/index.html") == 0)// é simplesmente /index.html?
 		{
 			this->_path = true;
-			request.setPath(root + path);
+			request.setPath(_root + path);
 		}
 	}
 
 }
 
-void RequestValidator::handleDirectoryListing(Request& request, std::string& path, const std::string& root, ServerData &serverData)
+void RequestValidator::handleDirectoryListing(Request& request, std::string& path, const std::string& _root, ServerData &serverData)
 {
 	if (!this->_path && !this->_isDirectoryListing && serverData.isDirectoryListingLocation(path))
 	{
 		this->_isDirectoryListing = true;
-		request.setPath(root + path + "/");
+		request.setPath(_root + path + "/");
 	}
 	else if (!this->_path && !request.getHeader("Referer").empty())
 	{
@@ -131,7 +131,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 		}
 		else
 		{
-			request.setPath(root + path);
+			request.setPath(_root + path);
 			this->_path = true;
 		}
 	}
@@ -142,12 +142,17 @@ bool RequestValidator::isDirectoryListing()
 	return this->_isDirectoryListing;
 }
 
-void RequestValidator::handleAssetsPath(Request& request, const std::string& path, const std::string& root)
+std::string RequestValidator::getRoot(void) const
+{
+    return this->root;
+}
+
+void RequestValidator::handleAssetsPath(Request& request, const std::string& path, const std::string& _root)
 {
     if (path.find("/assets") != std::string::npos && !request.getHeader("Referer").empty())
     {
         this->_path = true;
-        request.setPath(root + path);
+        request.setPath(_root + path);
 		if (request.getHeader("Referer").empty())
 		{
 			this->_path = true;

@@ -11,6 +11,7 @@ class IMethod : public MethodsUtils
     public:
         Request request;
         RequestValidator validator;
+        std::string root;
         virtual ~IMethod() {};
 
         virtual const char  *buildResponse() = 0;
