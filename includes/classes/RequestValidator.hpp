@@ -24,6 +24,7 @@ class RequestValidator
 		bool				        getHeader(std::string headerName) const;
 		bool 						getServerName(void) const;
 		bool						isDirectoryListing();
+		std::string					getRoot(void) const;
 
 		void 						setBody(bool body);
 
@@ -50,6 +51,7 @@ class RequestValidator
 		bool						_requestBody;
 		bool						_serverName;
 		bool						_isDirectoryListing;
+		std::string					root;
 };
 
 #endif
