@@ -41,6 +41,10 @@ class RequestParser
 		void 								parseRequestStartLine(std::string &line, std::istringstream &iss);
 		void 								parseRequestHeader(std::string &line, std::istringstream &iss);
 		void 								parseRequestBody(std::string &line, std::istringstream &iss);
+		void								parseContentLengthBody(std::istringstream& iss);
+		void 								parseChunkedBody(std::istringstream& iss);
+		int									getContentLength() const;
+
     	std::map<std::string, std::string> 	_headers;
 		std::string  						_method;
 		std::string                 		_path;

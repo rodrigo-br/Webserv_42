@@ -50,12 +50,87 @@ void RequestParser::parserServerName(void)
 	this->_serverName = host.substr(0, host.find(':'));
 }
 
+void RequestParser::parseChunkedBody(std::istringstream& iss)
+{
+   
+    std::string chunkSizeLine;
+    std::string chunk;
+    size_t chunkSize;
+
+        std::cout<< "aaaaaaaaaaaaaaaaaaaa  ="<<  std::endl << chunk << std::endl << std::endl;
+
+    // Continue lendo os chunks até encontrar um chunk com tamanho zero
+    while (std::getline(iss, chunkSizeLine))
+    {
+        std::stringstream chunkSizeStream(chunkSizeLine);
+        chunkSizeStream >> std::hex >> chunkSize;
+        
+        if (chunkSize == 0)
+        {
+        std::cout<< "aaaaaaaaaaaaaaaaaaaa  ="<<  std::endl << chunk << std::endl << std::endl;
+
+            break;
+        }
+
+        // Lê o chunk atual
+        chunk.resize(chunkSize);
+        iss.read(&chunk[0], chunkSize);
+
+        // Descarta o CRLF após o chunk
+        std::string crlf;
+        std::getline(iss, crlf);
+
+        // Adiciona o chunk ao corpo da requisição
+        std::cout<< "chunkkkkkkkkkkkkkkkke  ="<<  std::endl << chunk << std::endl << std::endl;
+        _requestBody += chunk;
+    }
+}
+
+
+void RequestParser::parseContentLengthBody(std::istringstream& iss)
+{
+    std::string line;
+    size_t contentLength = getContentLength(); // Implemente essa função
+
+    while (contentLength > 0 && std::getline(iss, line))
+    {
+        this->_requestBody += line + "\r\n"; // Adicione o tamanho dos caracteres de nova linha
+        contentLength -= (line.size() + 2); // Tamanho da linha + 2 para os caracteres de nova linha
+    }
+    // Finalize o processamento do corpo se necessário
+}
+
+int RequestParser::getContentLength() const
+{
+    std::string contentLengthStr = getHeader("Content-Length");
+    
+    if (!contentLengthStr.empty())
+    {
+        return atoi(contentLengthStr.c_str());
+    }
+    
+    return 0;
+}
+
 void RequestParser::parseRequestBody(std::string& line, std::istringstream& iss)
 {
-    while (std::getline(iss, line)) 
+    // while (std::getline(iss, line)) 
+    // {
+    //     this->_requestBody += line;
+    // }
+    (void)line;
+    std::string transferEncoding = getHeader("Transfer-Encoding");
+    if (transferEncoding == "chunked")
     {
-        this->_requestBody += line;
+        parseChunkedBody(iss);
     }
+
+    else if (!getHeader("Content-Length").empty())
+    {
+        parseContentLengthBody(iss);
+        std::cout <<  std::endl<< "entrou no contrenteeeeeeeeeeee "<< std::endl <<  std::endl;
+    }
+
 }
 
 void 	RequestParser::parseRequestHeader( std::string &line, std::istringstream &iss )

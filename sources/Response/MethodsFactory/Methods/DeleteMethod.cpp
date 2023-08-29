@@ -21,12 +21,12 @@ const char* DeleteMethod::buildBody()
 
 ssize_t DeleteMethod::getbodySize() const
 {
-    return 0;
+    return this->_bodySize;
 }
 
 bool DeleteMethod::hasBody() const
 {
-    return false;
+    return this->_hasBody;
 }
 
 std::string DeleteMethod::build_start_line() const
@@ -63,7 +63,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
             std::cout << "Arquivo removido com sucesso." << std::endl;
         else
         {
-            file = ROOT + std::string("/404.html");
+            file = this->root + std::string("/404.html");
         }
     }
     if (!file.empty())
@@ -107,7 +107,7 @@ std::string DeleteMethod::get_content_type() const
     }
     else
     {
-        file = ROOT + std::string("/404.html");
+        file = this->root + std::string("/404.html");
     }
     return this->_contentTypes.getMimeType(this->getExtension(file));
 }
@@ -116,3 +116,4 @@ std::string DeleteMethod::get_status_msg() const
 {
     return this->_statusCodes.getStatusMessage(this->get_status_code());
 }
+    

@@ -5,7 +5,7 @@
 a project to put pictures of our dogs on the web
 
 <h4 align=center>
-	<b>Nico e Emily</b>
+	<b>Emily e Nico</b>
 </h4>
 <p align="center">
     <img src="wwwroot/assets/Dogs.png" alt="Dogs" style="display: block; margin: auto;">
