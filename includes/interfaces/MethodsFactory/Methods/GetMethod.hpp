@@ -25,7 +25,7 @@ class GetMethod : public IMethod
         bool        _hasBody;
         ssize_t     _bodySize;
         bool        _isDirectoryList;
-        
+
         std::string build_start_line() const;
         std::string build_headers() const;
         char *BODY_BUILDER_BIIIIHHHHLLL();
