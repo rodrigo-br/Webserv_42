@@ -189,18 +189,6 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     return body;
 }
 
-std::string GetMethod::get_status_code() const
-{
-    std::stringstream ss_code;
-    ss_code << this->statusCode;
-    return ss_code.str();
-}
-
-std::string GetMethod::get_status_msg() const
-{
-    return this->_statusCodes.getStatusMessage(this->get_status_code());
-}
-
 std::string GetMethod::get_content_type() const
 {
     std::string file;

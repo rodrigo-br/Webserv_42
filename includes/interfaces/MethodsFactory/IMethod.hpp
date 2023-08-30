@@ -13,7 +13,6 @@ class IMethod : public MethodsUtils
         Request request;
         RequestValidator validator;
         std::string root;
-        StatusCodesEnum::statusCodes statusCode;
         virtual ~IMethod() {};
 
         virtual const char  *buildResponse() = 0;
