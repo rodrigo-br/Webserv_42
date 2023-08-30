@@ -3,6 +3,7 @@
 
 # include "interfaces/MethodsFactory/IMethod.hpp"
 # include "interfaces/MethodsFactory/MethodsUtils.hpp"
+# include "enums/StatusCodesEnum.hpp"
 # include "classes/Request.hpp"
 # include "classes/RequestValidator.hpp"
 

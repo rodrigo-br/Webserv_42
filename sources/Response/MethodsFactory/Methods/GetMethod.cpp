@@ -7,9 +7,7 @@ const char* GetMethod::buildResponse()
     std::string response;
 
     response.append(this->build_start_line());
-
     response.append(this->build_headers());
-
     char *response_as_char = new char[(response.length() + 1)];
     std::strcpy(response_as_char, response.c_str());
 
@@ -104,7 +102,6 @@ char *GetMethod::getDirectoryListing()
 
     if (!this->request.getHeader("Referer").empty())
     {
-        std::cout << "entrou no if do referer" << std::endl;
         directoryPath = std::string(this->root) + "/" + directoryPath;
     }
     addHeader(listing, directoryPath);
@@ -113,6 +110,7 @@ char *GetMethod::getDirectoryListing()
     {
         this->_isDirectoryList   = false;
         std::string file = this->root + std::string("/404.html");
+        this->statusCode = StatusCodesEnum::NOT_FOUND;
         char* errorCStr = new char[file.size() + 1];
         strcpy(errorCStr, file.c_str());
         return errorCStr;
@@ -137,9 +135,8 @@ char *GetMethod::getDirectoryListing()
     this->_bodySize = listing.str().length() ;
     char* listingCStr = new char[_bodySize + 1];
     strcpy(listingCStr, listing.str().c_str());
-    listing.str("");
-    listing.clear();
     this->_isDirectoryList = true;
+    this->statusCode = StatusCodesEnum::OK;
     return listingCStr;
 }
 
@@ -150,8 +147,8 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (this->validator.getPath())
     {
-
         file = this->request.getPath();
+        this->statusCode = StatusCodesEnum::OK;
     }
     else if (this->validator.isDirectoryListing())
     {
@@ -160,6 +157,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     else
     {
         file = this->root + std::string("/404.html");
+        this->statusCode = StatusCodesEnum::NOT_FOUND;
     }
     if (this->_isDirectoryList == false)
     {
@@ -174,18 +172,6 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
         this->_hasBody = true;
     }
     return body;
-}
-
-std::string GetMethod::get_status_code() const
-{
-    std::stringstream ss_code;
-    ss_code << StatusCodesEnum::OK;
-    return ss_code.str();
-}
-
-std::string GetMethod::get_status_msg() const
-{
-    return this->_statusCodes.getStatusMessage(this->get_status_code());
 }
 
 std::string GetMethod::get_content_type() const

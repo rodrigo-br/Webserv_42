@@ -28,6 +28,7 @@ class Request
 		std::string					getHeader(std::string headerName) const;
 		std::string					getServerName(void) const;
 		std::string					getPort(void) const;
+		std::string					getFileName(void) const;
 		int							getPortNumber(void) const;
 		void        				setPath(std::string newPath);
 		std::string 				getQuery(void) const;

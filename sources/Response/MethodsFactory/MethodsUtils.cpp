@@ -46,3 +46,15 @@ std::string MethodsUtils::getProtocolVersion() const
 {
     return "HTTP/1.1";
 }
+
+std::string MethodsUtils::get_status_code() const
+{
+    std::stringstream ss_code;
+    ss_code << this->statusCode;
+    return ss_code.str();
+}
+
+std::string MethodsUtils::get_status_msg() const
+{
+    return this->_statusCodes.getStatusMessage(this->get_status_code());
+}

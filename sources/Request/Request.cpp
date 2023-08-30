@@ -68,6 +68,10 @@ std::string Request::getFileExec(void) const
 {
     return  this->_parser.getFileExec();
 }
+std::string Request::getFileName(void) const
+{
+    return this->_parser.getFileName();
+}
 
 void Request::setFileExec(std::string fileExec)
 {

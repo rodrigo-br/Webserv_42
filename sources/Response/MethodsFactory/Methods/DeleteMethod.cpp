@@ -77,7 +77,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     else
     {
         std::ostringstream responseDelete;
-        responseDelete << "HTTP/1.1 200 OK\r\n";
+        responseDelete << "HTTP/1.1 501 OK\r\n";
         responseDelete << "\r\n";
         std::string responseBody = responseDelete.str();
         this->_bodySize = responseBody.size();

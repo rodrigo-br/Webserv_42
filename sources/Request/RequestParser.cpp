@@ -39,9 +39,7 @@ void    RequestParser::parseRequestPort()
             this->_port = portSubstring;
             this->_portNumber = std::atoi(portSubstring.c_str());
         }
-        
     }
-
 }
 
 void RequestParser::parserServerName(void)
@@ -50,42 +48,52 @@ void RequestParser::parserServerName(void)
 	this->_serverName = host.substr(0, host.find(':'));
 }
 
-void RequestParser::parseChunkedBody(std::istringstream& iss)
+void RequestParser::parseMultipartFormDataBody(const std::string& boundary)
 {
-   
+    size_t boundaryPos = _requestBody.find(boundary);
+    if (boundaryPos == std::string::npos) 
+    {
+        return ; 
+    }
+    size_t contentStart = _requestBody.find("\r\n\r\n", boundaryPos);
+    if (contentStart == std::string::npos) {
+        return ; 
+    }
+    contentStart += 4;
+    if (_requestBody[contentStart] == '\r')
+        ++contentStart;
+    size_t contentEnd = _requestBody.find(boundary, contentStart);
+    if (contentEnd == std::string::npos) {
+        return ; 
+    }
+    while (contentEnd > contentStart && (_requestBody[contentEnd - 1] == '\r' || _requestBody[contentEnd - 1] == '\n' || _requestBody[contentEnd - 1] == '-')) {
+        --contentEnd;
+    }
+    _requestBody = _requestBody.substr(contentStart, contentEnd - contentStart);
+}
+
+
+void RequestParser::parseChunkedBody(std::istringstream& iss)
+{  
     std::string chunkSizeLine;
     std::string chunk;
     size_t chunkSize;
 
-        std::cout<< "aaaaaaaaaaaaaaaaaaaa  ="<<  std::endl << chunk << std::endl << std::endl;
-
-    // Continue lendo os chunks até encontrar um chunk com tamanho zero
     while (std::getline(iss, chunkSizeLine))
     {
         std::stringstream chunkSizeStream(chunkSizeLine);
         chunkSizeStream >> std::hex >> chunkSize;
-        
         if (chunkSize == 0)
         {
-        std::cout<< "aaaaaaaaaaaaaaaaaaaa  ="<<  std::endl << chunk << std::endl << std::endl;
-
             break;
         }
-
-        // Lê o chunk atual
         chunk.resize(chunkSize);
         iss.read(&chunk[0], chunkSize);
-
-        // Descarta o CRLF após o chunk
         std::string crlf;
         std::getline(iss, crlf);
-
-        // Adiciona o chunk ao corpo da requisição
-        std::cout<< "chunkkkkkkkkkkkkkkkke  ="<<  std::endl << chunk << std::endl << std::endl;
         _requestBody += chunk;
     }
 }
-
 
 void RequestParser::parseContentLengthBody(std::istringstream& iss)
 {
@@ -94,30 +102,13 @@ void RequestParser::parseContentLengthBody(std::istringstream& iss)
 
     while (contentLength > 0 && std::getline(iss, line))
     {
-        this->_requestBody += line + "\r\n"; // Adicione o tamanho dos caracteres de nova linha
-        contentLength -= (line.size() + 2); // Tamanho da linha + 2 para os caracteres de nova linha
+        this->_requestBody += line + "\n";
+        contentLength -= (line.size() + 2);
     }
-    // Finalize o processamento do corpo se necessário
-}
-
-int RequestParser::getContentLength() const
-{
-    std::string contentLengthStr = getHeader("Content-Length");
-    
-    if (!contentLengthStr.empty())
-    {
-        return atoi(contentLengthStr.c_str());
-    }
-    
-    return 0;
 }
 
 void RequestParser::parseRequestBody(std::string& line, std::istringstream& iss)
 {
-    // while (std::getline(iss, line)) 
-    // {
-    //     this->_requestBody += line;
-    // }
     (void)line;
     std::string transferEncoding = getHeader("Transfer-Encoding");
     if (transferEncoding == "chunked")
@@ -128,9 +119,17 @@ void RequestParser::parseRequestBody(std::string& line, std::istringstream& iss)
     else if (!getHeader("Content-Length").empty())
     {
         parseContentLengthBody(iss);
-        std::cout <<  std::endl<< "entrou no contrenteeeeeeeeeeee "<< std::endl <<  std::endl;
     }
-
+    if (!getHeader("Content-Type").empty() && getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
+    {   
+        setFileName();
+        size_t pos = getHeader("Content-Type").find("boundary=", 0);
+        if (pos != std::string::npos)
+        {
+            std::string boundary = getHeader("Content-Type").substr(pos + 9);
+            parseMultipartFormDataBody(boundary);
+        }
+    }
 }
 
 void 	RequestParser::parseRequestHeader( std::string &line, std::istringstream &iss )
@@ -222,6 +221,11 @@ std::string RequestParser::getServerName(void) const
     return this->_serverName;;
 }
 
+std::string RequestParser::getFileName(void) const
+{
+    return this->_fileName;
+}
+
 void RequestParser::setPath(std::string newPath)
 {
     this->_path = newPath;
@@ -240,4 +244,27 @@ std::string RequestParser::getFileExec(void) const
 void RequestParser::setFileExec(std::string fileExec)
 {
     this->_fileExec = fileExec;
+}
+
+void       RequestParser::setFileName( void )
+{
+    std::string fileName = _requestBody;
+    size_t filenamePos = fileName.find("filename=\"");
+    if (filenamePos != std::string::npos) 
+    {
+        fileName = fileName.substr(filenamePos + 10);
+        fileName = fileName.substr(0, fileName.find("\""));
+    }
+    _fileName = fileName;
+}
+
+int RequestParser::getContentLength() const
+{
+    std::string contentLengthStr = getHeader("Content-Length");
+    
+    if (!contentLengthStr.empty())
+    {
+        return atoi(contentLengthStr.c_str());
+    }
+    return 0;
 }

@@ -28,6 +28,7 @@ class RequestParser
 		std::string							getServerName(void) const;
 		std::string							getQuery(void) const;
 		std::string							getFileExec(void) const;
+		std::string							getFileName(void) const;
 		int									getPortNumber(void) const;
 		void								setPath(std::string newPath);
 		void								setBody(std::string newBody);
@@ -41,9 +42,12 @@ class RequestParser
 		void 								parseRequestStartLine(std::string &line, std::istringstream &iss);
 		void 								parseRequestHeader(std::string &line, std::istringstream &iss);
 		void 								parseRequestBody(std::string &line, std::istringstream &iss);
+		void								parseMultipartFormDataBody(const std::string& boundary);
 		void								parseContentLengthBody(std::istringstream& iss);
 		void 								parseChunkedBody(std::istringstream& iss);
 		int									getContentLength() const;
+		void       							setFileName();
+
 
     	std::map<std::string, std::string> 	_headers;
 		std::string  						_method;
@@ -55,6 +59,7 @@ class RequestParser
 		std::string							_query;
 		std::string							_fileExec;
 		std::string							_serverName;
+		std::string							_fileName;
 
 
 };

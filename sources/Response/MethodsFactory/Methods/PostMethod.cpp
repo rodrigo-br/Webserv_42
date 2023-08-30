@@ -74,101 +74,40 @@ std::string PostMethod::get_status_msg() const
     return this->_statusCodes.getStatusMessage(this->get_status_code());
 }
 
-// char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
-// {
-//     char *body;
-//     if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
-//     {
-//         std::ostringstream responseDelete;
-//         responseDelete << "HTTP/1.1 200 OK\r\n";
-//         responseDelete << "\r\n";
+char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
+{
+    char *body;
 
-//         std::string responseBody = responseDelete.str();
-
-//         std::ifstream fileStream(request.getPath().c_str(), std::ios::binary);
-//         if (fileStream) 
-//         {
-//             std::ostringstream fileContentStream;
-//             fileContentStream << fileStream.rdbuf();
-//             responseBody += fileContentStream.str();
-//             fileStream.close();
-//         } 
-//         else 
-//         {
-//             responseBody += "Failed to read file content.";
-//         }
-
-//         this->_bodySize = responseBody.size();
-//         body = new char[this->_bodySize + 1];
-//         std::strcpy(body, responseBody.c_str());
-//         body[this->_bodySize] = '\0';
-//         std::cout <<  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = " << body << std::endl;
-
-
-//     }
-//     else 
-//     {
-//         std::cout <<  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = " << request.getHeader("Content-Type") << std::endl;
-//     }
-
-//     if (this->_bodySize > 0)
-//     {
-//         this->_hasBody = true;
-//     }
-//     return body;
-// }
-
-    char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
+    if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
     {
-        char *body;
-
-        if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
+        std::string fileContent = request.getBody();
+        std::string filePath = "wwwroot/post/" + request.getFileName();
+        std::ofstream outFile(filePath.c_str(), std::ios::binary);
+        if (outFile)
         {
-            std::ostringstream responseStream;
-            responseStream << "HTTP/1.1 200 OK\r\n";
-            responseStream << "Content-Type: text/html\r\n";
-            responseStream << "\r\n";
-
-            std::string responseBody = responseStream.str();
-            std::string fileName = request.getBody();
-            size_t filenamePos = fileName.find("filename=\"");
-            if (filenamePos != std::string::npos) 
-            {
-                fileName = fileName.substr(filenamePos + 10);
-                fileName = fileName.substr(0, fileName.find("\""));
-            }
-        
-            std::string fileContent;
-            std::string filePath = "wwwroot/post/" + fileName;
-            std::cout << std::endl <<  "filePath =====  " << filePath << std::endl << std::endl;
-            std::ofstream outFile(filePath.c_str(), std::ios::binary);
-            if (outFile)
-            {
-                outFile.write(fileContent.c_str(), fileContent.length());
-                outFile.close();
-                std::cout << std::endl <<  "fileContent =====  " << fileContent << std::endl << std::endl;
-                responseBody += "File uploaded successfully.";
-            }
-            else
-            {
-                std::cout << std::endl <<  "error =====  " << fileContent << std::endl << std::endl;
-
-                responseBody += "Failed to upload file. ";
-            }
-            this->_bodySize = responseBody.size();
-            body = new char[this->_bodySize + 1];
-            std::strcpy(body, responseBody.c_str());
-            body[this->_bodySize] = '\0';
+            outFile.write(fileContent.c_str(), fileContent.length());
+            outFile.close();
         }
         else
         {
-            std::cout << "DEU RUIM " << request.getHeader("Content-Type") << std::endl;
-        }
+            std::cout << std::endl <<  "error =====  " << fileContent << std::endl << std::endl;
 
-        if (this->_bodySize > 0)
-        {
-            this->_hasBody = true;
         }
-        return body;
+        std::cout << std::endl <<  "fileContent =====  " << fileContent << std::endl << std::endl;
+        this->_bodySize = fileContent.size();
+        body = new char[this->_bodySize];
+        std::copy(fileContent.begin(), fileContent.end(), body);
+
     }
+    else
+    {
+        std::cout << "DEU RUIM " << request.getHeader("Content-Type") << std::endl;
+    }
+
+    if (this->_bodySize > 0)
+    {
+        this->_hasBody = true;
+    }
+    return body;
+}
 
