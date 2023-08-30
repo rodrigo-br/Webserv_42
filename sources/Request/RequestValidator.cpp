@@ -209,15 +209,13 @@ void	RequestValidator::serverNamesValidator(ServerData &serverData, Request& req
 	{
 		if ((*it).compare(request.getServerName()) == 0)
 		{
-			if (this->_isDirectoryListing == false)
+			if (request.getPath().find("/assets") != std::string::npos && !request.getHeader("Referer").empty())
+			{
 				this->_path = true;
+			}
 			return ;
 		}
 	}
 	this->_path = false;
 	this->_isDirectoryListing = false;
-	if (request.getPath().find("/assets") != std::string::npos && !request.getHeader("Referer").empty())
-	{
-		this->_path = true;
-	}
 }

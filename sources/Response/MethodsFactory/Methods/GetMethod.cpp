@@ -121,6 +121,7 @@ char *GetMethod::getDirectoryListing()
     {
         this->_isDirectoryList   = false;
         std::string file = this->root + std::string("/404.html");
+        this->statusCode = StatusCodesEnum::NOT_FOUND;
         char* errorCStr = new char[file.size() + 1];
         strcpy(errorCStr, file.c_str());
         return errorCStr;
@@ -148,6 +149,7 @@ char *GetMethod::getDirectoryListing()
     listing.str("");
     listing.clear();
     this->_isDirectoryList = true;
+    this->statusCode = StatusCodesEnum::OK;
     return listingCStr;
 }
 
@@ -160,8 +162,8 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (this->validator.getPath())
     {
-
         file = this->request.getPath();
+        this->statusCode = StatusCodesEnum::OK;
     }
     else if (this->validator.isDirectoryListing())
     {
@@ -170,6 +172,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     else
     {
         file = this->root + std::string("/404.html");
+        this->statusCode = StatusCodesEnum::NOT_FOUND;
     }
     if (this->_isDirectoryList == false)
     {
@@ -184,18 +187,6 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
         this->_hasBody = true;
     }
     return body;
-}
-
-std::string GetMethod::get_status_code() const
-{
-    std::stringstream ss_code;
-    ss_code << StatusCodesEnum::OK;
-    return ss_code.str();
-}
-
-std::string GetMethod::get_status_msg() const
-{
-    return this->_statusCodes.getStatusMessage(this->get_status_code());
 }
 
 std::string GetMethod::get_content_type() const
