@@ -1,6 +1,8 @@
 #include "interfaces/MethodsFactory/Methods/PostMethod.hpp"
 #include <sstream> 
-
+# include <vector>
+# include <iostream>
+# include <fstream>
 const char* PostMethod::buildResponse()
 {
     std::string response;
@@ -96,7 +98,9 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
         std::cout << std::endl <<  "fileContent =====  " << fileContent << std::endl << std::endl;
         this->_bodySize = fileContent.size();
         body = new char[this->_bodySize];
-        std::copy(fileContent.begin(), fileContent.end(), body);
+        // std::copy(fileContent.begin(), fileContent.end(), body);
+                    memcpy(body, fileContent.c_str(), this->_bodySize);
+
 
     }
     else

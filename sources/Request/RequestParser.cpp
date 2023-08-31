@@ -50,13 +50,18 @@ void RequestParser::parserServerName(void)
 
 void RequestParser::parseMultipartFormDataBody(const std::string& boundary)
 {
+    std::cout << std::endl <<   "boundary" << std::endl << std::endl;
     size_t boundaryPos = _requestBody.find(boundary);
     if (boundaryPos == std::string::npos) 
     {
+            std::cout << std::endl <<   "boundaryPos" << std::endl << std::endl;
+
         return ; 
     }
     size_t contentStart = _requestBody.find("\r\n\r\n", boundaryPos);
     if (contentStart == std::string::npos) {
+                    std::cout << std::endl <<   "contentStart" << std::endl << std::endl;
+
         return ; 
     }
     contentStart += 4;
@@ -64,11 +69,16 @@ void RequestParser::parseMultipartFormDataBody(const std::string& boundary)
         ++contentStart;
     size_t contentEnd = _requestBody.find(boundary, contentStart);
     if (contentEnd == std::string::npos) {
+                            std::cout << std::endl <<   "contentEnd" << std::endl << std::endl;
+            std::cout << std::endl <<   "_requestBody" << _requestBody.substr(contentStart, contentEnd - contentStart)<< std::endl << std::endl;
+        _requestBody =  _requestBody.substr(contentStart, contentEnd - contentStart);
         return ; 
     }
     while (contentEnd > contentStart && (_requestBody[contentEnd - 1] == '\r' || _requestBody[contentEnd - 1] == '\n' || _requestBody[contentEnd - 1] == '-')) {
         --contentEnd;
     }
+                                std::cout << std::endl <<   "_requestBody" << _requestBody.substr(contentStart, contentEnd - contentStart)<< std::endl << std::endl;
+
     _requestBody = _requestBody.substr(contentStart, contentEnd - contentStart);
 }
 
