@@ -23,6 +23,7 @@ class RequestValidator
 		bool				        getBody(void) const;
 		bool				        getHeader(std::string headerName) const;
 		bool 						getServerName(void) const;
+		bool						getRequiredMethodAllowed(void) const;
 		bool						isDirectoryListing();
 		std::string					getRoot(void) const;
 
@@ -40,6 +41,7 @@ class RequestValidator
 
 
 
+		void 						handleAllowedMethods(Request& request, std::string& path, ServerData &serverData);
     	void 						handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root);
     	void 						handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& root);
     	void 						handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root, size_t position);
@@ -51,6 +53,7 @@ class RequestValidator
 		bool						_requestBody;
 		bool						_serverName;
 		bool						_isDirectoryListing;
+		bool						_requiredMethodAllowed;
 		std::string					root;
 };
 

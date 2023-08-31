@@ -160,7 +160,12 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     std::string file;
     char * body;
 
-    if (this->validator.getPath())
+    if (!this->validator.getRequiredMethodAllowed())
+    {
+        file = this->root + std::string("/404.html");
+        this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
+    }
+    else if (this->validator.getPath())
     {
         file = this->request.getPath();
         this->statusCode = StatusCodesEnum::OK;

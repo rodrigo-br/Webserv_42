@@ -34,20 +34,24 @@ void RequestValidator::pathValidator(ServerData &serverData, Request& request)
 	size_t		len = path.length();
 
 
-    if (isRootPath(path, len))
+	if (isRootPath(path, len))
 	{
-        handleRootPath(serverData, request, path, root);
+		handleRootPath(serverData, request, path, root);
 	}
-    else if (endsWithSlash(position, len))
+	else if (endsWithSlash(position, len))
 	{
-        handlePathWithTrailingSlash(serverData, request, path, root);
+		handlePathWithTrailingSlash(serverData, request, path, root);
 	}
-    else
+	else
 	{
-        handleNonTrailingSlashPath(serverData, request, path, root, position);
+		handleNonTrailingSlashPath(serverData, request, path, root, position);
 	}
-    handleAssetsPath(request, path, root);
-	handleDirectoryListing(request, path, root, serverData);
+	handleAllowedMethods(request, path, serverData);
+	handleAssetsPath(request, path, root);
+	if (this->_requiredMethodAllowed)
+	{
+		handleDirectoryListing(request, path, root, serverData);
+	}
 }
 
 bool RequestValidator::isRootPath(const std::string& path, size_t len)
@@ -60,7 +64,19 @@ bool RequestValidator::endsWithSlash(size_t position, size_t len)
     return (len == position + 1);
 }
 
-void RequestValidator::handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& _root)
+void RequestValidator::handleAllowedMethods(Request& request, std::string& path, ServerData& serverData)
+{
+	if (!Utils::hasMethodInInput(request.getMethod(), (HttpMethodEnum::httpMethod)serverData.getAllowedMethods(path)))
+	{
+		this->_requiredMethodAllowed = false;
+	}
+	else
+	{
+		this->_requiredMethodAllowed = true;
+	}
+}
+
+void RequestValidator::handleRootPath(ServerData& serverData, Request& request, const std::string& path, const std::string& _root)
 {
     std::string location = serverData.getLocation(path);
     if (!location.empty())
@@ -152,11 +168,8 @@ void RequestValidator::handleAssetsPath(Request& request, const std::string& pat
     if (path.find("/assets") != std::string::npos && !request.getHeader("Referer").empty())
     {
         this->_path = true;
+		this->_requiredMethodAllowed = true;
         request.setPath(_root + path);
-		if (request.getHeader("Referer").empty())
-		{
-			this->_path = true;
-		}
     }
 }
 
@@ -195,6 +208,11 @@ bool RequestValidator::getBody(void) const
 bool RequestValidator::getServerName(void) const
 {
 	return this->_serverName;
+}
+
+bool RequestValidator::getRequiredMethodAllowed(void) const
+{
+    return this->_requiredMethodAllowed;
 }
 
 HttpMethodEnum::httpMethod RequestValidator::getMethod(void) const

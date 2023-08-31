@@ -19,6 +19,7 @@ class ServerData
     public:
         ServerData();
 
+        int getAllowedMethods(std::string locationPath) const;
         std::string getRoot() const;
         std::string getLocation(std::string locationName) const;
         std::vector<std::string> getServerNames() const;

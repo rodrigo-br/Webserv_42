@@ -19,6 +19,17 @@ std::string ServerData::getRoot() const
     return this->_root;
 }
 
+int ServerData::getAllowedMethods(std::string locationPath) const
+{
+    std::map<std::string, Location>::const_iterator it = this->_location.find(locationPath);
+
+    if (it != this->_location.end())
+    {
+        return it->second.getAllowedMethods();
+    }
+    return 0;
+}
+
 std::map<std::string, Location> ServerData::getLocations() const
 {
     return this->_location;

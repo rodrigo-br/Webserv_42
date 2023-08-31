@@ -12,7 +12,7 @@ class Utils {
 
     public:
         static bool check(ssize_t result, std::string functionToBeChecked, int erro = -1);
-        static bool hasMethodInInput(int input, HttpMethodEnum::httpMethod method);
+        static bool hasMethodInInput(std::string input, HttpMethodEnum::httpMethod method);
         static bool endsWith(const std::string &str, const std::string &suffix);
         static std::string intToString(int value);
 };
