@@ -10,7 +10,7 @@
 # include "classes/RequestParser.hpp"
 # include "enums/HttpMethodsEnum.hpp"
 
-# define BUFFER_SIZE 30000
+# define BUFFER_SIZE2 30000
 
 class Request
 {
@@ -37,9 +37,10 @@ class Request
 		void						setBody(std::string newBody);
 		void						buildCGI(void);
 
+int getContentLength() const;
 	private:
 		RequestParser				_parser;
-		char            			_request[BUFFER_SIZE];
+		char            			_request[BUFFER_SIZE2];
 
 };
 

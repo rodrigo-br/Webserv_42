@@ -1,21 +1,22 @@
 #include "classes/Request.hpp"
-
+        
 Request::Request( ) : _request() {	}
 
 Request::~Request( void ) { }
 
 const char*    Request::getMensageRequest( void ) const
 {
-    return (this->_request);
+    return (_parser.getRequest().c_str());
 }
 
 Request			&Request::createParsedMessage(int fdConnection)
 {
-	if (Utils::check(read(fdConnection,this->_request, BUFFER_SIZE),  "Read request"))
-	{
-		exit(EXIT_FAILURE);
-	}
-	this->_parser.parserHttpRequest(this->_request);
+//    int fd = fdConnection;
+// 	if (Utils::check(read(fdConnection, this->_request, BUFFER_SIZE2),  "Read request"))
+// 	{
+// 		exit(EXIT_FAILURE);
+// 	}
+	this->_parser.parserHttpRequest(fdConnection);
 	return *this;
 }
 

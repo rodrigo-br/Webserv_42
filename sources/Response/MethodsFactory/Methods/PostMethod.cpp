@@ -83,11 +83,13 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
     {
         std::string fileContent = request.getBody();
+                    std::cout << std::endl <<  "body antes:" << fileContent.length() << std::endl;
+
         std::string filePath = "wwwroot/post/" + request.getFileName();
         std::ofstream outFile(filePath.c_str(), std::ios::binary);
         if (outFile)
         {
-            outFile.write(fileContent.c_str(), fileContent.length());
+            outFile.write(fileContent.c_str(), 144043);
             outFile.close();
         }
         else
@@ -95,12 +97,11 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
             std::cout << std::endl <<  "error =====  " << fileContent << std::endl << std::endl;
 
         }
-        std::cout << std::endl <<  "fileContent =====  " << fileContent << std::endl << std::endl;
+            std::cout << std::endl <<  "body :" << fileContent << std::endl;
+
         this->_bodySize = fileContent.size();
         body = new char[this->_bodySize];
-        // std::copy(fileContent.begin(), fileContent.end(), body);
-                    memcpy(body, fileContent.c_str(), this->_bodySize);
-
+        memcpy(body, fileContent.c_str(), this->_bodySize);
 
     }
     else
