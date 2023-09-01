@@ -9,6 +9,7 @@ std::vector<char> MethodsUtils::openFileAsVector(std::string path)
     {
         path += "index.html";
     }
+    std::cout << path << std::endl;
     std::ifstream file(path.c_str(), std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {

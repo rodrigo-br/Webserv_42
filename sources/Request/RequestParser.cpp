@@ -3,46 +3,44 @@
 #define SP				" "
 RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVersion(""), _requestBody("") { }
 
-static bool has_delimiter(std::string line, std::string delimiter)
+static bool Isdelimiter(std::string line, std::string delimiter)
 {
 	return (line.rfind(delimiter) != std::string::npos);
+}
+void	readLine(int fd, std::string &line, std::string delimiter)
+{
+	char		buffer[2] = {0};
+	ssize_t		num_of_bytes;	
+	std::string temp_line;
+
+	while (true)
+	{
+		num_of_bytes = recv(fd, buffer, 1, 0);
+        std::cout << num_of_bytes << std::endl;
+		if (num_of_bytes == -1)
+			return;
+		if (num_of_bytes == 0)
+			break ;
+		temp_line += buffer;
+        if (Isdelimiter(temp_line, delimiter))
+            break ;
+	}
+	line = temp_line;
+    if (Isdelimiter(temp_line, delimiter))
+		line.resize(line.rfind(delimiter));
 }
 
 RequestParser::~RequestParser(void) {}
 
 void    							RequestParser::parserHttpRequest(int fdConection)
 {
-    std::string line;
-    char		buffer[2] = {0};
-	ssize_t		num_of_bytes;	
-	std::string temp_line;
+
     this->_fdClient = fdConection;
-	while (true)
-	{
-		num_of_bytes = recv(_fdClient, buffer, 1, 0);
-		if (num_of_bytes == -1)
-			throw (std::exception());
-		if (num_of_bytes == 0)
-			break ;
-		temp_line += buffer;
-        if (has_delimiter(temp_line, CRLF))
-            break ;
-	}
-	line = temp_line;
-    if (has_delimiter(temp_line, CRLF))
-		line.resize(line.rfind(CRLF));
 	
-	std::istringstream	iss(line);
-    // std::string line2;
-    // std::string temp_line2;
-    // std::string lin;
 
-	parseRequestStartLine(temp_line, iss);
-  
-        // std::cout << temp_line2 << std::endl;
-
-	parseRequestHeader(line, iss);
-	parseRequestBody(fdConection);
+	parseRequestStartLine();
+	parseRequestHeader();
+	parseRequestBody();
     parseRequestPort();
     parserServerName();
     parseRquestQuery();
@@ -116,31 +114,10 @@ void RequestParser::_clean_footer(std::string &temp_line)
 }
 
 
-void	receive_line(int fd, std::string &line, std::string delimiter)
-{
-	char		buffer[2] = {0};
-	ssize_t		num_of_bytes;	
-	std::string temp_line;
 
-	while (true)
-	{
-		num_of_bytes = recv(fd, buffer, 1, 0);
-		if (num_of_bytes == -1)
-			return;
-		if (num_of_bytes == 0)
-			break ;
-		temp_line += buffer;
-        if (has_delimiter(temp_line, delimiter))
-            break ;
-	}
-	line = temp_line;
-    if (has_delimiter(temp_line, delimiter))
-		line.resize(line.rfind(delimiter));
-}
 
-void RequestParser::parseRequestBody(int fdFon)
+void RequestParser::parseRequestBody(void)
 {
-    (void)fdFon;
 
         // std::cout <<  "ola" << line << std::endl;
 
@@ -153,18 +130,37 @@ void RequestParser::parseRequestBody(int fdFon)
     //     parseChunkedBody(iss);
     // }
 
-    // if (!getHeader("Content-Type").empty() && getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
-    // {   
-    //     // setFileName(iss);
-    //     size_t pos = getHeader("Content-Type").find("boundary=", 0);
-    //     if (pos != std::string::npos)
-    //     {
-    //         _clean_header(line);
-	// 	    _clean_footer(line);
+    if (!getHeader("Content-Type").empty() && getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
+    {   
+        int			length;
+        ssize_t		num_of_bytes;
+        char		buffer[BUFFER_SIZE] = {0};
+        std::string temp_line;
 
-    //     }
-    // }
-    // _requestBody = line;
+        length = getContentLength();
+        while (true)
+        {
+            if (!length)
+                break;
+            num_of_bytes = recv(this->_fdClient, buffer, BUFFER_SIZE, 0);
+            if (num_of_bytes == -1)
+                return ;
+            if (num_of_bytes == 0)
+                break;
+            length -= num_of_bytes;
+            temp_line.append(buffer, num_of_bytes);
+            memset(buffer, 0, BUFFER_SIZE);
+        }
+        setFileName(temp_line);
+        size_t pos = getHeader("Content-Type").find("boundary=", 0);
+        if (pos != std::string::npos)
+        {
+            _clean_header(temp_line);
+		    _clean_footer(temp_line);
+
+        }
+        this->_requestBody = temp_line;
+    }
     // else if (!getHeader("Content-Length").empty())
     // {
     //     parseContentLengthBody(iss);
@@ -173,53 +169,45 @@ void RequestParser::parseRequestBody(int fdFon)
     // }
 }
 
-void 	RequestParser::parseRequestHeader( std::string &line, std::istringstream &iss )
+void 	RequestParser::parseRequestHeader(void)
 {
-    (void)iss;
-        (void)line;
-
-    std::string line2;
-
+    std::string line;
     while (true)
     {
-        receive_line(_fdClient, line2, CRLF);
-
-    if (line2 == CRLF || line2.empty())
-    {
-        // Fim dos cabeçalhos
-            std::cout << "break = " << line2 << std::endl;; 
-
-        break;
-    }
-     else
+        readLine(_fdClient, line, CRLF);
+        if (line == CRLF || line.empty())
         {
-            size_t colonPos = line2.find(':');
+            break;
+        }
+        else
+        {
+            size_t colonPos = line.find(':');
             if (colonPos != std::string::npos)
             {
-                size_t lastNonCRLF = line2.find_last_not_of("\r\n");
+                size_t lastNonCRLF = line.find_last_not_of("\r\n");
                 if (lastNonCRLF != std::string::npos) 
                 {
-                    line2 = line2.substr(0, lastNonCRLF + 1);
-                    std::string headerName = line2.substr(0, colonPos);
-                    std::string headerValue = line2.substr(colonPos + 2);
+                    line = line.substr(0, lastNonCRLF + 1);
+                    std::string headerName = line.substr(0, colonPos);
+                    std::string headerValue = line.substr(colonPos + 2);
                     this->_headers[headerName] = headerValue;
-                                this->_request += line2 + "\n";
 
                 }
             }
         }
+        this->_request += line + "\n";
     }
 }
 
-void	RequestParser::parseRequestStartLine(std::string &line, std::istringstream &iss)
+void	RequestParser::parseRequestStartLine(void)
 {
-	if (std::getline(iss, line))
+    std::string line;
+    readLine(_fdClient, line, CRLF);
+	if (!line.empty())
 	{
         std::istringstream lineStream(line);
-        lineStream >> this->_method >> _path >> this->_httpVersion;
+        lineStream >> this->_method >> this->_path >> this->_httpVersion;
         this->_request += line +  "\n";
-        std::cout <<  "starLine = "<< line << std::endl;
-
     }
 }
 
@@ -255,7 +243,6 @@ int RequestParser::getPortNumber(void) const
 
 std::string RequestParser::getHeader(std::string headerName) const
 {
-    // std::cout <<  "header name = " << _headers[headerName] << std::endl;
     std::map<std::string, std::string>::const_iterator it = this->_headers.find(headerName);
 
     if (it != this->_headers.end())
@@ -309,39 +296,18 @@ void RequestParser::setFileExec(std::string fileExec)
     this->_fileExec = fileExec;
 }
 
-// void       RequestParser::setFileName( void )
-// {
-//     std::string fileName = _requestBody;
-//     size_t filenamePos = fileName.find("filename=\"");
-//     if (filenamePos != std::string::npos) 
-//     {
-//         fileName = fileName.substr(filenamePos + 10);
-//         fileName = fileName.substr(0, fileName.find("\""));
-//     }
-//     _fileName = fileName;
-// }
-void RequestParser::setFileName(std::istringstream& iss)
+void RequestParser::setFileName(std::string line)
 {
-    std::string fileName;
-    size_t contentLength = getContentLength();
-    char buffer;
-    size_t bytesRead = 0;
 
-    while (contentLength > 0 && bytesRead < contentLength && iss.get(buffer))
+    if (line.find("filename=\"") != std::string::npos)
     {
-        fileName += buffer;
-        bytesRead++;
-
-        if (fileName.find("filename=\"") != std::string::npos)
+        size_t filenameEndPos = line.find("\"", line.find("filename=\"") + 10);
+        if (filenameEndPos != std::string::npos)
         {
-            size_t filenameEndPos = fileName.find("\"", fileName.find("filename=\"") + 10);
-            if (filenameEndPos != std::string::npos)
-            {
-                _fileName = fileName.substr(fileName.find("filename=\"") + 10, filenameEndPos - (fileName.find("filename=\"") + 10));
-                return;
-            }
+            _fileName = line.substr(line.find("filename=\"") + 10, filenameEndPos - (line.find("filename=\"") + 10));
         }
     }
+    
 }
 
 
@@ -351,7 +317,6 @@ int RequestParser::getContentLength() const
     
     if (!contentLengthStr.empty())
     {
-        std::cout <<  "tamanho = " << atol(contentLengthStr.c_str()) <<std::endl;
         return atol(contentLengthStr.c_str());
     }
     return 0;

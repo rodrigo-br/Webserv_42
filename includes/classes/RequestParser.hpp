@@ -49,10 +49,9 @@ class RequestParser
 		void								parseRequestPort();
 		void								parserServerName();
 		void  								parseRquestQuery();
-		void 								parseRequestStartLine(std::string &line, std::istringstream &iss);
-		void 								parseRequestHeader(std::string &line, std::istringstream &iss);
-		// void 								parseRequestBody(std::string &line, std::istringstream &iss);
-				void 								parseRequestBody(int fdConection);
+		void 								parseRequestStartLine(void);
+		void 								parseRequestHeader(void);
+		void 								parseRequestBody();
 
 
 void _clean_header(std::string &temp_line);
@@ -62,8 +61,8 @@ void _clean_footer(std::string &temp_line);
 		int								parseContentLengthBody(std::istringstream& iss);
 		void 								parseChunkedBody(std::istringstream& iss);
 		int									getContentLength() const;
-		void       							setFileName();
-void setFileName(std::istringstream& iss);
+		void       							setFileName(std::string file);
+// void setFileName(std::istringstream& iss);
 
 void parseMultipartFormDataBody(const std::string& boundary, std::istringstream& iss);
 

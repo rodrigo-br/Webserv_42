@@ -180,6 +180,7 @@ std::string GetMethod::get_content_type() const
     if (this->validator.getPath())
     {
         file = this->request.getPath();
+        std::cout  <<"file" << file << std::endl;
     }
     else
     {
