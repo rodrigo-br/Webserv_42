@@ -1,43 +1,13 @@
 #include "classes/RequestParser.hpp"
 # include <sstream>
-#define SP				" "
+
 RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVersion(""), _requestBody("") { }
-
-static bool Isdelimiter(std::string line, std::string delimiter)
-{
-	return (line.rfind(delimiter) != std::string::npos);
-}
-void	readLine(int fd, std::string &line, std::string delimiter)
-{
-	char		buffer[2] = {0};
-	ssize_t		num_of_bytes;	
-	std::string temp_line;
-
-	while (true)
-	{
-		num_of_bytes = recv(fd, buffer, 1, 0);
-        std::cout << num_of_bytes << std::endl;
-		if (num_of_bytes == -1)
-			return;
-		if (num_of_bytes == 0)
-			break ;
-		temp_line += buffer;
-        if (Isdelimiter(temp_line, delimiter))
-            break ;
-	}
-	line = temp_line;
-    if (Isdelimiter(temp_line, delimiter))
-		line.resize(line.rfind(delimiter));
-}
 
 RequestParser::~RequestParser(void) {}
 
 void    							RequestParser::parserHttpRequest(int fdConection)
 {
-
-    this->_fdClient = fdConection;
-	
-
+    this->_fdClient = fdConection;	
 	parseRequestStartLine();
 	parseRequestHeader();
 	parseRequestBody();
@@ -99,22 +69,35 @@ void RequestParser::parseChunkedBody(std::istringstream& iss)
     }
 }
 
-void RequestParser::_clean_header(std::string &temp_line)
+void parseMultipartFormDataBody(const std::string& boundary, std::string &tempLine)
 {
-	std::string header;
-	header = temp_line.substr(0, temp_line.find(CRLF_DOUBLE));
-	temp_line.erase(0, header.length() + strlen(CRLF_DOUBLE));
+    size_t boundaryPos = tempLine.find(boundary);
+    if (boundaryPos == std::string::npos) 
+    {
+        return ; 
+    }
+    size_t contentStart = tempLine.find("\r\n\r\n", boundaryPos);
+    if (contentStart == std::string::npos) 
+    {
+        return ; 
+    }
+    contentStart += 4;
+    if (tempLine[contentStart] == '\r')
+    {
+        ++contentStart;
+    }
+    size_t contentEnd = tempLine.find(boundary, contentStart);
+    if (contentEnd == std::string::npos) 
+    {
+        tempLine =  tempLine.substr(contentStart, contentEnd - contentStart);
+        return ; 
+    }
+    while (contentEnd > contentStart && (tempLine[contentEnd - 1] == '\r' || tempLine[contentEnd - 1] == '\n' || tempLine[contentEnd - 1] == '-')) 
+    {
+        --contentEnd;
+    }
+    tempLine = tempLine.substr(contentStart, contentEnd - contentStart);
 }
-
-void RequestParser::_clean_footer(std::string &temp_line)
-{
-	std::string footer;
-	footer = temp_line.substr(temp_line.rfind(CRLF), temp_line.npos);
-	temp_line.erase(temp_line.length() - footer.length(), temp_line.npos);
-}
-
-
-
 
 void RequestParser::parseRequestBody(void)
 {
@@ -132,49 +115,27 @@ void RequestParser::parseRequestBody(void)
 
     if (!getHeader("Content-Type").empty() && getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
     {   
-        int			length;
-        ssize_t		num_of_bytes;
-        char		buffer[BUFFER_SIZE] = {0};
-        std::string temp_line;
+        std::string tempLine;
 
-        length = getContentLength();
-        while (true)
-        {
-            if (!length)
-                break;
-            num_of_bytes = recv(this->_fdClient, buffer, BUFFER_SIZE, 0);
-            if (num_of_bytes == -1)
-                return ;
-            if (num_of_bytes == 0)
-                break;
-            length -= num_of_bytes;
-            temp_line.append(buffer, num_of_bytes);
-            memset(buffer, 0, BUFFER_SIZE);
-        }
-        setFileName(temp_line);
+        Utils::readLineBody(this->_fdClient, tempLine, getContentLength());
+        setFileName(tempLine);
         size_t pos = getHeader("Content-Type").find("boundary=", 0);
         if (pos != std::string::npos)
         {
-            _clean_header(temp_line);
-		    _clean_footer(temp_line);
-
+            std::string boundary = getHeader("Content-Type").substr(pos + 9);
+            parseMultipartFormDataBody(boundary, tempLine);
         }
-        this->_requestBody = temp_line;
+        this->_requestBody += tempLine;
     }
-    // else if (!getHeader("Content-Length").empty())
-    // {
-    //     parseContentLengthBody(iss);
-    //     std::cout << std::endl <<  "_requestBody antes:" << _requestBody.length() << std::endl;
-
-    // }
 }
 
 void 	RequestParser::parseRequestHeader(void)
 {
     std::string line;
+
     while (true)
     {
-        readLine(_fdClient, line, CRLF);
+        Utils::readLine(_fdClient, line, CRLF);
         if (line == CRLF || line.empty())
         {
             break;
@@ -184,7 +145,7 @@ void 	RequestParser::parseRequestHeader(void)
             size_t colonPos = line.find(':');
             if (colonPos != std::string::npos)
             {
-                size_t lastNonCRLF = line.find_last_not_of("\r\n");
+                size_t lastNonCRLF = line.find_last_not_of(CRLF);
                 if (lastNonCRLF != std::string::npos) 
                 {
                     line = line.substr(0, lastNonCRLF + 1);
@@ -202,7 +163,8 @@ void 	RequestParser::parseRequestHeader(void)
 void	RequestParser::parseRequestStartLine(void)
 {
     std::string line;
-    readLine(_fdClient, line, CRLF);
+
+    Utils::readLine(_fdClient, line, CRLF);
 	if (!line.empty())
 	{
         std::istringstream lineStream(line);
@@ -251,7 +213,7 @@ std::string RequestParser::getHeader(std::string headerName) const
     }
     else 
     {
-        return "nao deu";
+        return "";
     }
 }
 
@@ -309,7 +271,6 @@ void RequestParser::setFileName(std::string line)
     }
     
 }
-
 
 int RequestParser::getContentLength() const
 {

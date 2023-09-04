@@ -3,12 +3,12 @@
 
 # include <string>
 # include "enums/HttpMethodsEnum.hpp"
+# include "classes/Utils.hpp"
 # include <iostream>
 # include <map>
 # include <cstdlib>
-// # include <sstream>
-#include <cstring>
-#include <sys/socket.h>
+# include <cstring>
+# include <sys/socket.h>
 # include <string>
 # include <typeinfo>
 # include <vector>
@@ -38,7 +38,6 @@ class RequestParser
 		std::string							getFileExec(void) const;
 		std::string							getFileName(void) const;
 		std::string							getRequest(void) const;
-
 		int									getPortNumber(void) const;
 		void								setPath(std::string newPath);
 		void								setBody(std::string newBody);
@@ -46,25 +45,15 @@ class RequestParser
 
 
 	private:
-		void								parseRequestPort();
-		void								parserServerName();
-		void  								parseRquestQuery();
+		void								parseRequestPort(void);
+		void								parserServerName(void);
+		void  								parseRquestQuery(void);
 		void 								parseRequestStartLine(void);
 		void 								parseRequestHeader(void);
-		void 								parseRequestBody();
-
-
-void _clean_header(std::string &temp_line);
-void _clean_footer(std::string &temp_line);
-
-		void								parseMultipartFormDataBody(const std::string& boundary);
-		int								parseContentLengthBody(std::istringstream& iss);
+		void 								parseRequestBody(void);
 		void 								parseChunkedBody(std::istringstream& iss);
-		int									getContentLength() const;
+		int									getContentLength(void) const;
 		void       							setFileName(std::string file);
-// void setFileName(std::istringstream& iss);
-
-void parseMultipartFormDataBody(const std::string& boundary, std::istringstream& iss);
 
     	std::map<std::string, std::string> 	_headers;
 		std::string  						_method;

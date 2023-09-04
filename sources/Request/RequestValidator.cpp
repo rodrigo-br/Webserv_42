@@ -35,19 +35,14 @@ void RequestValidator::pathValidator(ServerData &serverData, Request& request)
 
     if (isRootPath(path, len))
 	{
-					std::cout <<  "isRootPath  " << path << std::endl;
-
         handleRootPath(serverData, request, path, root);
 	}
     else if (endsWithSlash(position, len))
 	{
-			std::cout <<  "endsWithSlash  " << path << std::endl;
-
         handlePathWithTrailingSlash(serverData, request, path, root);
 	}
     else
 	{
-	std::cout <<  "pathValidator  " << path << std::endl;
         handleNonTrailingSlashPath(serverData, request, path, root, position);
 	}
     handleAssetsPath(request, path, root);
@@ -69,8 +64,6 @@ void RequestValidator::handleRootPath(ServerData &serverData, Request& request, 
     std::string location = serverData.getLocation(path);
     if (!location.empty())
     {
-						std::cout <<  "gggggggggg  " << path << std::endl;
-
         this->_path = true;
         request.setPath(_root + path + location);
     }
@@ -81,15 +74,11 @@ void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Reque
     std::string location = serverData.getLocation(path.substr(0, path.length() - 1));
     if (!location.empty())
     {
-		std::cout <<  "eeeee  " << path << std::endl;
-
         this->_path = true;
         request.setPath(_root + path + location);
     }
 	else if (serverData.isDirectoryListingLocation(path.substr(0, path.length() - 1)))
 	{
-				std::cout <<  "fffff  " << path << std::endl;
-
 		this->_isDirectoryListing = true;
 		request.setPath(_root + path);
 	}
@@ -100,8 +89,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	
 	std::string location = serverData.getLocation(path);
 	if (!location.empty())
-	{								std::cout <<  "ddddddddd  " << path << std::endl;
-
+	{
 		this->_path = true;
 		request.setPath(_root + path + "/" + location);
 		return ;
@@ -111,8 +99,6 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	{
 		if (location.compare(path.substr(position + 1)) == 0)
 		{
-								std::cout <<  "bbbbbbbbbbbb  " << path << std::endl;
-
 			this->_path = true;
 			request.setPath(_root + path);
 		}
@@ -121,8 +107,6 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	{
 		if (path.compare("/index.html") == 0)
 		{
-				std::cout <<  "aaaaaaaaaa  " << path << std::endl;
-
 			this->_path = true;
 			request.setPath(_root + path);
 		}
@@ -146,8 +130,6 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 		}
 		else
 		{
-							std::cout <<  "hhhhhhhhh  " << path << std::endl;
-
 			request.setPath(_root + path);
 			this->_path = true;
 		}

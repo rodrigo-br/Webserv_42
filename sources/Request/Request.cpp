@@ -4,18 +4,13 @@ Request::Request( ) : _request() {	}
 
 Request::~Request( void ) { }
 
-const char*    Request::getMensageRequest( void ) const
+std::string   Request::getMensageRequest( void ) const
 {
-    return (_parser.getRequest().c_str());
+    return (_parser.getRequest());
 }
 
 Request			&Request::createParsedMessage(int fdConnection)
 {
-//    int fd = fdConnection;
-// 	if (Utils::check(read(fdConnection, this->_request, BUFFER_SIZE2),  "Read request"))
-// 	{
-// 		exit(EXIT_FAILURE);
-// 	}
 	this->_parser.parserHttpRequest(fdConnection);
 	return *this;
 }

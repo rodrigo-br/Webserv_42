@@ -34,7 +34,6 @@ class RequestValidator
 		void						bodyValidator(Request& request);
 		void						httpVersionValidator(Request& request);
 		void						serverNamesValidator(ServerData &serverData, Request& request);
-		void 						fileExecValidator(std::string root, Request& request);
 		bool						isRootPath(const std::string& path, size_t	len);
 		bool 						endsWithSlash(size_t position, size_t len);
 
