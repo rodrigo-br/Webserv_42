@@ -79,30 +79,31 @@ std::string PostMethod::get_status_msg() const
 char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     char *body;
+     std::string fileContent;
 
     if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
     {
-        std::string fileContent = request.getBody();
+        fileContent = request.getBody();
         std::string filePath = this->root + "/post/" + request.getFileName();
         std::ofstream outFile(filePath.c_str(), std::ios::binary);
         if (outFile)
         {
             outFile.write(fileContent.c_str(), request.getBody().length());
             outFile.close();
+            this->_bodySize = fileContent.size();
+            body = new char[this->_bodySize];
+            memcpy(body, fileContent.c_str(), this->_bodySize);
         }
-        else
-        {
-            std::cout << std::endl <<  "error =====  " << fileContent << std::endl << std::endl;
-
-        }
-        this->_bodySize = fileContent.size();
-        body = new char[this->_bodySize];
-        memcpy(body, fileContent.c_str(), this->_bodySize);
 
     }
     else
     {
-        std::cout << "DEU RUIM " << request.getHeader("Content-Type") << std::endl;
+        fileContent = this->root + std::string("/404.html");
+        this->statusCode = StatusCodesEnum::LENGTH_REQUIRED;
+        std::vector<char> buffer = this->openFileAsVector(fileContent   );
+        this->_bodySize = buffer.size();
+        body = new char[this->_bodySize];
+        std::copy(buffer.begin(), buffer.end(), body);
     }
 
     if (this->_bodySize > 0)

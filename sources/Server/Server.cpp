@@ -26,7 +26,7 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 	
 
 	Response response(new ResponseBuilder(request, validator));
-	std::cout << std::endl<< response.getResponse() << std::endl << std::endl;
+	std::cout << std::endl<<  "response ===== "<< response.getResponse() << std::endl << std::endl;
 	if (Utils::check(send(clientSocket, response.getResponse(), response.getSize(), 0), "Send"))
 	{
 		return;
