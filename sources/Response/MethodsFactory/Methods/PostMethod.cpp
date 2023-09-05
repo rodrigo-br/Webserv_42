@@ -83,7 +83,7 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
     {
         std::string fileContent = request.getBody();
-        std::string filePath = "wwwroot/post/" + request.getFileName();
+        std::string filePath = this->root + "/post/" + request.getFileName();
         std::ofstream outFile(filePath.c_str(), std::ios::binary);
         if (outFile)
         {
