@@ -1,11 +1,9 @@
 #include "interfaces/MethodsFactory/MethodsUtils.hpp"
 #include <sstream>
 
-# define ROOT "wwwroot/"
-
 std::vector<char> MethodsUtils::openFileAsVector(std::string path)
 {
-    if (path == ROOT)
+    if (path == this->root)
     {
         path += "index.html";
     }
@@ -31,7 +29,7 @@ std::vector<char> MethodsUtils::openFileAsVector(std::string path)
 
 std::string MethodsUtils::getExtension(std::string path) const
 {
-    if (path == ROOT)
+    if (path == this->root)
     {
         path += "index.html";
     }
