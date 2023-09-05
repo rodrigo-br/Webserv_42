@@ -7,6 +7,7 @@
 # include <cerrno>
 # include <sys/types.h>
 # include "enums/HttpMethodsEnum.hpp"
+# include <sys/socket.h>
 
 class Utils {
 
@@ -15,6 +16,10 @@ class Utils {
         static bool hasMethodInInput(std::string input, HttpMethodEnum::httpMethod method);
         static bool endsWith(const std::string &str, const std::string &suffix);
         static std::string intToString(int value);
+        static void	readLineBody(int fd, std::string &line, int contentLength);
+        static void	readLine(int fd, std::string &line, std::string delimiter);
+        static bool isdelimiter(std::string line, std::string delimiter);
+
 };
 
 

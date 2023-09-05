@@ -33,8 +33,7 @@ void RequestValidator::pathValidator(ServerData &serverData, Request& request)
 	size_t		position = path.find_last_of("/");
 	size_t		len = path.length();
 
-
-	if (isRootPath(path, len))
+    if (isRootPath(path, len))
 	{
 		handleRootPath(serverData, request, path, root);
 	}
@@ -103,6 +102,7 @@ void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Reque
 
 void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& _root, size_t position)
 {
+
 	std::string location = serverData.getLocation(path);
 	if (!location.empty())
 	{
@@ -115,7 +115,6 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	{
 		if (location.compare(path.substr(position + 1)) == 0)
 		{
-
 			this->_path = true;
 			request.setPath(_root + path);
 		}

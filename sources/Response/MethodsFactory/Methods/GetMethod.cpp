@@ -6,13 +6,8 @@ const char* GetMethod::buildResponse()
 {
     std::string response;
 
-    // Opening Line
     response.append(this->build_start_line());
-
-    // Headers
     response.append(this->build_headers());
-
-    // convert string to char ptr
     char *response_as_char = new char[(response.length() + 1)];
     std::strcpy(response_as_char, response.c_str());
 
@@ -43,8 +38,6 @@ std::string GetMethod::build_start_line() const
     start_line.append(" ");
     start_line.append(this->get_status_msg());
     start_line.append("\r\n");
-    std::cout << "START LINE : " << start_line << std::endl;
-
     return start_line;
 }
 
@@ -54,9 +47,6 @@ std::string GetMethod::build_headers() const
     headers.append("Content-Type: ");
     headers.append(this->get_content_type());
     headers.append("\r\n\n");
-
-    std::cout << "HEADER : " << headers << std::endl;
-
     return headers;
 }
 
@@ -112,7 +102,6 @@ char *GetMethod::getDirectoryListing()
 
     if (!this->request.getHeader("Referer").empty())
     {
-        std::cout << "entrou no if do referer" << std::endl;
         directoryPath = std::string(this->root) + "/" + directoryPath;
     }
     addHeader(listing, directoryPath);
@@ -146,14 +135,10 @@ char *GetMethod::getDirectoryListing()
     this->_bodySize = listing.str().length() ;
     char* listingCStr = new char[_bodySize + 1];
     strcpy(listingCStr, listing.str().c_str());
-    listing.str("");
-    listing.clear();
     this->_isDirectoryList = true;
     this->statusCode = StatusCodesEnum::OK;
     return listingCStr;
 }
-
-
 
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {

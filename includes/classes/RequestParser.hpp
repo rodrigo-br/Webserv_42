@@ -3,13 +3,21 @@
 
 # include <string>
 # include "enums/HttpMethodsEnum.hpp"
+# include "classes/Utils.hpp"
 # include <iostream>
 # include <map>
 # include <cstdlib>
-// # include <sstream>
+# include <cstring>
+# include <sys/socket.h>
 # include <string>
 # include <typeinfo>
 # include <vector>
+
+#define CRLF			"\r\n"
+#define CRLF_DOUBLE		"\r\n\r\n"
+#define FILENAME_ID		"filename=\""
+#define DOUBLE_QUOTE	"\""
+#define BUFFER_SIZE		20
 
 class RequestParser
 {
@@ -18,7 +26,7 @@ class RequestParser
 		RequestParser ();
 		~RequestParser();
 
-		void    							parserHttpRequest(char *request);
+		void    							parserHttpRequest(int fdConection);
 		std::string 						getMethod(void) const;
 		std::string							getPath(void) const;
 		std::string							getHttpVersion(void) const;
@@ -28,6 +36,8 @@ class RequestParser
 		std::string							getServerName(void) const;
 		std::string							getQuery(void) const;
 		std::string							getFileExec(void) const;
+		std::string							getFileName(void) const;
+		std::string							getRequest(void) const;
 		int									getPortNumber(void) const;
 		void								setPath(std::string newPath);
 		void								setBody(std::string newBody);
@@ -35,12 +45,16 @@ class RequestParser
 
 
 	private:
-		void								parseRequestPort();
-		void								parserServerName();
-		void  								parseRquestQuery();
-		void 								parseRequestStartLine(std::string &line, std::istringstream &iss);
-		void 								parseRequestHeader(std::string &line, std::istringstream &iss);
-		void 								parseRequestBody(std::string &line, std::istringstream &iss);
+		void								parseRequestPort(void);
+		void								parserServerName(void);
+		void  								parseRquestQuery(void);
+		void 								parseRequestStartLine(void);
+		void 								parseRequestHeader(void);
+		void 								parseRequestBody(void);
+		void 								parseChunkedBody(std::istringstream& iss);
+		int									getContentLength(void) const;
+		void       							setFileName(std::string file);
+
     	std::map<std::string, std::string> 	_headers;
 		std::string  						_method;
 		std::string                 		_path;
@@ -51,6 +65,9 @@ class RequestParser
 		std::string							_query;
 		std::string							_fileExec;
 		std::string							_serverName;
+		std::string							_fileName;
+		int									_fdClient;
+		std::string							_request;
 
 
 };

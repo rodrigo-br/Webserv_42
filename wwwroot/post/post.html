@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Uploads Example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+
+
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <h2>
+                    <li><a href="/tour" class="secondary">←</a></li>
+                    <li>post 📤</li>
+                </h2>
+            </ul>
+        </nav>
+
+        <div class="grid">
+
+            <article>
+                <h3>Single file</h3>
+                <form method="post" enctype="multipart/form-data" action="/post" accept-charset="utf-8">
+                    <input type="file" name="example" />
+                    <input type="submit" />
+                </form>
+            </article>
+        </div>
+
+    </main>
+</body>
+
+
+</html>

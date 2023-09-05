@@ -3,7 +3,7 @@
 
 # include "webserv.hpp"
 
-# define BUFFER_SIZE 30000
+# define BUFFER_SIZE2 30000
 
 class Server
 {
