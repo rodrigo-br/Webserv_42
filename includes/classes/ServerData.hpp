@@ -15,10 +15,12 @@ class ServerData
         std::map<std::string, void (ServerData::*)(std::string)> _configurations;
         std::string _currentLocation;
         std::vector<std::string> _serverNames;
+        int _bodySizeLimit;
 
     public:
         ServerData();
 
+        int getBodySizeLimit() const;
         int getAllowedMethods(std::string locationPath) const;
         std::string getRoot() const;
         std::string getLocation(std::string locationName) const;
@@ -31,6 +33,7 @@ class ServerData
         void setLocationAllowedMethods(std::string allowedMethods);
         void setLocationDirectoryListening(std::string directoryListening);
         void setServerNames(std::string directoryListening);
+        void setBodySizeLimit(std::string value);
         bool isDirectoryListingLocation(std::string locationPath);
 };
 

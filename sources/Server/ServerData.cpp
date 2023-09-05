@@ -7,6 +7,7 @@ ServerData::ServerData()
     this->_configurations["directory_listing"] = &ServerData::setLocationDirectoryListening;
     this->_configurations["http_methods"] = &ServerData::setLocationAllowedMethods;
     this->_configurations["server_names"] = &ServerData::setServerNames;
+    this->_configurations["body_size_limit"] = &ServerData::setBodySizeLimit;
 }
 
 std::vector<std::string> ServerData::getServerNames() const
@@ -50,6 +51,15 @@ void ServerData::setServerNames(std::string name)
     this->_serverNames.push_back(name);
 }
 
+int ServerData::getBodySizeLimit() const
+{
+    return this->_bodySizeLimit;
+}
+
+void ServerData::setBodySizeLimit(std::string value)
+{
+    this->_bodySizeLimit = std::atoi(value.c_str());
+}
 
 bool ServerData::isDirectoryListingLocation(std::string locationPath)
 {
