@@ -37,14 +37,14 @@ class Request
 		void						setFileExec(std::string fileExec);
 		void						setBody(std::string newBody);
 		void						buildCGI(void);
-		void						setLocation(Location location);
-		Location					getLocation();
+		void						setAllowed(int value);
+		int							getAllowed();
 
 int getContentLength() const;
 	private:
 		RequestParser				_parser;
 		char            			_request[BUFFER_SIZE2];
-		Location					_location;
+		int							_allowed;
 
 };
 

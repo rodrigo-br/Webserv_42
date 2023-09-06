@@ -65,9 +65,15 @@ void RequestValidator::handleRootPath(ServerData &serverData, Request& request, 
     if (!location.empty())
     {
         this->_path = true;
-		request.setLocation(serverData.getLocations().find(path)->second);
+		std::cout << "GetAllowed(PATH): " << serverData.getAllowed(path) << " method: " << this->_method << std::endl;
+		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path));
         request.setPath(_root + path + location);
     }
+}
+
+bool	RequestValidator::getMethodAllowed(void) const
+{
+	return this->_methodAllowed;
 }
 
 void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& _root)
@@ -77,7 +83,7 @@ void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Reque
     if (!location.empty())
     {
         this->_path = true;
-		request.setLocation(serverData.getLocations().find(correctPath)->second);
+		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(correctPath));
         request.setPath(_root + path + location);
     }
 	else if (serverData.isDirectoryListingLocation(correctPath))
@@ -94,7 +100,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	if (!location.empty())
 	{
 		this->_path = true;
-		request.setLocation(serverData.getLocations().find(path)->second);
+		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path));
 		request.setPath(_root + path + "/" + location);
 		return ;
 	}
@@ -103,7 +109,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	{
 		if (location.compare(path.substr(position + 1)) == 0)
 		{
-			request.setLocation(serverData.getLocations().find(path.substr(0, position))->second);
+			this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path.substr(0, position)));
 			this->_path = true;
 			request.setPath(_root + path);
 		}
@@ -112,7 +118,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	{
 		if (path.compare("/index.html") == 0)
 		{
-			request.setLocation(serverData.getLocations().find("/")->second);
+			this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed("/"));
 			this->_path = true;
 			request.setPath(_root + path);
 		}
@@ -125,8 +131,9 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 	if (!this->_path && !this->_isDirectoryListing && serverData.isDirectoryListingLocation(path))
 	{
 		this->_isDirectoryListing = true;
-		request.setLocation(serverData.getLocations().find(path)->second);
+		request.setAllowed(serverData.getAllowed(path));
 		request.setPath(_root + path + "/");
+		this->_methodAllowed = true;
 	}
 	else if (!this->_path && !request.getHeader("Referer").empty())
 	{
@@ -140,6 +147,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 			request.setPath(_root + path);
 			this->_path = true;
 		}
+		this->_methodAllowed = true;
 	}
 }
 
@@ -162,6 +170,7 @@ void RequestValidator::handleAssetsPath(Request& request, const std::string& pat
 		if (request.getHeader("Referer").empty())
 		{
 			this->_path = true;
+			this->_methodAllowed = true;
 		}
     }
 }

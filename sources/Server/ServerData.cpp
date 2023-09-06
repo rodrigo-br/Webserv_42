@@ -102,3 +102,8 @@ void ServerData::setLocationDirectoryListening(std::string directoryListening)
     this->_location[this->_currentLocation].setDirectoryListening((directoryListening.compare("on") == 0));
 }
 
+int ServerData::getAllowed(std::string locationPath)
+{
+    int allowed = this->_location[locationPath].getAllowedMethods();
+    return ((allowed <= 8 && allowed > 0) ? allowed : 1);
+}

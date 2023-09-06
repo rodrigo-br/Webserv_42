@@ -89,12 +89,12 @@ void Request::buildCGI(void)
     setPath("/assets/cgi_temp.html");
 }
 
-void Request::setLocation(Location location)
+void Request::setAllowed(int value)
 {
-    this->_location = location;
+    this->_allowed = value;
 }
 
-Location Request::getLocation()
+int Request::getAllowed()
 {
-    return this->_location;
+    return this->_allowed;
 }
