@@ -55,7 +55,7 @@ void addHeader(std::stringstream& listing, const std::string& directoryPath)
     listing << "<html>"
             << "<head>"
             << "<title>Index of " << directoryPath << "</title>"
-            << "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css\">"
+            << "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css\">"
             << "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css\">"
             << "</head>"
             << "<body>"
@@ -144,6 +144,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
     char * body;
+    		std::cout << "path = " << (this->validator.getPath() ? "true" : "false") << std::endl;
 
     if (this->validator.getPath())
     {

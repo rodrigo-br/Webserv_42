@@ -63,11 +63,15 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
             std::cout << "Arquivo removido com sucesso." << std::endl;
         else
         {
+                  this->statusCode = StatusCodesEnum::NOT_IMPLEMENTED;
+
             file = this->root + std::string("/404.html");
         }
     }
     if (!file.empty())
     {
+                this->statusCode = StatusCodesEnum::NOT_IMPLEMENTED;
+
         std::cerr << "Erro ao remover o arquivo." << std::endl;
         std::vector<char> buffer = this->openFileAsVector(file);
         this->_bodySize = buffer.size();
@@ -76,9 +80,10 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
+                std::cerr << "Erraaaaaaaaaarquivo." << std::endl;
+
         std::ostringstream responseDelete;
-        responseDelete << "HTTP/1.1 501 OK\r\n";
-        responseDelete << "\r\n";
+        this->statusCode = StatusCodesEnum::NOT_IMPLEMENTED;
         std::string responseBody = responseDelete.str();
         this->_bodySize = responseBody.size();
         body = new char[this->_bodySize];

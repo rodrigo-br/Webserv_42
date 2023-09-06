@@ -76,6 +76,44 @@ std::string PostMethod::get_status_msg() const
     return this->_statusCodes.getStatusMessage(this->get_status_code());
 }
 
+char* PostMethod::generateResponsePage(const std::string& fileName)
+{
+    std::stringstream responseStream;
+    responseStream << "<!DOCTYPE html>\n"
+                    << "<html>\n"
+                    << "<head>\n"
+                    << "    <meta charset='UTF-8'>\n"
+                    << "    <title>Upload Response</title>\n"
+                    << "    <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css\">\n"
+                    << "    <style>"
+                    << "     body {"
+                    << "            margin: 20px; /* Margem ao redor do conteúdo */"
+                    << "            display: flex;"
+                    << "            flex-direction: column;"
+                    << "            align-items: center;"
+                    << "            padding-top: 30px; /**/"
+                    << "        }"
+                    << "        h1, h3, p {"
+                    << "            text-align: center;"
+                    << "        }"
+                    << "    </style>"
+                    << "</head>\n"
+                    << "<body>\n"
+                    << "    <h1>Upload</h1>\n"
+                    << "    <h3>O arquivo " << fileName << " foi adicionado com sucesso!</h3>\n"
+                    << "    <p>Confira a pasta wwwroot/post e poderá ver o seu dog (ou seja lá o que tenha adicionado)!</p>\n"
+                    << "</body>\n"
+                    << "</html>\n";
+
+    std::string responsePage = responseStream.str();
+    this->_bodySize = responseStream.str().length() ;
+    char* listingCStr = new char[_bodySize + 1];
+    strcpy(listingCStr, responseStream.str().c_str());
+    this->statusCode = StatusCodesEnum::OK;
+    return listingCStr;
+}
+
+
 char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     char *body;
@@ -90,11 +128,8 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
         {
             outFile.write(fileContent.c_str(), request.getBody().length());
             outFile.close();
-            this->_bodySize = fileContent.size();
-            body = new char[this->_bodySize];
-            memcpy(body, fileContent.c_str(), this->_bodySize);
+            body = generateResponsePage(request.getFileName());
         }
-
     }
     else
     {

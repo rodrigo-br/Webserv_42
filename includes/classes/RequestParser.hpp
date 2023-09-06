@@ -26,7 +26,7 @@ class RequestParser
 		RequestParser ();
 		~RequestParser();
 
-		void    							parserHttpRequest(int fdConection);
+		void    							parserHttpRequest(int &fdConection);
 		std::string 						getMethod(void) const;
 		std::string							getPath(void) const;
 		std::string							getHttpVersion(void) const;

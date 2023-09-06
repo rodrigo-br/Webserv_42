@@ -5,7 +5,7 @@ RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVe
 
 RequestParser::~RequestParser(void) {}
 
-void    							RequestParser::parserHttpRequest(int fdConection)
+void    							RequestParser::parserHttpRequest(int &fdConection)
 {
     this->_fdClient = fdConection;	
 	parseRequestStartLine();
