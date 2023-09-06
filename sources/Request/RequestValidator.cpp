@@ -167,11 +167,7 @@ void RequestValidator::handleAssetsPath(Request& request, const std::string& pat
     {
         this->_path = true;
         request.setPath(_root + path);
-		if (request.getHeader("Referer").empty())
-		{
-			this->_path = true;
-			this->_methodAllowed = true;
-		}
+		this->_methodAllowed = true;
     }
 }
 
