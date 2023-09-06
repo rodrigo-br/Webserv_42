@@ -65,19 +65,22 @@ void RequestValidator::handleRootPath(ServerData &serverData, Request& request, 
     if (!location.empty())
     {
         this->_path = true;
+		request.setLocation(serverData.getLocations().find(path)->second);
         request.setPath(_root + path + location);
     }
 }
 
 void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& _root)
 {
-    std::string location = serverData.getLocation(path.substr(0, path.length() - 1));
+	std::string correctPath = path.substr(0, path.length() - 1);
+    std::string location = serverData.getLocation(correctPath);
     if (!location.empty())
     {
         this->_path = true;
+		request.setLocation(serverData.getLocations().find(correctPath)->second);
         request.setPath(_root + path + location);
     }
-	else if (serverData.isDirectoryListingLocation(path.substr(0, path.length() - 1)))
+	else if (serverData.isDirectoryListingLocation(correctPath))
 	{
 		this->_isDirectoryListing = true;
 		request.setPath(_root + path);
@@ -86,11 +89,12 @@ void RequestValidator::handlePathWithTrailingSlash(ServerData &serverData, Reque
 
 void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& _root, size_t position)
 {
-	
+
 	std::string location = serverData.getLocation(path);
 	if (!location.empty())
 	{
 		this->_path = true;
+		request.setLocation(serverData.getLocations().find(path)->second);
 		request.setPath(_root + path + "/" + location);
 		return ;
 	}
@@ -99,6 +103,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	{
 		if (location.compare(path.substr(position + 1)) == 0)
 		{
+			request.setLocation(serverData.getLocations().find(path.substr(0, position))->second);
 			this->_path = true;
 			request.setPath(_root + path);
 		}
@@ -107,6 +112,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 	{
 		if (path.compare("/index.html") == 0)
 		{
+			request.setLocation(serverData.getLocations().find("/")->second);
 			this->_path = true;
 			request.setPath(_root + path);
 		}
@@ -119,6 +125,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 	if (!this->_path && !this->_isDirectoryListing && serverData.isDirectoryListingLocation(path))
 	{
 		this->_isDirectoryListing = true;
+		request.setLocation(serverData.getLocations().find(path)->second);
 		request.setPath(_root + path + "/");
 	}
 	else if (!this->_path && !request.getHeader("Referer").empty())

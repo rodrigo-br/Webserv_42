@@ -9,6 +9,7 @@
 # include "classes/Utils.hpp"
 # include "classes/RequestParser.hpp"
 # include "enums/HttpMethodsEnum.hpp"
+# include "classes/Location.hpp"
 
 # define BUFFER_SIZE2 30000
 
@@ -36,11 +37,14 @@ class Request
 		void						setFileExec(std::string fileExec);
 		void						setBody(std::string newBody);
 		void						buildCGI(void);
+		void						setLocation(Location location);
+		Location					getLocation();
 
 int getContentLength() const;
 	private:
 		RequestParser				_parser;
 		char            			_request[BUFFER_SIZE2];
+		Location					_location;
 
 };
 

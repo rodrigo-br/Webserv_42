@@ -1,5 +1,5 @@
 #include "classes/Request.hpp"
-        
+
 Request::Request( ) : _request() {	}
 
 Request::~Request( void ) { }
@@ -87,4 +87,14 @@ void Request::setPath(std::string newPath)
 void Request::buildCGI(void)
 {
     setPath("/assets/cgi_temp.html");
+}
+
+void Request::setLocation(Location location)
+{
+    this->_location = location;
+}
+
+Location Request::getLocation()
+{
+    return this->_location;
 }
