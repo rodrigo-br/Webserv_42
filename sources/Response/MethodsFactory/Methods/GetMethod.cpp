@@ -144,9 +144,8 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
     char * body;
-    		std::cout << "path = " << (this->validator.getPath() ? "true" : "false") << std::endl;
 
-    if (!this->validator.getMethodAllowed())
+    if (!this->validator.getMethodAllowed() && this->validator.getPath())
     {
         file = this->root + std::string("/405.html");
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;

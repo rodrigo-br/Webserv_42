@@ -135,7 +135,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 		this->_isDirectoryListing = true;
 		request.setAllowed(serverData.getAllowed(path));
 		request.setPath(_root + path + "/");
-		this->_methodAllowed = true;
+		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path));
 	}
 	else if (!this->_path && !request.getHeader("Referer").empty())
 	{
@@ -149,7 +149,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 			request.setPath(_root + path);
 			this->_path = true;
 		}
-		this->_methodAllowed = true;
+		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path));
 	}
 }
 
