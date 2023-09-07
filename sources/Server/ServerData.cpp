@@ -2,6 +2,7 @@
 
 ServerData::ServerData()
 {
+    this->_serverNames.push_back("localhost");
     this->_configurations["root"] = &ServerData::setRoot;
     this->_configurations["index"] = &ServerData::setLocationIndex;
     this->_configurations["directory_listing"] = &ServerData::setLocationDirectoryListening;
