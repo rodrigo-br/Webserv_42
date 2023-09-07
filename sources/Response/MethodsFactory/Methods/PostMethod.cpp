@@ -111,7 +111,6 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     char *body;
     std::string file;
-    bool error = true;
 
     if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
     {
@@ -122,19 +121,18 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     {
         file = this->root + std::string("/413.html");
         this->statusCode = StatusCodesEnum::PAYLOAD_TOO_LARGE;
-
     }
     else if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
     {
         file = request.getBody();
-        std::string filePath = this->root + "/post/" + request.getFileName() ;
+        std::string filePath = this->root + "/post/" + "image.jpg";
         std::ofstream outFile(filePath.c_str(), std::ios::binary);
         if (outFile)
         {
             outFile.write(file.c_str(), request.getBody().length());
             outFile.close();
-            body = generateResponsePage("image.jpg");
-            error = false;
+            file = this->root + std::string("/post/success.html");
+            this->statusCode = StatusCodesEnum::OK;
         }
     }
     else
@@ -142,7 +140,7 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
         file = this->root + std::string("/404.html");
         this->statusCode = StatusCodesEnum::LENGTH_REQUIRED;
     }
-    if(!file.empty() && error == true)
+    if(!file.empty())
     {
         std::vector<char> buffer = this->openFileAsVector(file);
         this->_bodySize = buffer.size();

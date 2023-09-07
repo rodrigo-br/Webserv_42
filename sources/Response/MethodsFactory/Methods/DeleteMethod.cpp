@@ -67,11 +67,14 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
         file = this->root + std::string("/405.html");
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
-    else if (path.find("/uploads") != std::string::npos) 
+    else if (path.find("/delete") != std::string::npos) 
     {
         const char* filePath = path.c_str();
 		if (remove(filePath) == 0)
+        {
             this->statusCode = StatusCodesEnum::OK;
+            std::cout <<  "äaaaaaaaaaaaaaaa" << std::endl;
+        }
         else
         {   
             this->statusCode = StatusCodesEnum::NOT_IMPLEMENTED;

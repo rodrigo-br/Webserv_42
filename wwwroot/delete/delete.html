@@ -12,12 +12,10 @@
             align-items: center;
         }
         .rounded-image {
-            justify-content: center;
-            align-items: center;    
-            border-radius: 60%;
+    
+            border-radius: 30%;
             width: 300px; /* Defina a largura desejada da imagem */
-            height: 300px; /* Defina a altura desejada da imagem */
-            object-fit: cover; /* Redimensione a imagem para preencher o espaço definido */
+            height: 450px; /* Defina a altura desejada da imagem */
         }
         .delete-button {     
             margin-top:20px; 
@@ -44,9 +42,9 @@
                 <ul id="fileList">
                     <div id="fileItem1">
                         <div class="rounded-image-container">
-                            <img class="rounded-image" src="/delete/file/arya.jpg" alt="Imagem 1">
+                            <img class="rounded-image" src="/delete/file/bocao.jpg" alt="Imagem 1">
                         </div>
-                        <button class="delete-button" onclick="deleteFile('arya.jpg', 'fileItem1')">Excluir arquivo</button>        
+                        <button class="delete-button" onclick="deleteFile('bocao.jpg', 'fileItem1')">Excluir arquivo</button>        
                     </div>
                 </ul>
             </article>
@@ -67,13 +65,13 @@
             .then(response => {
                 if (response.ok) {
                     console.log(`Arquivo ${fileName} excluído com sucesso.`);
-                    // Ocultar o item da lista após a exclusão
                     const listItem = document.getElementById(itemId);
                     if (listItem) {
                         listItem.style.display = 'none';
                         window.location.href = '/delete/success.html';
                     }
                 } else {
+                    window.location.href = '/delete/error.html';
                     console.error(`Falha ao excluir o arquivo ${fileName}.`);
                 }
             })
