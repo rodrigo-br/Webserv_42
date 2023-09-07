@@ -55,6 +55,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     std::string file;
     char        *body;
 
+
     if (request.getPath().compare("/uploads"))
     {
         std::string file2 = request.getPath();
@@ -62,13 +63,13 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
 		if (remove(filePath) == 0)
             std::cout << "Arquivo removido com sucesso." << std::endl;
         else
-        {
+        {   
+            this->statusCode = StatusCodesEnum::NOT_IMPLEMENTED;
             file = this->root + std::string("/404.html");
         }
     }
     if (!file.empty())
     {
-        std::cerr << "Erro ao remover o arquivo." << std::endl;
         std::vector<char> buffer = this->openFileAsVector(file);
         this->_bodySize = buffer.size();
         body = new char[this->_bodySize];
@@ -77,8 +78,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     else
     {
         std::ostringstream responseDelete;
-        responseDelete << "HTTP/1.1 501 OK\r\n";
-        responseDelete << "\r\n";
+        this->statusCode = StatusCodesEnum::NOT_IMPLEMENTED;
         std::string responseBody = responseDelete.str();
         this->_bodySize = responseBody.size();
         body = new char[this->_bodySize];
@@ -89,13 +89,6 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
         this->_hasBody = true;
     }
     return  body;
-}
-
-std::string DeleteMethod::get_status_code() const
-{
-    std::stringstream ss_code;
-    ss_code << StatusCodesEnum::OK;
-    return ss_code.str();
 }
 
 std::string DeleteMethod::get_content_type() const

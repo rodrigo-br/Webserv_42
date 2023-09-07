@@ -31,6 +31,8 @@ class PostMethod : public IMethod
         std::string get_status_code() const;
         std::string get_status_msg() const;
         std::string get_content_type() const;
+        char* generateResponsePage(const std::string& fileName);
+
 };
 
 #endif

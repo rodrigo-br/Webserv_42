@@ -26,7 +26,7 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 	
 
 	Response response(new ResponseBuilder(request, validator));
-	std::cout << std::endl<< response.getResponse() << std::endl << std::endl;
+	std::cout << std::endl<<  "response ===== "<< response.getResponse() << std::endl << std::endl;
 	if (Utils::check(send(clientSocket, response.getResponse(), response.getSize(), 0), "Send"))
 	{
 		return;
@@ -51,7 +51,7 @@ void Server::processClientRequest(int clientSocket, Request &request, RequestVal
 	request = Request().createParsedMessage(clientSocket);
 	std::cout << "****************************mensagem gerada**************************" << std::endl;
 
-	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
+	// std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
 	std::string cgi = "/cgi-bin";
 	if (!this->conf.getLocation(request.getPortNumber(), cgi).empty())
 	{

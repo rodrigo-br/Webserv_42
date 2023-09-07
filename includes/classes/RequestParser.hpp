@@ -26,7 +26,7 @@ class RequestParser
 		RequestParser ();
 		~RequestParser();
 
-		void    							parserHttpRequest(int fdConection);
+		void    							parserHttpRequest(int &fdConection);
 		std::string 						getMethod(void) const;
 		std::string							getPath(void) const;
 		std::string							getHttpVersion(void) const;
@@ -54,6 +54,10 @@ class RequestParser
 		void 								parseChunkedBody(std::istringstream& iss);
 		int									getContentLength(void) const;
 		void       							setFileName(std::string file);
+		size_t 								convertChunkSize();
+		void								parseRequestBodyChunked(void);
+		void 								parseRequestBodyContentType(void);
+
 
     	std::map<std::string, std::string> 	_headers;
 		std::string  						_method;

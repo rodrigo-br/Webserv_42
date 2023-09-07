@@ -18,7 +18,7 @@ class Utils {
         static std::string intToString(int value);
         static void	readLineBody(int fd, std::string &line, int contentLength);
         static void	readLine(int fd, std::string &line, std::string delimiter);
-        static bool isdelimiter(std::string line, std::string delimiter);
+        static bool isDelimiter(std::string line, std::string delimiter);
 
 };
 

@@ -33,7 +33,7 @@ std::string Utils::intToString(int value)
     return ss.str();
 }
 
-bool  Utils::isdelimiter(std::string line, std::string delimiter)
+bool  Utils::isDelimiter(std::string line, std::string delimiter)
 {
 	return (line.rfind(delimiter) != std::string::npos);
 }
@@ -52,11 +52,11 @@ void	 Utils::readLine(int fd, std::string &line, std::string delimiter)
 		if (numberBytes == 0)
 			break ;
 		tempLine += buffer;
-        if (isdelimiter(tempLine, delimiter))
+        if (isDelimiter(tempLine, delimiter))
             break ;
 	}
 	line = tempLine;
-    if (isdelimiter(tempLine, delimiter))
+    if (isDelimiter(tempLine, delimiter))
 		line.resize(line.rfind(delimiter));
 }
 

@@ -5,7 +5,7 @@ RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVe
 
 RequestParser::~RequestParser(void) {}
 
-void    							RequestParser::parserHttpRequest(int fdConection)
+void    							RequestParser::parserHttpRequest(int &fdConection)
 {
     this->_fdClient = fdConection;	
 	parseRequestStartLine();
@@ -99,33 +99,66 @@ void parseMultipartFormDataBody(const std::string& boundary, std::string &tempLi
     tempLine = tempLine.substr(contentStart, contentEnd - contentStart);
 }
 
+size_t  RequestParser::convertChunkSize(void)
+{
+    std::string line;
+    std::string chunkSizeLine;
+
+    Utils::readLine(this->_fdClient, line, CRLF);
+    std::size_t chunkSize = 0;
+    if (line == "") 
+        return 0;
+    chunkSizeLine = line.substr(0,  line.find(" "));
+    std::stringstream ss;
+    ss << std::hex << chunkSizeLine;
+    ss >> chunkSize;
+    return chunkSize;
+}
+
+void RequestParser::parseRequestBodyChunked()
+{
+    std::size_t     chunkSize = convertChunkSize();
+    std::size_t		length;
+    std::string        tempLine;
+
+    while (chunkSize > 0)
+    {
+        Utils::readLine(this->_fdClient, tempLine, CRLF);
+        this->_requestBody += tempLine;
+        length += chunkSize;
+        this->_request += tempLine + "\n";
+        this->_requestBody += tempLine + "\n";
+        Utils::readLine(this->_fdClient, tempLine, CRLF);
+        chunkSize = convertChunkSize();
+    }   
+}
+
+void RequestParser::parseRequestBodyContentType(void)
+{
+    std::string tempLine;
+    size_t pos;
+
+    Utils::readLineBody(this->_fdClient, tempLine, getContentLength());
+    setFileName(tempLine);
+    pos = getHeader("Content-Type").find("boundary=", 0);
+    if (pos != std::string::npos)
+    {
+        std::string boundary = getHeader("Content-Type").substr(pos + 9);
+        parseMultipartFormDataBody(boundary, tempLine);
+    }
+    this->_requestBody += tempLine;
+    this->_request += tempLine + "\n";
+
+}
 void RequestParser::parseRequestBody(void)
 {
-
-        // std::cout <<  "ola" << line << std::endl;
-
-    // (void)line;
-    // std::cout << std::endl <<  "parseRequestBody antes:" << _requestBody.length() << std::endl;
-
-    // std::string transferEncoding = getHeader("Transfer-Encoding");
-    // if (transferEncoding == "chunked")
-    // {
-    //     parseChunkedBody(iss);
-    // }
-
-    if (!getHeader("Content-Type").empty() && getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
+    if (getHeader("Transfer-Encoding") == "chunked")
+    {
+        parseRequestBodyChunked();
+    }
+    else if (!getHeader("Content-Type").empty() && getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
     {   
-        std::string tempLine;
-
-        Utils::readLineBody(this->_fdClient, tempLine, getContentLength());
-        setFileName(tempLine);
-        size_t pos = getHeader("Content-Type").find("boundary=", 0);
-        if (pos != std::string::npos)
-        {
-            std::string boundary = getHeader("Content-Type").substr(pos + 9);
-            parseMultipartFormDataBody(boundary, tempLine);
-        }
-        this->_requestBody += tempLine;
+        parseRequestBodyContentType();
     }
 }
 
@@ -135,7 +168,7 @@ void 	RequestParser::parseRequestHeader(void)
 
     while (true)
     {
-        Utils::readLine(_fdClient, line, CRLF);
+        Utils::readLine(this->_fdClient, line, CRLF);
         if (line == CRLF || line.empty())
         {
             break;
