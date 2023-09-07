@@ -25,6 +25,8 @@ class RequestValidator
 		bool						getMethodAllowed(void) const;
 		bool 						getServerName(void) const;
 		bool						isDirectoryListing();
+		bool						getBodySizeLimit(void) const;
+
 		std::string					getRoot(void) const;
 
 		void 						setBody(bool body);
@@ -33,6 +35,7 @@ class RequestValidator
 		HttpMethodEnum::httpMethod	methodValidator(Request& request);
 		void 						pathValidator(ServerData &serverData, Request& request);
 		void						bodyValidator(Request& request);
+		void						bodySizeLimitValidator(ServerData &serverData, Request& request);
 		void						httpVersionValidator(Request& request);
 		void						serverNamesValidator(ServerData &serverData, Request& request);
 		bool						isRootPath(const std::string& path, size_t	len);
@@ -52,6 +55,7 @@ class RequestValidator
 		bool						_serverName;
 		bool						_isDirectoryListing;
 		bool						_methodAllowed;
+		bool						_bodySizeLimit;
 		std::string					root;
 };
 

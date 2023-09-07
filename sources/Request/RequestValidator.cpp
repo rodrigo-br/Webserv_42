@@ -1,6 +1,6 @@
 #include "classes/RequestValidator.hpp"
 
-RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _httpVersion(false), _requestBody(false), _serverName(false), _isDirectoryListing(false)  { }
+RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _httpVersion(false), _requestBody(false), _serverName(false), _isDirectoryListing(false), _bodySizeLimit(false)  { }
 
 RequestValidator::~RequestValidator(void) {}
 
@@ -11,6 +11,7 @@ RequestValidator &RequestValidator::requestValidator(ServerData &serverData, Req
 	bodyValidator(request);
 	httpVersionValidator(request);
 	serverNamesValidator(serverData, request);
+	bodySizeLimitValidator(serverData, request);
 	return *this;
 }
 
@@ -32,8 +33,6 @@ void RequestValidator::pathValidator(ServerData &serverData, Request& request)
     this->root = serverData.getRoot();
 	size_t		position = path.find_last_of("/");
 	size_t		len = path.length();
-
-	std::cout << "serverData = " << serverData.getRoot() << std::endl;
 
     if (isRootPath(path, len))
 	{
@@ -67,7 +66,6 @@ void RequestValidator::handleRootPath(ServerData &serverData, Request& request, 
     if (!location.empty())
     {
         this->_path = true;
-		std::cout << "GetAllowed(PATH): " << serverData.getAllowed(path) << " method: " << this->_method << std::endl;
 		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path));
         request.setPath(_root + path + location);
     }
@@ -185,6 +183,14 @@ void RequestValidator::httpVersionValidator(Request& request)
 		this->_httpVersion = true;
 }
 
+void RequestValidator::bodySizeLimitValidator(ServerData &serverData, Request& request)
+{
+	if (Utils::stringToInt(request.getHeader("Content-Length")) <= serverData.getBodySizeLimit())
+	{
+		this->_bodySizeLimit = true;
+	}
+}
+
 void RequestValidator::setBody(bool body)
 {
 	this->_requestBody = body;
@@ -193,6 +199,11 @@ void RequestValidator::setBody(bool body)
 bool RequestValidator::getPath(void) const
 {
 	return this->_path;
+}
+
+bool RequestValidator::getBodySizeLimit(void) const
+{
+	return this->_bodySizeLimit;
 }
 
 bool RequestValidator::getHttpVersion(void) const

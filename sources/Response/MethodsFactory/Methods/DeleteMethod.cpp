@@ -50,18 +50,28 @@ std::string DeleteMethod::build_headers() const
     return headers;
 }
 
+bool containsUploadsFolder(const std::string& path) 
+{
+    size_t found = path.find("/uploads");
+    return found != std::string::npos;
+}
+
 char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
     char        *body;
+    std::string path = request.getPath();
 
-
-    if (request.getPath().compare("/uploads"))
+    if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
     {
-        std::string file2 = request.getPath();
-        const char* filePath = file2.c_str();
+        file = this->root + std::string("/405.html");
+        this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
+    }
+    else if (path.find("/uploads") != std::string::npos) 
+    {
+        const char* filePath = path.c_str();
 		if (remove(filePath) == 0)
-            std::cout << "Arquivo removido com sucesso." << std::endl;
+            this->statusCode = StatusCodesEnum::OK;
         else
         {   
             this->statusCode = StatusCodesEnum::NOT_IMPLEMENTED;
@@ -78,7 +88,6 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     else
     {
         std::ostringstream responseDelete;
-        this->statusCode = StatusCodesEnum::NOT_IMPLEMENTED;
         std::string responseBody = responseDelete.str();
         this->_bodySize = responseBody.size();
         body = new char[this->_bodySize];

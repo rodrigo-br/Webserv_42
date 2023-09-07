@@ -47,7 +47,7 @@ class RequestParser
 	private:
 		void								parseRequestPort(void);
 		void								parserServerName(void);
-		void  								parseRquestQuery(void);
+		void  								parseRequestQuery(void);
 		void 								parseRequestStartLine(void);
 		void 								parseRequestHeader(void);
 		void 								parseRequestBody(void);
@@ -57,6 +57,7 @@ class RequestParser
 		size_t 								convertChunkSize();
 		void								parseRequestBodyChunked(void);
 		void 								parseRequestBodyContentType(void);
+
 
 
     	std::map<std::string, std::string> 	_headers;

@@ -33,6 +33,14 @@ std::string Utils::intToString(int value)
     return ss.str();
 }
 
+int Utils::stringToInt(const std::string& str) 
+{
+    std::stringstream ss(str);
+    int value = 0;
+    ss >> value;
+    return value;
+}
+
 bool  Utils::isDelimiter(std::string line, std::string delimiter)
 {
 	return (line.rfind(delimiter) != std::string::npos);

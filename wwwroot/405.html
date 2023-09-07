@@ -2,45 +2,31 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erro 405 - Method Not Allowed</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            text-align: center;
-        }
-
         .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; 
         }
 
-        h1 {
-            color: #e74c3c;
-        }
-
-        p {
-            font-size: 18px;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            margin-top: 20px;
+        .grid {
+            text-align: center; 
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Erro 405 - Method Not Allowed</h1>
-        <p>Desculpe, a ação que você tentou executar não é permitida neste servidor.</p>
-        <p>Tente novamente mais tarde ou entre em contato com o administrador do site.</p>
-        <img src="/assets/dog.jpg" alt="Foto de cachorro elegante">
+        <div class="grid">
+            <article>
+                <h1>Erro 405 - Method Not Allowed</h1>
+                <p>Desculpe, a ação que você tentou executar não é permitida neste servidor.</p>
+                <p>Tente novamente mais tarde ou entre em contato com o administrador do site.</p>
+                <img src="/assets/dog.jpg" alt="Foto de cachorro elegante">
+            </article>
+        </div>
     </div>
 </body>
 </html>

@@ -13,10 +13,10 @@ void    							RequestParser::parserHttpRequest(int &fdConection)
 	parseRequestBody();
     parseRequestPort();
     parserServerName();
-    parseRquestQuery();
+    parseRequestQuery();
 }
 
-void    RequestParser::parseRquestQuery()
+void    RequestParser::parseRequestQuery()
 {	
     size_t queryStart = this->_path.find_first_of('?');
     if (queryStart != std::string::npos)
@@ -130,7 +130,9 @@ void RequestParser::parseRequestBodyChunked()
         this->_requestBody += tempLine + "\n";
         Utils::readLine(this->_fdClient, tempLine, CRLF);
         chunkSize = convertChunkSize();
-    }   
+    }
+    this->_headers["Content-Length"] = Utils::intToString(length);
+
 }
 
 void RequestParser::parseRequestBodyContentType(void)

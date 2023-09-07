@@ -50,13 +50,6 @@ std::string PostMethod::build_headers() const
     return headers;
 }
 
-std::string PostMethod::get_status_code() const
-{
-    std::stringstream ss_code;
-    ss_code << StatusCodesEnum::OK;
-    return ss_code.str();
-}
-
 std::string PostMethod::get_content_type() const
 {
     std::string file;
@@ -117,25 +110,41 @@ char* PostMethod::generateResponsePage(const std::string& fileName)
 char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     char *body;
-     std::string fileContent;
+    std::string file;
+    bool error = true;
 
-    if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
+    if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
     {
-        fileContent = request.getBody();
-        std::string filePath = this->root + "/post/" + request.getFileName();
+        file = this->root + std::string("/405.html");
+        this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
+    }
+    else if (this->validator.getBodySizeLimit() == false)
+    {
+        file = this->root + std::string("/413.html");
+        this->statusCode = StatusCodesEnum::PAYLOAD_TOO_LARGE;
+
+    }
+    else if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
+    {
+        file = request.getBody();
+        std::string filePath = this->root + "/post/" + request.getFileName() ;
         std::ofstream outFile(filePath.c_str(), std::ios::binary);
         if (outFile)
         {
-            outFile.write(fileContent.c_str(), request.getBody().length());
+            outFile.write(file.c_str(), request.getBody().length());
             outFile.close();
-            body = generateResponsePage(request.getFileName());
+            body = generateResponsePage("image.jpg");
+            error = false;
         }
     }
     else
     {
-        fileContent = this->root + std::string("/404.html");
+        file = this->root + std::string("/404.html");
         this->statusCode = StatusCodesEnum::LENGTH_REQUIRED;
-        std::vector<char> buffer = this->openFileAsVector(fileContent   );
+    }
+    if(!file.empty() && error == true)
+    {
+        std::vector<char> buffer = this->openFileAsVector(file);
         this->_bodySize = buffer.size();
         body = new char[this->_bodySize];
         std::copy(buffer.begin(), buffer.end(), body);
