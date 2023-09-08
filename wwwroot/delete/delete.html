@@ -63,21 +63,33 @@
                 method: 'DELETE'
             })  
             .then(response => {
-                if (response.ok) {
-                    console.log(`Arquivo ${fileName} excluído com sucesso.`);
-                    const listItem = document.getElementById(itemId);
-                    if (listItem) {
-                        listItem.style.display = 'none';
-                        window.location.href = '/delete/success.html';
-                    }
-                } else {
-                    window.location.href = '/delete/error.html';
-                    console.error(`Falha ao excluir o arquivo ${fileName}.`);
+            if (response.ok) {
+                console.log(`Arquivo ${fileName} excluído com sucesso.`);
+                const listItem = document.getElementById(itemId);
+                if (listItem) {
+                    listItem.style.display = 'none';
                 }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-            });
+                response.text().then(body => {
+                    window.location.href = '/delete/success.html';
+                    const responseBodyElement = document.getElementById('responseBody');
+                    if (responseBodyElement) {
+                        responseBodyElement.innerHTML = body;
+                    }
+                });
+            } else {
+                console.error(`Falha ao excluir o arquivo ${fileName}.`);
+                window.location.href = '/delete/error_delete.html';
+                response.text().then(body => {
+                    const responseBodyElement = document.getElementById('responseBody');
+                    if (responseBodyElement) {
+                        responseBodyElement.innerHTML = body;
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
         }
     </script>
 </body>

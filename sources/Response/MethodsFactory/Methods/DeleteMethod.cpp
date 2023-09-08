@@ -64,6 +64,8 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
     {
+                    std::cout <<  "iiiiiiiiiiiiiii" << std::endl;
+
         file = this->root + std::string("/405.html");
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
@@ -73,16 +75,22 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
 		if (remove(filePath) == 0)
         {
             this->statusCode = StatusCodesEnum::OK;
+            file = this->root + std::string("/delete/success.html");
             std::cout <<  "äaaaaaaaaaaaaaaa" << std::endl;
         }
         else
         {   
+                        std::cout <<  "bbbbbbbbbbbbbbbb" << std::endl;
+
             this->statusCode = StatusCodesEnum::NOT_IMPLEMENTED;
-            file = this->root + std::string("/404.html");
+           this->_statusCodes.setContentType("text/html");
+            file = this->root + std::string("/501.html");
         }
     }
     if (!file.empty())
     {
+                    std::cout <<  "ccccccccccccccccccccccc" << std::endl;
+
         std::vector<char> buffer = this->openFileAsVector(file);
         this->_bodySize = buffer.size();
         body = new char[this->_bodySize];
@@ -90,6 +98,8 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
+                            std::cout <<  "sssssssssssssssssssssss" << std::endl;
+
         std::ostringstream responseDelete;
         std::string responseBody = responseDelete.str();
         this->_bodySize = responseBody.size();

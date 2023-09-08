@@ -125,19 +125,24 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     else if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
     {
         file = request.getBody();
-        std::string filePath = this->root + "/post/" + "image.jpg";
+        std::string filePath = this->root + "/post/" + request.getFileName();
         std::ofstream outFile(filePath.c_str(), std::ios::binary);
         if (outFile)
         {
+            std::cout <<   "outFile = " << outFile << std::endl;
             outFile.write(file.c_str(), request.getBody().length());
             outFile.close();
             file = this->root + std::string("/post/success.html");
             this->statusCode = StatusCodesEnum::OK;
         }
+        else
+        {
+            file = this->root + std::string("/post/error.html");
+        }
     }
     else
     {
-        file = this->root + std::string("/404.html");
+        file = this->root + std::string("/413.html");
         this->statusCode = StatusCodesEnum::LENGTH_REQUIRED;
     }
     if(!file.empty())

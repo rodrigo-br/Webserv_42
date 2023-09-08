@@ -86,3 +86,8 @@ std::string StatusCodes::getStatusMessage(std::string code) const
         return "Unknown Status Code";
     }
 }
+
+void StatusCodes::setContentType(const std::string& contentType) 
+{
+    statusCodes["Content-Type"] = contentType;
+}
