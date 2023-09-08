@@ -3,6 +3,7 @@
 
 import cgi
 import sys
+import os
 
 print()
 
@@ -12,7 +13,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 print("<html>")
 print("<head><title>Script CGI Python</title></head>")
 print("<body>")
-print("<h1>Ola, humano!</h1>")
-print("<p>Eu sou um script CGI Python simples.</p>")
+print(f"<h1>Ola, {os.environ.get('NAME')}!</h1>")
+print("<p>Eu sou um script CGI Python COM POST.</p>")
 print("</body>")
 print("</html>")

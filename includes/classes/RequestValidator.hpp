@@ -43,7 +43,7 @@ class RequestValidator
     	void 						handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root);
     	void 						handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& root);
     	void 						handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root, size_t position);
-    	void 						handleAssetsPath(Request& request, const std::string& path, const std::string& root);
+    	void 						handleAssetsPath(Request& request, const std::string& path, const std::string& root, ServerData &serverData);
 		void 						handleDirectoryListing(Request& request, std::string& path, const std::string& root, ServerData &serverData);
 		HttpMethodEnum::httpMethod	_method;
 		bool                 		_path;

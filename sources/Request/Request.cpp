@@ -98,3 +98,8 @@ int Request::getAllowed()
 {
     return this->_allowed;
 }
+
+void Request::setMethod(std::string method)
+{
+    this->_parser.setMethod(method);
+}

@@ -42,6 +42,7 @@ class RequestParser
 		void								setPath(std::string newPath);
 		void								setBody(std::string newBody);
 		void								setFileExec(std::string newFileExec);
+		void 								setMethod(std::string method);
 
 
 	private:
