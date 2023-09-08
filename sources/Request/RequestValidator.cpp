@@ -104,7 +104,8 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 		request.setPath(_root + path + "/" + location);
 		return ;
 	}
-	location = serverData.getLocation(path.substr(0, position));
+	std::string locationPath = path.substr(0, position);
+	location = serverData.getLocation(locationPath);
 	if (!location.empty())
 	{
 		if (location.compare(path.substr(position + 1)) == 0)
@@ -113,6 +114,12 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 			this->_path = true;
 			request.setPath(_root + path);
 		}
+		else if (request.getMethod() == "DELETE" && !request.getHeader("Referer").empty())
+        {
+            this->_path = true;
+            request.setPath(_root + path);
+            this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(locationPath));
+        }
 	}
 	else
 	{

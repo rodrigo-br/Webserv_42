@@ -110,7 +110,8 @@ std::string Cgi::executeCgi()
     else if (pid == 0)
     {
         dup2(this->_fdExec, STDOUT_FILENO);
-        fullNameScript = this->_fileScript;
+
+        fullNameScript = "/usr/bin/" + this->_script;
         execve(fullNameScript.c_str(), this->_args, this->_envp);
         std::cerr << "-----------------------Error executing CGI script-----------------" << std::endl;
     }

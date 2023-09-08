@@ -152,10 +152,13 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
         body = new char[this->_bodySize];
         std::copy(buffer.begin(), buffer.end(), body);
     }
-
     if (this->_bodySize > 0)
     {
         this->_hasBody = true;
+    }
+    if (this->isErrorFile(file))
+    {
+        this->statusCode = (StatusCodesEnum::statusCodes)this->findStatusCodeFromFile(file);
     }
     return body;
 }

@@ -98,6 +98,10 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     {
         this->_hasBody = true;
     }
+    if (this->isErrorFile(file))
+    {
+        this->statusCode = (StatusCodesEnum::statusCodes)this->findStatusCodeFromFile(file);
+    }
     return  body;
 }
 
