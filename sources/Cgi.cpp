@@ -2,14 +2,18 @@
 
 #define CGI_BUFSIZE 3000
 
-Cgi::Cgi(Request &request, std::string root) : _fdExec(0)
+Cgi::Cgi(Request &request, std::string root, std::string name) : _fdExec(0)
 {
-	this->initEnv(request);
+	this->initEnv(request, name);
 	createEnvironmentArray();
     this->_root = root;
     request.setFileExec(root + "/assets/cgi_temp.html");
     this->_fileExec = request.getFileExec();
     this->_pathTemp = _root + request.getPath();
+    if (name.length() > 0)
+    {
+        this->_pathTemp += "cgipost.py";
+    }
 	this->_fileScript = this->_pathTemp;
 	this->_body = request.getBody();
 	this->_scriptName = this->_pathTemp.substr(this->_pathTemp.find_last_of("/") + 1);
@@ -27,7 +31,7 @@ Cgi::~Cgi(void)
     freeArrayOfStrings(this->_envp);
 }
 
-void		Cgi::initEnv(Request &request) 
+void		Cgi::initEnv(Request &request, std::string name)
 {
 	this->_env["SERVER_SOFTWARE"] = "Webserv/1.0";
 	this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
@@ -46,15 +50,16 @@ void		Cgi::initEnv(Request &request)
 	this->_env["HTTP_ACCEPT"] = request.getHeader("Accept");
 	this->_env["REQUEST_METHOD"] = request.getMethod();
 	this->_env["HTTP_HOST"] = request.getHeader("Host");
+    this->_env["NAME"] = name;
 }
 
-void    Cgi::createEnvironmentArray() 
+void    Cgi::createEnvironmentArray()
 {
     std::string     element;
     int             j = 0;
 
     this->_envp = new char*[this->_env.size() + 1];
-    for (std::map<std::string, std::string>::const_iterator i = this->_env.begin(); i != this->_env.end(); i++) 
+    for (std::map<std::string, std::string>::const_iterator i = this->_env.begin(); i != this->_env.end(); i++)
 	{
         element = i->first + "=" + i->second;
        this->_envp[j] = new char[element.size() + 1];
@@ -64,7 +69,7 @@ void    Cgi::createEnvironmentArray()
     this->_envp[j] = NULL;
 }
 
-void    Cgi::createArgumentsArray(std::vector<std::string> const &argsVars) 
+void    Cgi::createArgumentsArray(std::vector<std::string> const &argsVars)
 {
 	this->_args = new char *[argsVars.size() + 1];
 
@@ -86,19 +91,19 @@ void Cgi::initScriptArguments(Request &request)
 	createArgumentsArray(argmunts);
 }
 
-std::string Cgi::executeCgi() 
+std::string Cgi::executeCgi()
 {
     std::string fullNameScript;
     pid_t       pid;
     int         status;
 
     this->_fdExec = open(_fileExec.c_str(), O_CREAT | O_RDWR | O_TRUNC, 0644);
-    if (this->_fdExec == -1) 
+    if (this->_fdExec == -1)
     {
         return "Status: 500\r\n\r\n";
     }
     pid = fork();
-    if (pid == -1) 
+    if (pid == -1)
     {
         return "Status: 500\r\n\r\n";
     }
@@ -119,9 +124,9 @@ std::string Cgi::executeCgi()
 
 void Cgi::freeArrayOfStrings(char **arg)
 {
-    if (arg) 
+    if (arg)
     {
-        for (int i = 0; arg[i] != NULL; ++i) 
+        for (int i = 0; arg[i] != NULL; ++i)
         {
             delete[] arg[i];
         }

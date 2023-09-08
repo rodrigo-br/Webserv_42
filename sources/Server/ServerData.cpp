@@ -3,6 +3,8 @@
 ServerData::ServerData()
 {
     this->_serverNames.push_back("localhost");
+    this->_root = "wwwroot";
+    this->_bodySizeLimit = 5000000;
     this->_configurations["root"] = &ServerData::setRoot;
     this->_configurations["index"] = &ServerData::setLocationIndex;
     this->_configurations["directory_listing"] = &ServerData::setLocationDirectoryListening;

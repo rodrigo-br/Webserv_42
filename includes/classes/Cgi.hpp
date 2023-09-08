@@ -15,18 +15,18 @@
 class Cgi
 {
 	public:
-		Cgi(Request &request, std::string root);
+		Cgi(Request &request, std::string root, std::string name="");
 		std::string executeCgi() ;
 		~Cgi();
 
 	private:
-		void		initEnv(Request &request);
+		void		initEnv(Request &request, std::string name);
 		void		createEnvironmentArray() ;
 		void		initScriptArguments(Request &request);
 		void	    createArgumentsArray(std::vector<std::string> const &argsVars);
 		void 		freeArrayOfStrings(char **arg);
 		std::string	exec(int &socket);
-		
+
 		std::map<std::string, std::string>	_env;
 		std::string 						_fileScript;
 		std::string							_scriptName;

@@ -145,7 +145,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     std::string file;
     char * body;
 
-    if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
+    if (!this->validator.getMethodAllowed() && this->validator.getPath())
     {
         file = this->root + std::string("/405.html");
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
@@ -175,6 +175,10 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     if (this->_bodySize > 0)
     {
         this->_hasBody = true;
+    }
+    if (this->isErrorFile(file))
+    {
+        this->statusCode = (StatusCodesEnum::statusCodes)this->findStatusCodeFromFile(file);
     }
     return body;
 }

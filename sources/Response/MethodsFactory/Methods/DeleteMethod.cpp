@@ -62,7 +62,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     char        *body;
     std::string path = request.getPath();
 
-    if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
+    if (!this->validator.getMethodAllowed() && this->validator.getPath())
     {
         file = this->root + std::string("/405.html");
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;

@@ -7,7 +7,7 @@ RequestParser::~RequestParser(void) {}
 
 void    							RequestParser::parserHttpRequest(int &fdConection)
 {
-    this->_fdClient = fdConection;	
+    this->_fdClient = fdConection;
 	parseRequestStartLine();
 	parseRequestHeader();
 	parseRequestBody();
@@ -26,7 +26,7 @@ void    RequestParser::parseRequestQuery()
 }
 
 void    RequestParser::parseRequestPort()
-{   
+{
     std::string host = getHeader("Host");
     size_t      colonPos = host.find(':');
 
@@ -48,7 +48,7 @@ void RequestParser::parserServerName(void)
 }
 
 void RequestParser::parseChunkedBody(std::istringstream& iss)
-{  
+{
     std::string chunkSizeLine;
     std::string chunk;
     size_t chunkSize;
@@ -72,14 +72,14 @@ void RequestParser::parseChunkedBody(std::istringstream& iss)
 void parseMultipartFormDataBody(const std::string& boundary, std::string &tempLine)
 {
     size_t boundaryPos = tempLine.find(boundary);
-    if (boundaryPos == std::string::npos) 
+    if (boundaryPos == std::string::npos)
     {
-        return ; 
+        return ;
     }
     size_t contentStart = tempLine.find("\r\n\r\n", boundaryPos);
-    if (contentStart == std::string::npos) 
+    if (contentStart == std::string::npos)
     {
-        return ; 
+        return ;
     }
     contentStart += 4;
     if (tempLine[contentStart] == '\r')
@@ -87,12 +87,12 @@ void parseMultipartFormDataBody(const std::string& boundary, std::string &tempLi
         ++contentStart;
     }
     size_t contentEnd = tempLine.find(boundary, contentStart);
-    if (contentEnd == std::string::npos) 
+    if (contentEnd == std::string::npos)
     {
         tempLine =  tempLine.substr(contentStart, contentEnd - contentStart);
-        return ; 
+        return ;
     }
-    while (contentEnd > contentStart && (tempLine[contentEnd - 1] == '\r' || tempLine[contentEnd - 1] == '\n' || tempLine[contentEnd - 1] == '-')) 
+    while (contentEnd > contentStart && (tempLine[contentEnd - 1] == '\r' || tempLine[contentEnd - 1] == '\n' || tempLine[contentEnd - 1] == '-'))
     {
         --contentEnd;
     }
@@ -106,7 +106,7 @@ size_t  RequestParser::convertChunkSize(void)
 
     Utils::readLine(this->_fdClient, line, CRLF);
     std::size_t chunkSize = 0;
-    if (line == "") 
+    if (line == "")
         return 0;
     chunkSizeLine = line.substr(0,  line.find(" "));
     std::stringstream ss;
@@ -132,7 +132,6 @@ void RequestParser::parseRequestBodyChunked()
         chunkSize = convertChunkSize();
     }
     this->_headers["Content-Length"] = Utils::intToString(length);
-
 }
 
 void RequestParser::parseRequestBodyContentType(void)
@@ -159,7 +158,7 @@ void RequestParser::parseRequestBody(void)
         parseRequestBodyChunked();
     }
     else if (!getHeader("Content-Type").empty() && getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
-    {   
+    {
         parseRequestBodyContentType();
     }
 }
@@ -181,7 +180,7 @@ void 	RequestParser::parseRequestHeader(void)
             if (colonPos != std::string::npos)
             {
                 size_t lastNonCRLF = line.find_last_not_of(CRLF);
-                if (lastNonCRLF != std::string::npos) 
+                if (lastNonCRLF != std::string::npos)
                 {
                     line = line.substr(0, lastNonCRLF + 1);
                     std::string headerName = line.substr(0, colonPos);
@@ -246,7 +245,7 @@ std::string RequestParser::getHeader(std::string headerName) const
     {
         return it->second;
     }
-    else 
+    else
     {
         return "";
     }
@@ -304,16 +303,21 @@ void RequestParser::setFileName(std::string line)
             _fileName = line.substr(line.find("filename=\"") + 10, filenameEndPos - (line.find("filename=\"") + 10));
         }
     }
-    
+
 }
 
 int RequestParser::getContentLength() const
 {
     std::string contentLengthStr = getHeader("Content-Length");
-    
+
     if (!contentLengthStr.empty())
     {
         return atol(contentLengthStr.c_str());
     }
     return 0;
+}
+
+void RequestParser::setMethod(std::string method)
+{
+    this->_method = method;
 }

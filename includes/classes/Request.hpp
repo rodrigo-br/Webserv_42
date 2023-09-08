@@ -39,6 +39,7 @@ class Request
 		void						buildCGI(void);
 		void						setAllowed(int value);
 		int							getAllowed();
+		void						setMethod(std::string method);
 
 int getContentLength() const;
 	private:

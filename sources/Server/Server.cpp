@@ -20,10 +20,10 @@ void Server::closeSockets()
 	}
 }
 
-void Server::sendClientResponse(int clientSocket, int i, Request &request, RequestValidator &validator) 
+void Server::sendClientResponse(int clientSocket, int i, Request &request, RequestValidator &validator)
 {
 	std::cout << "Sending response to client" << std::endl;
-	
+
 
 	Response response(new ResponseBuilder(request, validator));
 	std::cout << std::endl<<  "response ===== "<< response.getResponse() << std::endl << std::endl;
@@ -50,12 +50,30 @@ void Server::processClientRequest(int clientSocket, Request &request, RequestVal
 	std::cout << "Reading client request" << std::endl;
 	request = Request().createParsedMessage(clientSocket);
 	std::cout << "****************************mensagem gerada**************************" << std::endl;
-
 	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
+	
 	std::string cgi = "/cgi-bin";
 	if (!this->conf.getLocation(request.getPortNumber(), cgi).empty())
 	{
-		if (Utils::endsWith(request.getPath() , ".py")) 
+		std::string query = request.getQuery();
+		size_t querySymbolPos = request.getPath().find_first_of("?");
+		std::string name = "";
+		if (querySymbolPos != std::string::npos)
+		{
+			request.setPath(request.getPath().substr(0, querySymbolPos));
+		}
+		if (Utils::hasQuery(query, "name=") && request.getMethod() == "POST")
+		{
+			size_t startPos = query.find("name=");
+			std::string restOfQuery = query.substr(startPos);
+			size_t endPos = restOfQuery.find_first_of("&");
+			name = query.substr(startPos + 5, endPos - 5);
+			Cgi CgiRequest(request, this->conf.getRoot(request.getPortNumber()), name);
+			CgiRequest.executeCgi();
+			request.buildCGI();
+			request.setMethod("GET");
+		}
+		else if (Utils::endsWith(request.getPath() , ".py"))
 		{
 			Cgi CgiRequest(request, this->conf.getRoot(request.getPortNumber()));
 			CgiRequest.executeCgi();

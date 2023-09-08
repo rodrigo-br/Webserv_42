@@ -46,7 +46,7 @@ void RequestValidator::pathValidator(ServerData &serverData, Request& request)
 	{
         handleNonTrailingSlashPath(serverData, request, path, root, position);
 	}
-    handleAssetsPath(request, path, root);
+    handleAssetsPath(request, path, root, serverData);
 	handleDirectoryListing(request, path, root, serverData);
 }
 
@@ -133,7 +133,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 		this->_isDirectoryListing = true;
 		request.setAllowed(serverData.getAllowed(path));
 		request.setPath(_root + path + "/");
-		this->_methodAllowed = true;
+		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path));
 	}
 	else if (!this->_path && !request.getHeader("Referer").empty())
 	{
@@ -147,7 +147,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 			request.setPath(_root + path);
 			this->_path = true;
 		}
-		this->_methodAllowed = true;
+		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path));
 	}
 }
 
@@ -161,7 +161,7 @@ std::string RequestValidator::getRoot(void) const
     return this->root;
 }
 
-void RequestValidator::handleAssetsPath(Request& request, const std::string& path, const std::string& _root)
+void RequestValidator::handleAssetsPath(Request& request, const std::string& path, const std::string& _root, ServerData &serverData)
 {
     if (path.find("/assets") != std::string::npos && !request.getHeader("Referer").empty())
     {
@@ -169,6 +169,12 @@ void RequestValidator::handleAssetsPath(Request& request, const std::string& pat
         request.setPath(_root + path);
 		this->_methodAllowed = true;
     }
+	else if (path.find("/assets/cgi_temp.html") != std::string::npos)
+	{
+		this->_path = true;
+		request.setPath(_root + path);
+		this->_methodAllowed = Utils::hasMethodInInput(HttpMethodEnum::POST, (HttpMethodEnum::httpMethod)serverData.getAllowed("/cgi-bin"));
+	}
 }
 
 void RequestValidator::bodyValidator(Request& request)
@@ -234,6 +240,10 @@ void	RequestValidator::serverNamesValidator(ServerData &serverData, Request& req
 		if ((*it).compare(request.getServerName()) == 0)
 		{
 			if (request.getPath().find("/assets") != std::string::npos && !request.getHeader("Referer").empty())
+			{
+				this->_path = true;
+			}
+			if (request.getPath().find("/assets/cgi_temp.html") != std::string::npos)
 			{
 				this->_path = true;
 			}

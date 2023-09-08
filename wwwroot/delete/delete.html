@@ -42,7 +42,7 @@
                 <ul id="fileList">
                     <div id="fileItem1">
                         <div class="rounded-image-container">
-                            <img class="rounded-image" src="/delete/file/bocao.jpg" alt="Imagem 1">
+                            <img class="rounded-image" src="/delete/bocao.jpg" alt="Imagem 1">
                         </div>
                         <button class="delete-button" onclick="deleteFile('bocao.jpg', 'fileItem1')">Excluir arquivo</button>        
                     </div>
@@ -59,7 +59,7 @@
                 console.log(`Arquivo ${fileName} já foi excluído ou está oculto.`);
                 return;
             }
-            fetch(`http://localhost:8000/delete/file/${fileName}`, {
+            fetch(`http://localhost:8000/delete/${fileName}`, {
                 method: 'DELETE'
             })  
             .then(response => {

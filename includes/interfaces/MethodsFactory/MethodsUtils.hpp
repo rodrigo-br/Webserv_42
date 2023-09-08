@@ -20,6 +20,8 @@ class MethodsUtils
         std::string         getProtocolVersion() const;
         std::string         get_status_code() const;
         std::string         get_status_msg() const;
+        bool                isErrorFile(std::string file);
+        int                 findStatusCodeFromFile(std::string file);
 };
 
 #endif
