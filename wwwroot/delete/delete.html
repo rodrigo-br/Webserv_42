@@ -70,7 +70,7 @@
                     listItem.style.display = 'none';
                 }
                 response.text().then(body => {
-                    window.location.href = '/delete/success.html';
+                    alert(`Arquivo "${fileName}" foi deletado.`);
                     const responseBodyElement = document.getElementById('responseBody');
                     if (responseBodyElement) {
                         responseBodyElement.innerHTML = body;
@@ -78,7 +78,7 @@
                 });
             } else {
                 console.error(`Falha ao excluir o arquivo ${fileName}.`);
-                window.location.href = '/delete/error_delete.html';
+                alert(`Falha ao excluir o arquivo`);
                 response.text().then(body => {
                     const responseBodyElement = document.getElementById('responseBody');
                     if (responseBodyElement) {
