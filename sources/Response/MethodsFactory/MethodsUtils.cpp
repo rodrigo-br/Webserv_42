@@ -57,3 +57,18 @@ std::string MethodsUtils::get_status_msg() const
 {
     return this->_statusCodes.getStatusMessage(this->get_status_code());
 }
+
+bool MethodsUtils::isErrorFile(std::string file)
+{
+    int result = findStatusCodeFromFile(file);
+    return (result >= 200 && result < 600);
+}
+
+int MethodsUtils::findStatusCodeFromFile(std::string file)
+{
+    size_t startPos = file.find_last_of('/') + 1;
+    size_t finalPos = file.find_last_of('.');
+    std::string fileNameWithoutExtension = file.substr(startPos, finalPos);
+    std::cout << fileNameWithoutExtension << std::endl;
+    return std::atoi(fileNameWithoutExtension.c_str());
+}
