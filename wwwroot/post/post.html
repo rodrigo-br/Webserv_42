@@ -15,9 +15,9 @@
         }
 
         .rounded-image {
-            border-radius: 50%; /* Define o raio da borda para 50% para criar uma forma circular */
-            width: 150px; /* Defina a largura desejada da imagem */
-            height: 150px; /* Defina a altura desejada da imagem */
+            border-radius: 60%; /* Define o raio da borda para 50% para criar uma forma circular */
+            width: 250px; /* Defina a largura desejada da imagem */
+            height: 250px; /* Defina a altura desejada da imagem */
             object-fit: cover; /* Redimensione a imagem para preencher o espaço definido */
         }
     </style>
@@ -38,7 +38,7 @@
                 <h3>Upload de arquivo</h3>
                 <h5>Adicione aqui a imagem do seu dog (ou qualquer coisa que você queira, pois não mandamos em você)</h5>
                 <div class="rounded-image-container">
-                    <img class="rounded-image" src="/post/image.jpg" alt="Minha Imagem" />
+                    <img class="rounded-image" src="/assets/Niqui.png" alt="Minha Imagem" />
                 </div>
                 <form method="post" enctype="multipart/form-data" action="/post" accept-charset="utf-8">
                     <input type="file" name="arquivo" />
