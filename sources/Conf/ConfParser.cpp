@@ -38,7 +38,7 @@ void ConfParser::createOrUpdateServerData(std::vector<std::string> tokens)
         this->_currentServerConfig = std::atoi(tokens[1].c_str());
         if (this->_serversData.find(this->_currentServerConfig) != this->_serversData.end())
         {
-            std::cout << "Falhô pois já existe essa porta em outro server = " << this->_currentServerConfig << std::endl;
+            std::cerr << "Falhô pois já existe essa porta em outro server = " << this->_currentServerConfig << std::endl;
             this->_criticalError = true;
             return ;
         }
