@@ -6,13 +6,8 @@ const char* GetMethod::buildResponse()
 {
     std::string response;
 
-    // Opening Line
     response.append(this->build_start_line());
-
-    // Headers
     response.append(this->build_headers());
-
-    // convert string to char ptr
     char *response_as_char = new char[(response.length() + 1)];
     std::strcpy(response_as_char, response.c_str());
 
@@ -43,8 +38,6 @@ std::string GetMethod::build_start_line() const
     start_line.append(" ");
     start_line.append(this->get_status_msg());
     start_line.append("\r\n");
-    std::cout << "START LINE : " << start_line << std::endl;
-
     return start_line;
 }
 
@@ -54,9 +47,6 @@ std::string GetMethod::build_headers() const
     headers.append("Content-Type: ");
     headers.append(this->get_content_type());
     headers.append("\r\n\n");
-
-    std::cout << "HEADER : " << headers << std::endl;
-
     return headers;
 }
 
@@ -65,7 +55,7 @@ void addHeader(std::stringstream& listing, const std::string& directoryPath)
     listing << "<html>"
             << "<head>"
             << "<title>Index of " << directoryPath << "</title>"
-            << "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css\">"
+            << "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css\">"
             << "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css\">"
             << "</head>"
             << "<body>"
@@ -112,7 +102,6 @@ char *GetMethod::getDirectoryListing()
 
     if (!this->request.getHeader("Referer").empty())
     {
-        std::cout << "entrou no if do referer" << std::endl;
         directoryPath = std::string(this->root) + "/" + directoryPath;
     }
     addHeader(listing, directoryPath);
@@ -120,7 +109,7 @@ char *GetMethod::getDirectoryListing()
     if (!dir)
     {
         this->_isDirectoryList   = false;
-        std::string file = this->root + std::string("/404.html");
+        std::string file = this->root + std::string("/statusCodes/404.html");
         this->statusCode = StatusCodesEnum::NOT_FOUND;
         char* errorCStr = new char[file.size() + 1];
         strcpy(errorCStr, file.c_str());
@@ -142,25 +131,25 @@ char *GetMethod::getDirectoryListing()
     listing << "</table>"
             << "</body>"
             << "</html>";
-
     this->_bodySize = listing.str().length() ;
     char* listingCStr = new char[_bodySize + 1];
     strcpy(listingCStr, listing.str().c_str());
-    listing.str("");
-    listing.clear();
     this->_isDirectoryList = true;
     this->statusCode = StatusCodesEnum::OK;
     return listingCStr;
 }
-
-
 
 char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     std::string file;
     char * body;
 
-    if (this->validator.getPath())
+    if (!this->validator.getMethodAllowed() && this->validator.getPath())
+    {
+        file = this->root + std::string("/statusCodes/405.html");
+        this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
+    }
+    else if (this->validator.getPath())
     {
         file = this->request.getPath();
         this->statusCode = StatusCodesEnum::OK;
@@ -171,7 +160,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
-        file = this->root + std::string("/404.html");
+        file = this->root + std::string("/statusCodes/404.html");
         this->statusCode = StatusCodesEnum::NOT_FOUND;
     }
     if (this->_isDirectoryList == false)
@@ -186,6 +175,10 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     {
         this->_hasBody = true;
     }
+    if (this->isErrorFile(file))
+    {
+        this->statusCode = (StatusCodesEnum::statusCodes)this->findStatusCodeFromFile(file);
+    }
     return body;
 }
 
@@ -198,7 +191,7 @@ std::string GetMethod::get_content_type() const
     }
     else
     {
-        file = this->root + std::string("/404.html");
+        file = this->root + std::string("/statusCodes/404.html");
     }
     return this->_contentTypes.getMimeType(this->getExtension(file));
 }

@@ -29,7 +29,7 @@ class GetMethod : public IMethod
         std::string build_headers() const;
         char *BODY_BUILDER_BIIIIHHHHLLL();
         std::string get_content_type() const;
-        char* getDirectoryListing() ;
+        char        *getDirectoryListing() ;
 };
 
 #endif

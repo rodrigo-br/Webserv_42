@@ -22,8 +22,11 @@ class RequestValidator
 		bool				        getHttpVersion(void) const;
 		bool				        getBody(void) const;
 		bool				        getHeader(std::string headerName) const;
+		bool						getMethodAllowed(void) const;
 		bool 						getServerName(void) const;
 		bool						isDirectoryListing();
+		bool						getBodySizeLimit(void) const;
+
 		std::string					getRoot(void) const;
 
 		void 						setBody(bool body);
@@ -32,9 +35,9 @@ class RequestValidator
 		HttpMethodEnum::httpMethod	methodValidator(Request& request);
 		void 						pathValidator(ServerData &serverData, Request& request);
 		void						bodyValidator(Request& request);
+		void						bodySizeLimitValidator(ServerData &serverData, Request& request);
 		void						httpVersionValidator(Request& request);
 		void						serverNamesValidator(ServerData &serverData, Request& request);
-		void 						fileExecValidator(std::string root, Request& request);
 		bool						isRootPath(const std::string& path, size_t	len);
 		bool 						endsWithSlash(size_t position, size_t len);
 
@@ -43,7 +46,7 @@ class RequestValidator
     	void 						handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root);
     	void 						handlePathWithTrailingSlash(ServerData &serverData, Request& request, const std::string& path, const std::string& root);
     	void 						handleNonTrailingSlashPath(ServerData &serverData, Request& request, const std::string& path, const std::string& root, size_t position);
-    	void 						handleAssetsPath(Request& request, const std::string& path, const std::string& root);
+    	void 						handleAssetsPath(Request& request, const std::string& path, const std::string& root, ServerData &serverData);
 		void 						handleDirectoryListing(Request& request, std::string& path, const std::string& root, ServerData &serverData);
 		HttpMethodEnum::httpMethod	_method;
 		bool                 		_path;
@@ -51,6 +54,8 @@ class RequestValidator
 		bool						_requestBody;
 		bool						_serverName;
 		bool						_isDirectoryListing;
+		bool						_methodAllowed;
+		bool						_bodySizeLimit;
 		std::string					root;
 };
 

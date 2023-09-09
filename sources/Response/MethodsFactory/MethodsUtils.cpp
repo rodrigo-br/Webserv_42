@@ -1,14 +1,13 @@
 #include "interfaces/MethodsFactory/MethodsUtils.hpp"
 #include <sstream>
 
-# define ROOT "wwwroot/"
-
 std::vector<char> MethodsUtils::openFileAsVector(std::string path)
 {
-    if (path == ROOT)
+    if (path == this->root)
     {
         path += "index.html";
     }
+    std::cout << path << std::endl;
     std::ifstream file(path.c_str(), std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {
@@ -16,7 +15,6 @@ std::vector<char> MethodsUtils::openFileAsVector(std::string path)
         return std::vector<char>();
     }
     std::streamsize size = file.tellg();
-    std::cout << "size ==== " << size <<std::endl;
     file.seekg(0, std::ios::beg);
     std::vector<char> imageBuffer(size);
     if (!file.read(imageBuffer.data(), size))
@@ -31,7 +29,7 @@ std::vector<char> MethodsUtils::openFileAsVector(std::string path)
 
 std::string MethodsUtils::getExtension(std::string path) const
 {
-    if (path == ROOT)
+    if (path == this->root)
     {
         path += "index.html";
     }
@@ -58,4 +56,19 @@ std::string MethodsUtils::get_status_code() const
 std::string MethodsUtils::get_status_msg() const
 {
     return this->_statusCodes.getStatusMessage(this->get_status_code());
+}
+
+bool MethodsUtils::isErrorFile(std::string file)
+{
+    int result = findStatusCodeFromFile(file);
+    return (result >= 200 && result < 600);
+}
+
+int MethodsUtils::findStatusCodeFromFile(std::string file)
+{
+    size_t startPos = file.find_last_of('/') + 1;
+    size_t finalPos = file.find_last_of('.');
+    std::string fileNameWithoutExtension = file.substr(startPos, finalPos);
+    std::cout << fileNameWithoutExtension << std::endl;
+    return std::atoi(fileNameWithoutExtension.c_str());
 }

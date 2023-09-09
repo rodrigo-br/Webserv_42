@@ -8,6 +8,7 @@ ValidConfigurations::ValidConfigurations()
     this->_serverConfigurations["root"] = new ValidateDirectoryExist();
     this->_serverConfigurations["location"] = new ValidateDirectoryExist();
     this->_serverConfigurations["server_names"] = new ValidateServerNames();
+    this->_serverConfigurations["body_size_limit"] = new ValidateBodySizeLimit();
     this->_locationConfigurations["http_methods"] = new ValidateMethods();
     this->_locationConfigurations["index"] = new ValidateLocationIndex();
     this->_locationConfigurations["directory_listing"] = new ValidateGenericConfiguration("on");

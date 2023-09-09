@@ -2,11 +2,15 @@
 
 ServerData::ServerData()
 {
+    this->_serverNames.push_back("localhost");
+    this->_root = "wwwroot";
+    this->_bodySizeLimit = 5000000;
     this->_configurations["root"] = &ServerData::setRoot;
     this->_configurations["index"] = &ServerData::setLocationIndex;
     this->_configurations["directory_listing"] = &ServerData::setLocationDirectoryListening;
     this->_configurations["http_methods"] = &ServerData::setLocationAllowedMethods;
     this->_configurations["server_names"] = &ServerData::setServerNames;
+    this->_configurations["body_size_limit"] = &ServerData::setBodySizeLimit;
 }
 
 std::vector<std::string> ServerData::getServerNames() const
@@ -39,6 +43,15 @@ void ServerData::setServerNames(std::string name)
     this->_serverNames.push_back(name);
 }
 
+int ServerData::getBodySizeLimit() const
+{
+    return this->_bodySizeLimit;
+}
+
+void ServerData::setBodySizeLimit(std::string value)
+{
+    this->_bodySizeLimit = std::atoi(value.c_str());
+}
 
 bool ServerData::isDirectoryListingLocation(std::string locationPath)
 {
@@ -92,3 +105,13 @@ void ServerData::setLocationDirectoryListening(std::string directoryListening)
     this->_location[this->_currentLocation].setDirectoryListening((directoryListening.compare("on") == 0));
 }
 
+int ServerData::getAllowed(std::string locationPath)
+{
+    std::map<std::string, Location>::iterator it = this->_location.find(locationPath);
+    if (it != this->_location.end())
+    {
+        int allowed = it->second.getAllowedMethods();
+        return ((allowed <= 8 && allowed > 0) ? allowed : 1);
+    }
+    return 0;
+}

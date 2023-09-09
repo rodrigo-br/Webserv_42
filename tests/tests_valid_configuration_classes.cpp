@@ -84,7 +84,7 @@ TEST_CASE("Testa index válidos dão true na configuração de location")
 {
     ValidConfigurations validConfigurations;
     std::string key = "index";
-    std::string value = GENERATE("wwwroot/index.html","wwwroot/404.html","Makefile","README.md");
+    std::string value = GENERATE("wwwroot/index.html","wwwroot/statusCodes/404.html","Makefile","README.md");
 
     bool isValidConfiguration = validConfigurations.ValidateALocationConfiguration(key, value);
 

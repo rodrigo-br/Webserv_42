@@ -13,12 +13,15 @@ class MethodsUtils
     public:
         StatusCodesEnum::statusCodes    statusCode;
         StatusCodes                     _statusCodes;
+        std::string                     root;
 
         std::vector<char>   openFileAsVector(std::string path);
         std::string         getExtension(std::string path) const;
         std::string         getProtocolVersion() const;
         std::string         get_status_code() const;
         std::string         get_status_msg() const;
+        bool                isErrorFile(std::string file);
+        int                 findStatusCodeFromFile(std::string file);
 };
 
 #endif

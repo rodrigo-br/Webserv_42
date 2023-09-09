@@ -13,6 +13,8 @@ class StatusCodes
     public:
         StatusCodes();
         std::string getStatusMessage(std::string code) const;
+        void setContentType(const std::string& contentType);
+
 };
 
 #endif

@@ -5,20 +5,18 @@ RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVe
 
 RequestParser::~RequestParser(void) {}
 
-void    RequestParser::parserHttpRequest(char *request)
+void    							RequestParser::parserHttpRequest(int &fdConection)
 {
-	std::string			line;
-	std::istringstream	iss(request);
-
-	parseRequestStartLine(line, iss);
-	parseRequestHeader(line, iss);
-	parseRequestBody(line, iss);
+    this->_fdClient = fdConection;
+	parseRequestStartLine();
+	parseRequestHeader();
+	parseRequestBody();
     parseRequestPort();
     parserServerName();
-    parseRquestQuery();
+    parseRequestQuery();
 }
 
-void    RequestParser::parseRquestQuery()
+void    RequestParser::parseRequestQuery()
 {	
     size_t queryStart = this->_path.find_first_of('?');
     if (queryStart != std::string::npos)
@@ -28,9 +26,10 @@ void    RequestParser::parseRquestQuery()
 }
 
 void    RequestParser::parseRequestPort()
-{   
+{
     std::string host = getHeader("Host");
     size_t      colonPos = host.find(':');
+
     if (colonPos != std::string::npos)
     {
         std::string portSubstring = host.substr(colonPos + 1);
@@ -39,9 +38,7 @@ void    RequestParser::parseRequestPort()
             this->_port = portSubstring;
             this->_portNumber = std::atoi(portSubstring.c_str());
         }
-        
     }
-
 }
 
 void RequestParser::parserServerName(void)
@@ -50,46 +47,163 @@ void RequestParser::parserServerName(void)
 	this->_serverName = host.substr(0, host.find(':'));
 }
 
-void RequestParser::parseRequestBody(std::string& line, std::istringstream& iss)
+void RequestParser::parseChunkedBody(std::istringstream& iss)
 {
-    while (std::getline(iss, line)) 
+    std::string chunkSizeLine;
+    std::string chunk;
+    size_t chunkSize;
+
+    while (std::getline(iss, chunkSizeLine))
     {
-        this->_requestBody += line;
+        std::stringstream chunkSizeStream(chunkSizeLine);
+        chunkSizeStream >> std::hex >> chunkSize;
+        if (chunkSize == 0)
+        {
+            break;
+        }
+        chunk.resize(chunkSize);
+        iss.read(&chunk[0], chunkSize);
+        std::string crlf;
+        std::getline(iss, crlf);
+        _requestBody += chunk;
     }
 }
 
-void 	RequestParser::parseRequestHeader( std::string &line, std::istringstream &iss )
+void parseMultipartFormDataBody(const std::string& boundary, std::string &tempLine)
 {
-	while (std::getline(iss, line) && !line.empty())
+    size_t boundaryPos = tempLine.find(boundary);
+    if (boundaryPos == std::string::npos)
     {
-        if (line == "\r" || line == "\r\n")
+        return ;
+    }
+    size_t contentStart = tempLine.find("\r\n\r\n", boundaryPos);
+    if (contentStart == std::string::npos)
+    {
+        return ;
+    }
+    contentStart += 4;
+    if (tempLine[contentStart] == '\r')
+    {
+        ++contentStart;
+    }
+    size_t contentEnd = tempLine.find(boundary, contentStart);
+    if (contentEnd == std::string::npos)
+    {
+        tempLine =  tempLine.substr(contentStart, contentEnd - contentStart);
+        return ;
+    }
+    while (contentEnd > contentStart && (tempLine[contentEnd - 1] == '\r' || tempLine[contentEnd - 1] == '\n' || tempLine[contentEnd - 1] == '-'))
+    {
+        --contentEnd;
+    }
+    tempLine = tempLine.substr(contentStart, contentEnd - contentStart);
+}
+
+size_t  RequestParser::convertChunkSize(void)
+{
+    std::string line;
+    std::string chunkSizeLine;
+
+    Utils::readLine(this->_fdClient, line, CRLF);
+    std::size_t chunkSize = 0;
+    if (line == "")
+        return 0;
+    chunkSizeLine = line.substr(0,  line.find(" "));
+    std::stringstream ss;
+    ss << std::hex << chunkSizeLine;
+    ss >> chunkSize;
+    return chunkSize;
+}
+
+void RequestParser::parseRequestBodyChunked()
+{
+    std::size_t     chunkSize = convertChunkSize();
+    std::size_t		length;
+    std::string        tempLine;
+
+    while (chunkSize > 0)
+    {
+        Utils::readLine(this->_fdClient, tempLine, CRLF);
+        this->_requestBody += tempLine;
+        length += chunkSize;
+        this->_request += tempLine + "\n";
+        this->_requestBody += tempLine + "\n";
+        Utils::readLine(this->_fdClient, tempLine, CRLF);
+        chunkSize = convertChunkSize();
+    }
+    this->_headers["Content-Length"] = Utils::intToString(length);
+}
+
+void RequestParser::parseRequestBodyContentType(void)
+{
+    std::string tempLine;
+    size_t pos;
+
+    Utils::readLineBody(this->_fdClient, tempLine, getContentLength());
+    setFileName(tempLine);
+    pos = getHeader("Content-Type").find("boundary=", 0);
+    if (pos != std::string::npos)
+    {
+        std::string boundary = getHeader("Content-Type").substr(pos + 9);
+        parseMultipartFormDataBody(boundary, tempLine);
+    }
+    this->_requestBody += tempLine;
+    this->_request += tempLine + "\n";
+
+}
+void RequestParser::parseRequestBody(void)
+{
+    if (getHeader("Transfer-Encoding") == "chunked")
+    {
+        parseRequestBodyChunked();
+    }
+    else if (!getHeader("Content-Type").empty() && getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
+    {
+        parseRequestBodyContentType();
+    }
+}
+
+void 	RequestParser::parseRequestHeader(void)
+{
+    std::string line;
+
+    while (true)
+    {
+        Utils::readLine(this->_fdClient, line, CRLF);
+        if (line == CRLF || line.empty())
         {
-                break;
+            break;
         }
         else
         {
             size_t colonPos = line.find(':');
             if (colonPos != std::string::npos)
             {
-                size_t lastNonCRLF = line.find_last_not_of("\r\n");
-                if (lastNonCRLF != std::string::npos) 
+                size_t lastNonCRLF = line.find_last_not_of(CRLF);
+                if (lastNonCRLF != std::string::npos)
                 {
                     line = line.substr(0, lastNonCRLF + 1);
                     std::string headerName = line.substr(0, colonPos);
                     std::string headerValue = line.substr(colonPos + 2);
                     this->_headers[headerName] = headerValue;
+
                 }
             }
         }
-	}
+        this->_request += line + "\n";
+    }
 }
 
-void	RequestParser::parseRequestStartLine(std::string &line, std::istringstream &iss)
+void	RequestParser::parseRequestStartLine(void)
 {
-	if (std::getline(iss, line))
+    std::string line;
+
+    Utils::readLine(_fdClient, line, CRLF);
+	if (!line.empty())
 	{
         std::istringstream lineStream(line);
-        lineStream >> this->_method >> _path >> this->_httpVersion;
+        lineStream >> this->_method >> this->_path >> this->_httpVersion;
+        this->_request += line +  "\n";
     }
 }
 
@@ -131,7 +245,7 @@ std::string RequestParser::getHeader(std::string headerName) const
     {
         return it->second;
     }
-    else 
+    else
     {
         return "";
     }
@@ -145,6 +259,17 @@ std::string RequestParser::getQuery(void) const
 std::string RequestParser::getServerName(void) const
 {
     return this->_serverName;;
+}
+
+std::string RequestParser::getFileName(void) const
+{
+    return this->_fileName;
+}
+
+
+std::string RequestParser::getRequest(void) const
+{
+    return this->_request;
 }
 
 void RequestParser::setPath(std::string newPath)
@@ -165,4 +290,34 @@ std::string RequestParser::getFileExec(void) const
 void RequestParser::setFileExec(std::string fileExec)
 {
     this->_fileExec = fileExec;
+}
+
+void RequestParser::setFileName(std::string line)
+{
+
+    if (line.find("filename=\"") != std::string::npos)
+    {
+        size_t filenameEndPos = line.find("\"", line.find("filename=\"") + 10);
+        if (filenameEndPos != std::string::npos)
+        {
+            _fileName = line.substr(line.find("filename=\"") + 10, filenameEndPos - (line.find("filename=\"") + 10));
+        }
+    }
+
+}
+
+int RequestParser::getContentLength() const
+{
+    std::string contentLengthStr = getHeader("Content-Length");
+
+    if (!contentLengthStr.empty())
+    {
+        return atol(contentLengthStr.c_str());
+    }
+    return 0;
+}
+
+void RequestParser::setMethod(std::string method)
+{
+    this->_method = method;
 }

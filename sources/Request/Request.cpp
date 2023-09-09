@@ -4,18 +4,14 @@ Request::Request( ) : _request() {	}
 
 Request::~Request( void ) { }
 
-const char*    Request::getMensageRequest( void ) const
+std::string   Request::getMensageRequest( void ) const
 {
-    return (this->_request);
+    return (_parser.getRequest());
 }
 
-Request			&Request::createParsedMessage(int fdConnection)
+Request			&Request::createParsedMessage(int &fdConnection)
 {
-	if (Utils::check(read(fdConnection,this->_request, BUFFER_SIZE),  "Read request"))
-	{
-		exit(EXIT_FAILURE);
-	}
-	this->_parser.parserHttpRequest(this->_request);
+	this->_parser.parserHttpRequest(fdConnection);
 	return *this;
 }
 
@@ -68,6 +64,10 @@ std::string Request::getFileExec(void) const
 {
     return  this->_parser.getFileExec();
 }
+std::string Request::getFileName(void) const
+{
+    return this->_parser.getFileName();
+}
 
 void Request::setFileExec(std::string fileExec)
 {
@@ -87,4 +87,19 @@ void Request::setPath(std::string newPath)
 void Request::buildCGI(void)
 {
     setPath("/assets/cgi_temp.html");
+}
+
+void Request::setAllowed(int value)
+{
+    this->_allowed = value;
+}
+
+int Request::getAllowed()
+{
+    return this->_allowed;
+}
+
+void Request::setMethod(std::string method)
+{
+    this->_parser.setMethod(method);
 }

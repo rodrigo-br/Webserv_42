@@ -37,6 +37,7 @@ bool createAndConfigureSocket(int& socketFd, int optval)
     socketFd = socket(AF_INET, SOCK_STREAM, 0);
     if (Utils::check(socketFd, "Create Socket")) 
     {
+        close(socketFd);
         return true;
     }
 
@@ -91,9 +92,9 @@ bool Socket::initializeSockets(std::map<int, ServerData>& conf)
     FD_ZERO(&this->_writeFds);
     for (std::map<int, ServerData>::const_iterator it = conf.begin(); it != conf.end(); ++it) 
     {
+        int serverSocket;
         int port = it->first;
         int optval = 1;
-        int serverSocket;
 
         if (createAndConfigureSocket(serverSocket, optval)) 
         {

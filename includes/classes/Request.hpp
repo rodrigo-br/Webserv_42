@@ -9,8 +9,9 @@
 # include "classes/Utils.hpp"
 # include "classes/RequestParser.hpp"
 # include "enums/HttpMethodsEnum.hpp"
+# include "classes/Location.hpp"
 
-# define BUFFER_SIZE 30000
+# define BUFFER_SIZE2 30000
 
 class Request
 {
@@ -19,8 +20,8 @@ class Request
 		Request();
 		~Request();
 
-		Request						&createParsedMessage(int fdConnecion);
-		const char*         		getMensageRequest() const;
+		Request						&createParsedMessage(int &fdConnecion);
+		std::string	        		getMensageRequest() const;
 		std::string					getMethod() const;
 		std::string					getPath(void) const;
 		std::string					getHttpVersion(void) const;
@@ -28,6 +29,7 @@ class Request
 		std::string					getHeader(std::string headerName) const;
 		std::string					getServerName(void) const;
 		std::string					getPort(void) const;
+		std::string					getFileName(void) const;
 		int							getPortNumber(void) const;
 		void        				setPath(std::string newPath);
 		std::string 				getQuery(void) const;
@@ -35,10 +37,15 @@ class Request
 		void						setFileExec(std::string fileExec);
 		void						setBody(std::string newBody);
 		void						buildCGI(void);
+		void						setAllowed(int value);
+		int							getAllowed();
+		void						setMethod(std::string method);
 
+int getContentLength() const;
 	private:
 		RequestParser				_parser;
-		char            			_request[BUFFER_SIZE];
+		char            			_request[BUFFER_SIZE2];
+		int							_allowed;
 
 };
 
