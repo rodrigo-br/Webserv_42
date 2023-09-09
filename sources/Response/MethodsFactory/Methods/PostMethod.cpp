@@ -1,5 +1,5 @@
 #include "interfaces/MethodsFactory/Methods/PostMethod.hpp"
-#include <sstream> 
+#include <sstream>
 # include <vector>
 # include <iostream>
 # include <fstream>
@@ -41,7 +41,7 @@ std::string PostMethod::build_start_line() const
     return start_line;
 }
 
-std::string PostMethod::build_headers() const
+std::string PostMethod::build_headers()
 {
     std::string headers;
     headers.append("Content-Type: ");
@@ -50,7 +50,7 @@ std::string PostMethod::build_headers() const
     return headers;
 }
 
-std::string PostMethod::get_content_type() const
+std::string PostMethod::get_content_type()
 {
     std::string file;
     if (this->validator.getPath())
@@ -59,7 +59,7 @@ std::string PostMethod::get_content_type() const
     }
     else
     {
-        file = this->root + std::string("/statusCodes/404.html");
+        file = this->root + this->validator.getErrorPage(404);
     }
     return this->_contentTypes.getMimeType(this->getExtension(file));
 }
@@ -76,12 +76,12 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
     {
-        file = this->root + std::string("/statusCodes/405.html");
+        file = this->root + this->validator.getErrorPage(405);
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
     else if (this->validator.getBodySizeLimit() == false)
     {
-        file = this->root + std::string("/statusCodes/413.html");
+        file = this->root + this->validator.getErrorPage(413);
         this->statusCode = StatusCodesEnum::PAYLOAD_TOO_LARGE;
     }
     else if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
@@ -91,7 +91,6 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
         std::ofstream outFile(filePath.c_str(), std::ios::binary);
         if (outFile)
         {
-            std::cout <<   "outFile = " << outFile << std::endl;
             outFile.write(file.c_str(), request.getBody().length());
             outFile.close();
             file = this->root + std::string("/post/success.html");
@@ -106,7 +105,7 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
-        file = this->root + std::string("/statusCodes/413.html");
+        file = this->root + this->validator.getErrorPage(413);
         this->statusCode = StatusCodesEnum::LENGTH_REQUIRED;
     }
     if(!file.empty())

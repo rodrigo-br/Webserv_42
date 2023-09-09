@@ -41,7 +41,7 @@ std::string GetMethod::build_start_line() const
     return start_line;
 }
 
-std::string GetMethod::build_headers() const
+std::string GetMethod::build_headers()
 {
     std::string headers;
     headers.append("Content-Type: ");
@@ -182,7 +182,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     return body;
 }
 
-std::string GetMethod::get_content_type() const
+std::string GetMethod::get_content_type()
 {
     std::string file;
     if (this->validator.getPath())
@@ -191,7 +191,7 @@ std::string GetMethod::get_content_type() const
     }
     else
     {
-        file = this->root + std::string("/statusCodes/404.html");
+        file = this->root + std::string(this->validator.getErrorPage(404));
     }
     return this->_contentTypes.getMimeType(this->getExtension(file));
 }

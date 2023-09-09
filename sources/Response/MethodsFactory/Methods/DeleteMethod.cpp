@@ -41,7 +41,7 @@ std::string DeleteMethod::build_start_line() const
     return start_line;
 }
 
-std::string DeleteMethod::build_headers() const
+std::string DeleteMethod::build_headers()
 {
     std::string headers;
     headers.append("Content-Type: ");
@@ -64,7 +64,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (!this->validator.getMethodAllowed() && this->validator.getPath())
     {
-        file = this->root + std::string("/statusCodes/405.html");
+        file = this->root + this->validator.getErrorPage(405);
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
     else if (path.find("/delete") != std::string::npos)
@@ -108,7 +108,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     return  body;
 }
 
-std::string DeleteMethod::get_content_type() const
+std::string DeleteMethod::get_content_type()
 {
     std::string file;
     if (this->validator.getPath())
@@ -117,7 +117,7 @@ std::string DeleteMethod::get_content_type() const
     }
     else
     {
-        file = this->root + std::string("/statusCodes/404.html");
+        file = this->validator.getErrorPage(404);
     }
     return this->_contentTypes.getMimeType(this->getExtension(file));
 }
