@@ -26,6 +26,7 @@ class RequestValidator
 		bool 						getServerName(void) const;
 		bool						isDirectoryListing();
 		bool						getBodySizeLimit(void) const;
+		std::string					getErrorPage(int erro);
 
 		std::string					getRoot(void) const;
 
@@ -49,6 +50,7 @@ class RequestValidator
     	void 						handleAssetsPath(Request& request, const std::string& path, const std::string& root, ServerData &serverData);
 		void 						handleDirectoryListing(Request& request, std::string& path, const std::string& root, ServerData &serverData);
 		HttpMethodEnum::httpMethod	_method;
+		std::map<int, std::string>	_errorPages;
 		bool                 		_path;
 		bool                		_httpVersion;
 		bool						_requestBody;
