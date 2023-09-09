@@ -1,19 +1,22 @@
 #include "classes/RequestParser.hpp"
 # include <sstream>
 
-RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVersion(""), _requestBody("") { }
+RequestParser::RequestParser(void) : _headers(), _method(""), _path(""), _httpVersion(""), _requestBody(""), _isErrorRead(false){ }
 
 RequestParser::~RequestParser(void) {}
 
-void    							RequestParser::parserHttpRequest(int &fdConection)
+void    							RequestParser::parserHttpRequest(int &fdConection, bool &errorRead)
 {
     this->_fdClient = fdConection;
+    this->_isErrorRead = errorRead;
 	parseRequestStartLine();
 	parseRequestHeader();
 	parseRequestBody();
     parseRequestPort();
     parserServerName();
     parseRequestQuery();
+    errorRead = this->_isErrorRead;
+
 }
 
 void    RequestParser::parseRequestQuery()
@@ -45,28 +48,6 @@ void RequestParser::parserServerName(void)
 {
 	std::string host = getHeader("Host");
 	this->_serverName = host.substr(0, host.find(':'));
-}
-
-void RequestParser::parseChunkedBody(std::istringstream& iss)
-{
-    std::string chunkSizeLine;
-    std::string chunk;
-    size_t chunkSize;
-
-    while (std::getline(iss, chunkSizeLine))
-    {
-        std::stringstream chunkSizeStream(chunkSizeLine);
-        chunkSizeStream >> std::hex >> chunkSize;
-        if (chunkSize == 0)
-        {
-            break;
-        }
-        chunk.resize(chunkSize);
-        iss.read(&chunk[0], chunkSize);
-        std::string crlf;
-        std::getline(iss, crlf);
-        _requestBody += chunk;
-    }
 }
 
 void parseMultipartFormDataBody(const std::string& boundary, std::string &tempLine)
@@ -104,7 +85,7 @@ size_t  RequestParser::convertChunkSize(void)
     std::string line;
     std::string chunkSizeLine;
 
-    Utils::readLine(this->_fdClient, line, CRLF);
+    Utils::readLine(this->_fdClient, line, CRLF, this->_isErrorRead);
     std::size_t chunkSize = 0;
     if (line == "")
         return 0;
@@ -123,12 +104,12 @@ void RequestParser::parseRequestBodyChunked()
 
     while (chunkSize > 0)
     {
-        Utils::readLine(this->_fdClient, tempLine, CRLF);
+        Utils::readLine(this->_fdClient, tempLine, CRLF, this->_isErrorRead);
         this->_requestBody += tempLine;
         length += chunkSize;
         this->_request += tempLine + "\n";
         this->_requestBody += tempLine + "\n";
-        Utils::readLine(this->_fdClient, tempLine, CRLF);
+        Utils::readLine(this->_fdClient, tempLine, CRLF, this->_isErrorRead);
         chunkSize = convertChunkSize();
     }
     this->_headers["Content-Length"] = Utils::intToString(length);
@@ -139,7 +120,7 @@ void RequestParser::parseRequestBodyContentType(void)
     std::string tempLine;
     size_t pos;
 
-    Utils::readLineBody(this->_fdClient, tempLine, getContentLength());
+    Utils::readLineBody(this->_fdClient, tempLine, getContentLength(), this->_isErrorRead);
     setFileName(tempLine);
     pos = getHeader("Content-Type").find("boundary=", 0);
     if (pos != std::string::npos)
@@ -169,7 +150,7 @@ void 	RequestParser::parseRequestHeader(void)
 
     while (true)
     {
-        Utils::readLine(this->_fdClient, line, CRLF);
+        Utils::readLine(this->_fdClient, line, CRLF, this->_isErrorRead);
         if (line == CRLF || line.empty())
         {
             break;
@@ -198,7 +179,7 @@ void	RequestParser::parseRequestStartLine(void)
 {
     std::string line;
 
-    Utils::readLine(_fdClient, line, CRLF);
+    Utils::readLine(_fdClient, line, CRLF, this->_isErrorRead);
 	if (!line.empty())
 	{
         std::istringstream lineStream(line);

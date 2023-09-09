@@ -16,7 +16,7 @@ class Server
         void handleNewClients();
         void acceptNewClient(int sockfd);
         void processClients();
-        void processClientRequest(int client_sock, Request &request, RequestValidator &validator);
+        void processClientRequest(int client_sock, int i, Request &request, RequestValidator &validator);
         void sendClientResponse(int client_sock, int i, Request &request, RequestValidator &validator);
         void closeSockets();
         void runServer(Socket socket);
@@ -27,6 +27,7 @@ class Server
         std::vector<int> clienstSocks;
         fd_set readSocket;
 		fd_set writeSocket;
+        bool isErrorRead;
 };
 
 #endif
