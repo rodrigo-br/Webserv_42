@@ -154,7 +154,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 			request.setPath(_root + path);
 			this->_path = true;
 		}
-		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path));
+		this->_methodAllowed = true;
 	}
 }
 
@@ -181,6 +181,12 @@ void RequestValidator::handleAssetsPath(Request& request, const std::string& pat
 		this->_path = true;
 		request.setPath(_root + path);
 		this->_methodAllowed = Utils::hasMethodInInput(HttpMethodEnum::POST, (HttpMethodEnum::httpMethod)serverData.getAllowed("/cgi-bin"));
+	}
+	else if (path.find("favicon.ico") != std::string::npos && !request.getHeader("Referer").empty())
+	{
+		this->_path = true;
+        request.setPath(_root + path);
+		this->_methodAllowed = true;
 	}
 }
 
