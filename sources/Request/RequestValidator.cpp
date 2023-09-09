@@ -1,6 +1,6 @@
 #include "classes/RequestValidator.hpp"
 
-RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _httpVersion(false), _requestBody(false), _serverName(false), _isDirectoryListing(false), _bodySizeLimit(false)  { }
+RequestValidator::RequestValidator(void) : _method(HttpMethodEnum::UNKNOWN), _path(false), _httpVersion(false), _requestBody(false), _serverName(false), _isDirectoryListing(false), _methodAllowed(false), _bodySizeLimit(false) { }
 
 RequestValidator::~RequestValidator(void) {}
 

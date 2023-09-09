@@ -1,6 +1,6 @@
 #include "classes/Location.hpp"
 
-Location::Location()
+Location::Location() : _index(""), _allowedMethods(0), _directoryListening(false)
 {
 }
 
@@ -19,6 +19,8 @@ Location& Location::operator=(Location const& rhs)
     if (this != &rhs)
     {
         this->_index = rhs.getIndex();
+        this->_allowedMethods = rhs.getAllowedMethods();
+        this->_directoryListening = rhs.getDirectoryListening();
     }
     return *this;
 }
