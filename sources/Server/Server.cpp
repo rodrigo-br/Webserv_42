@@ -50,6 +50,7 @@ void Server::processClientRequest(int clientSocket, Request &request, RequestVal
 	std::cout << "Reading client request" << std::endl;
 	request = Request().createParsedMessage(clientSocket);
 	std::cout << "****************************mensagem gerada**************************" << std::endl;
+	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
 
 	std::string cgi = "/cgi-bin";
 	if (!this->conf.getLocation(request.getPortNumber(), cgi).empty())

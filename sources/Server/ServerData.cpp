@@ -2,10 +2,10 @@
 
 ServerData::ServerData()
 {
-    this->_errorPages[404] = "/404.html";
-    this->_errorPages[405] = "/405.html";
-    this->_errorPages[413] = "/413.html";
-    this->_errorPages[501] = "/501.html";
+    this->_errorPages[404] = "/statusCodes/404.html";
+    this->_errorPages[405] = "/statusCodes/405.html";
+    this->_errorPages[413] = "/statusCodes/413.html";
+    this->_errorPages[501] = "/statusCodes/501.html";
     this->_serverNames.push_back("localhost");
     this->_root = "wwwroot";
     this->_bodySizeLimit = 5000000;

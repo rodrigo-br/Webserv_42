@@ -2,11 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; 
+        }
+
+        .grid {
+            text-align: center; 
+        }
+    </style>
+    
 </head>
 <body>
-    <h1>A Emily é uma cachorra</h1>
-    <img src="assets/Dogs.png" alt="Foto de dois dogs lindos">
+    <div class="container">
+        <div class="grid">
+            <article>
+                <h1>A Emily é uma cachorra</h1>
+                <img src="assets/Dogs.png" alt="Foto de dois dogs lindos">
+            </article>
+        </div>
+    </div>
 </body>
 </html>
