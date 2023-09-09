@@ -64,7 +64,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (!this->validator.getMethodAllowed() && this->validator.getPath())
     {
-        file = this->root + std::string("/405.html");
+        file = this->root + std::string("/statusCodes/405.html");
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
     else if (path.find("/delete") != std::string::npos) 
@@ -114,7 +114,7 @@ std::string DeleteMethod::get_content_type() const
     }
     else
     {
-        file = this->root + std::string("/404.html");
+        file = this->root + std::string("/statusCodes/404.html");
     }
     return this->_contentTypes.getMimeType(this->getExtension(file));
 }

@@ -59,7 +59,7 @@ std::string PostMethod::get_content_type() const
     }
     else
     {
-        file = this->root + std::string("/404.html");
+        file = this->root + std::string("/statusCodes/404.html");
     }
     return this->_contentTypes.getMimeType(this->getExtension(file));
 }
@@ -76,12 +76,12 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
     {
-        file = this->root + std::string("/405.html");
+        file = this->root + std::string("/statusCodes/405.html");
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
     else if (this->validator.getBodySizeLimit() == false)
     {
-        file = this->root + std::string("/413.html");
+        file = this->root + std::string("/statusCodes/413.html");
         this->statusCode = StatusCodesEnum::PAYLOAD_TOO_LARGE;
     }
     else if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
@@ -106,7 +106,7 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
-        file = this->root + std::string("/413.html");
+        file = this->root + std::string("/statusCodes/413.html");
         this->statusCode = StatusCodesEnum::LENGTH_REQUIRED;
     }
     if(!file.empty())

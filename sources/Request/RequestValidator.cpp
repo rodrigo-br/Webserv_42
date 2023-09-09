@@ -135,6 +135,7 @@ void RequestValidator::handleNonTrailingSlashPath(ServerData &serverData, Reques
 
 void RequestValidator::handleDirectoryListing(Request& request, std::string& path, const std::string& _root, ServerData &serverData)
 {
+
 	if (!this->_path && !this->_isDirectoryListing && serverData.isDirectoryListingLocation(path))
 	{
 		this->_isDirectoryListing = true;
@@ -154,7 +155,7 @@ void RequestValidator::handleDirectoryListing(Request& request, std::string& pat
 			request.setPath(_root + path);
 			this->_path = true;
 		}
-		this->_methodAllowed = Utils::hasMethodInInput(this->_method, (HttpMethodEnum::httpMethod)serverData.getAllowed(path));
+		this->_methodAllowed = true;
 	}
 }
 

@@ -109,7 +109,7 @@ char *GetMethod::getDirectoryListing()
     if (!dir)
     {
         this->_isDirectoryList   = false;
-        std::string file = this->root + std::string("/404.html");
+        std::string file = this->root + std::string("/statusCodes/404.html");
         this->statusCode = StatusCodesEnum::NOT_FOUND;
         char* errorCStr = new char[file.size() + 1];
         strcpy(errorCStr, file.c_str());
@@ -131,7 +131,6 @@ char *GetMethod::getDirectoryListing()
     listing << "</table>"
             << "</body>"
             << "</html>";
-
     this->_bodySize = listing.str().length() ;
     char* listingCStr = new char[_bodySize + 1];
     strcpy(listingCStr, listing.str().c_str());
@@ -147,7 +146,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (!this->validator.getMethodAllowed() && this->validator.getPath())
     {
-        file = this->root + std::string("/405.html");
+        file = this->root + std::string("/statusCodes/405.html");
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
     else if (this->validator.getPath())
@@ -161,7 +160,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
-        file = this->root + std::string("/404.html");
+        file = this->root + std::string("/statusCodes/404.html");
         this->statusCode = StatusCodesEnum::NOT_FOUND;
     }
     if (this->_isDirectoryList == false)
@@ -192,7 +191,7 @@ std::string GetMethod::get_content_type() const
     }
     else
     {
-        file = this->root + std::string("/404.html");
+        file = this->root + std::string("/statusCodes/404.html");
     }
     return this->_contentTypes.getMimeType(this->getExtension(file));
 }
