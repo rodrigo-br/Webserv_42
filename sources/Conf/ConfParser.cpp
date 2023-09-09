@@ -36,9 +36,20 @@ void ConfParser::createOrUpdateServerData(std::vector<std::string> tokens)
     if (tokens[0].compare("listen") == 0)
     {
         this->_currentServerConfig = std::atoi(tokens[1].c_str());
+        if (this->_serversData.find(this->_currentServerConfig) != this->_serversData.end())
+        {
+            std::cerr << "Falhô pois já existe essa porta em outro server = " << this->_currentServerConfig << std::endl;
+            this->_criticalError = true;
+            return ;
+        }
         this->_serversData[this->_currentServerConfig] = ServerData();
     }
     this->_serversData[this->_currentServerConfig].setConfiguration(tokens);
+}
+
+bool ConfParser::getCriticalError()
+{
+    return this->_criticalError;
 }
 
 bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
@@ -71,7 +82,7 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
 }
 
 ConfParser::ConfParser(std::string file) :
-    _succeed(false), _inServerBrackets(false), _inLocationBrackets(false), _currentServerConfig(-1)
+    _succeed(false), _inServerBrackets(false), _inLocationBrackets(false), _currentServerConfig(-1), _criticalError(false)
 {
     readConfigFile(file);
     createServers();
@@ -110,8 +121,8 @@ void ConfParser::createServers()
             this->_succeed = assignTokens(tokens);
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed) && std::atoi(tokens[0].c_str()) <= 0)
             {
-                std::cout << "Falhô = " <<  tokens[1]<< std::endl;
-                break ;
+                std::cout << "Falhô = " <<  tokens[1] << std::endl;
+                continue ;
             }
             if (this->_currentServerConfig > 0)
             {

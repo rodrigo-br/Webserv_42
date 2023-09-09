@@ -30,6 +30,12 @@ std::map<int, ServerData>& Conf::getServersData()
     return this->_parser->getServersData();
 }
 
+
+bool Conf::criticalError()
+{
+    return this->_parser->getCriticalError();
+}
+
 std::string Conf::getLocation(int port, std::string locationName) const
 {
     return this->_parser->getLocation(port, locationName);

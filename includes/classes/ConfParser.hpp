@@ -20,6 +20,7 @@ class ConfParser
         std::map<std::string, Location> getLocations(int port) const;
         std::string getLocation(int port, std::string locationName) const;
         std::string getRoot(int port) const;
+        bool getCriticalError();
 
     private:
         std::ifstream                   _configFile;
@@ -30,6 +31,7 @@ class ConfParser
         std::map<int, ServerData>       _serversData;
         int                             _currentServerConfig;
         std::string                     _currentLocationBlock;
+        bool                            _criticalError;
 
         void readConfigFile(std::string file);
         void createServers();
