@@ -23,6 +23,7 @@ class Conf
         std::string getLocation(int port, std::string locationName) const;
         std::map<std::string, Location> getLocations(int port) const;
         std::map<int, ServerData> &getServersData();
+        bool criticalError();
 };
 
 #endif
