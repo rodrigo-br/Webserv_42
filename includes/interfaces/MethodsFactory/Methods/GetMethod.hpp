@@ -26,9 +26,9 @@ class GetMethod : public IMethod
         bool        _isDirectoryList;
 
         std::string build_start_line() const;
-        std::string build_headers() const;
+        std::string build_headers();
         char *BODY_BUILDER_BIIIIHHHHLLL();
-        std::string get_content_type() const;
+        std::string get_content_type();
         char        *getDirectoryListing() ;
 };
 
