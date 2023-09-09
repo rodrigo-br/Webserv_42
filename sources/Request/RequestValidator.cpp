@@ -6,6 +6,7 @@ RequestValidator::~RequestValidator(void) {}
 
 RequestValidator &RequestValidator::requestValidator(ServerData &serverData, Request& request)
 {
+	this->_errorPages = serverData.getErrorPages();
 	methodValidator(request);
 	pathValidator(serverData, request);
 	bodyValidator(request);
@@ -183,6 +184,12 @@ void RequestValidator::handleAssetsPath(Request& request, const std::string& pat
 		request.setPath(_root + path);
 		this->_methodAllowed = Utils::hasMethodInInput(HttpMethodEnum::POST, (HttpMethodEnum::httpMethod)serverData.getAllowed("/cgi-bin"));
 	}
+	else if (path.find("favicon.ico") != std::string::npos && !request.getHeader("Referer").empty())
+	{
+		this->_path = true;
+        request.setPath(_root + path);
+		this->_methodAllowed = true;
+	}
 }
 
 void RequestValidator::bodyValidator(Request& request)
@@ -218,6 +225,17 @@ bool RequestValidator::getPath(void) const
 bool RequestValidator::getBodySizeLimit(void) const
 {
 	return this->_bodySizeLimit;
+}
+
+std::string RequestValidator::getErrorPage(int erro)
+{
+	std::map<int, std::string>::iterator it = this->_errorPages.find(erro);
+
+	if (it != this->_errorPages.end())
+	{
+		return it->second;
+	}
+	return "404.html";
 }
 
 bool RequestValidator::getHttpVersion(void) const

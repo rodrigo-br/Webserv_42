@@ -2,6 +2,10 @@
 
 ServerData::ServerData()
 {
+    this->_errorPages[404] = "/statusCodes/404.html";
+    this->_errorPages[405] = "/statusCodes/405.html";
+    this->_errorPages[413] = "/statusCodes/413.html";
+    this->_errorPages[501] = "/statusCodes/501.html";
     this->_serverNames.push_back("localhost");
     this->_root = "wwwroot";
     this->_bodySizeLimit = 5000000;
@@ -82,6 +86,12 @@ void ServerData::setConfiguration(std::vector<std::string> tokens)
         this->setLocation(tokens[1], Location());
         return ;
     }
+    int erro = std::atoi(tokens[0].c_str());
+    if (erro >= 400 && erro < 600)
+    {
+        this->setErrorPage(erro, tokens[1]);
+        return ;
+    }
 
     std::map<std::string, void (ServerData::*)(std::string)>::iterator it = _configurations.find(tokens[0]);
     if (it != _configurations.end())
@@ -105,6 +115,11 @@ void ServerData::setLocationDirectoryListening(std::string directoryListening)
     this->_location[this->_currentLocation].setDirectoryListening((directoryListening.compare("on") == 0));
 }
 
+void ServerData::setErrorPage(int erro, std::string errorPagePath)
+{
+    this->_errorPages[erro] = errorPagePath;
+}
+
 int ServerData::getAllowed(std::string locationPath)
 {
     std::map<std::string, Location>::iterator it = this->_location.find(locationPath);
@@ -115,3 +130,8 @@ int ServerData::getAllowed(std::string locationPath)
     }
     return 0;
 }
+std::map<int, std::string> ServerData::getErrorPages()
+{
+    return this->_errorPages;
+}
+

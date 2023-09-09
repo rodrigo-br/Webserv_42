@@ -1,5 +1,5 @@
 #include "interfaces/MethodsFactory/Methods/DeleteMethod.hpp"
-#include <sstream> 
+#include <sstream>
 
 #define ROOT "wwwroot"
 
@@ -50,7 +50,7 @@ std::string DeleteMethod::build_headers() const
     return headers;
 }
 
-bool containsUploadsFolder(const std::string& path) 
+bool containsUploadsFolder(const std::string& path)
 {
     size_t found = path.find("/uploads");
     return found != std::string::npos;
@@ -67,7 +67,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
         file = this->root + std::string("/statusCodes/405.html");
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
-    else if (path.find("/delete") != std::string::npos) 
+    else if (path.find("/delete") != std::string::npos)
     {
         const char* filePath = path.c_str();
 		if (remove(filePath) == 0)
@@ -75,7 +75,7 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
             this->statusCode = StatusCodesEnum::OK;
         }
         else
-        {   
+        {
             this->statusCode = StatusCodesEnum::GONE;
         }
     }
@@ -92,7 +92,10 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
         std::string responseBody = responseDelete.str();
         this->_bodySize = responseBody.size();
         body = new char[this->_bodySize];
-        std::strcpy(body, responseBody.c_str()); 
+        if (this->_bodySize > 0)
+        {
+            std::strcpy(body, responseBody.c_str());
+        }
     }
     if (this->_bodySize > 0)
     {
@@ -123,4 +126,3 @@ std::string DeleteMethod::get_status_msg() const
 {
     return this->_statusCodes.getStatusMessage(this->get_status_code());
 }
-    

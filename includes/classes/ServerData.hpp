@@ -16,6 +16,7 @@ class ServerData
         std::vector<std::string> _serverNames;
         std::map<std::string, Location> _location;
         std::map<std::string, void (ServerData::*)(std::string)> _configurations;
+        std::map<int, std::string> _errorPages;
 
     public:
         ServerData();
@@ -34,7 +35,9 @@ class ServerData
         bool isDirectoryListingLocation(std::string locationPath);
         void setLocationAllowedMethods(std::string allowedMethods);
         void setLocationDirectoryListening(std::string directoryListening);
+        void setErrorPage(int erro, std::string errorPagePath);
         int  getAllowed(std::string locationPath);
+        std::map<int, std::string> getErrorPages();
 };
 
 #endif

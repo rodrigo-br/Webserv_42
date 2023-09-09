@@ -146,7 +146,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (!this->validator.getMethodAllowed() && this->validator.getPath())
     {
-        file = this->root + std::string("/statusCodes/405.html");
+        file = this->root + this->validator.getErrorPage(405);
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
     else if (this->validator.getPath())
@@ -160,7 +160,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
-        file = this->root + std::string("/statusCodes/404.html");
+        file = this->root + this->validator.getErrorPage(404);
         this->statusCode = StatusCodesEnum::NOT_FOUND;
     }
     if (this->_isDirectoryList == false)
