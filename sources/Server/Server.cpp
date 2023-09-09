@@ -1,5 +1,13 @@
 #include "classes/Server.hpp"
 
+Server::Server(Conf &config) : conf(config), isErrorRead(false)
+{
+	Socket socket(conf.getServersData());
+	if(!socket.succeed())
+		return;
+	runServer(socket);
+}
+
 void Server::signalHandler(int signum)
 {
 	(void)signum;
@@ -27,14 +35,18 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 
 	Response response(new ResponseBuilder(request, validator));
 	std::cout << std::endl<<  "response ===== "<< response.getResponse() << std::endl << std::endl;
-	if (Utils::check(send(clientSocket, response.getResponse(), response.getSize(), 0), "Send"))
+	if (Utils::checkSend(send(clientSocket, response.getResponse(), response.getSize(), 0), "Send"))
 	{
+		close(clientSocket);
+		clienstSocks.erase(clienstSocks.begin() + i);
 		return;
 	}
 	if (response.hasBody())
 	{
-		if (Utils::check(send(clientSocket, response.getBody(), response.bodySize(), 0), "Send body"))
+		if (Utils::checkSend(send(clientSocket, response.getBody(), response.bodySize(), 0), "Send body"))
 		{
+			close(clientSocket);
+			clienstSocks.erase(clienstSocks.begin() + i);
 			return;
 		}
 	}
@@ -45,13 +57,18 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 }
 
 
-void Server::processClientRequest(int clientSocket, Request &request, RequestValidator &validator)
+void Server::processClientRequest(int clientSocket, int i, Request &request, RequestValidator &validator)
 {
 	std::cout << "Reading client request" << std::endl;
-	request = Request().createParsedMessage(clientSocket);
+	request = Request().createParsedMessage(clientSocket, this->isErrorRead);
+	if (this->isErrorRead)
+	{
+		close(clientSocket);
+		clienstSocks.erase(clienstSocks.begin() + i);
+		return ;
+	}
 	std::cout << "****************************mensagem gerada**************************" << std::endl;
 	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
-
 	std::string cgi = "/cgi-bin";
 	if (!this->conf.getLocation(request.getPortNumber(), cgi).empty())
 	{
@@ -95,7 +112,7 @@ void Server::processClients()
 		int clientSocket = this->clienstSocks[i];
 		if (FD_ISSET(clientSocket, &this->readSocket))
 		{
-			processClientRequest(clientSocket, request, requestValidator);
+			processClientRequest(clientSocket, i,  request, requestValidator);
 		}
 		if (FD_ISSET(clientSocket, &writeSocket))
 		{
@@ -158,12 +175,6 @@ void Server::runServer(Socket socket)
 	this->conf.deleteConfParser();
 }
 
-Server::Server(Conf &config) : conf(config)
-{
-	Socket socket(conf.getServersData());
-	if(!socket.succeed())
-		return;
-	runServer(socket);
-}
+
 
 bool Server::gSignalInterrupted = false;

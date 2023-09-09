@@ -9,9 +9,9 @@ std::string   Request::getMensageRequest( void ) const
     return (_parser.getRequest());
 }
 
-Request			&Request::createParsedMessage(int &fdConnection)
+Request			&Request::createParsedMessage(int &fdConnection, bool &errorRead)
 {
-	this->_parser.parserHttpRequest(fdConnection);
+	this->_parser.parserHttpRequest(fdConnection, errorRead);
 	return *this;
 }
 

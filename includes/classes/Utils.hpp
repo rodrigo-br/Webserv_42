@@ -16,11 +16,12 @@ class Utils {
         static bool hasMethodInInput(int input, HttpMethodEnum::httpMethod method);
         static bool endsWith(const std::string &str, const std::string &suffix);
         static std::string intToString(int value);
-        static void readLineBody(int fd, std::string &line, int contentLength);
-        static void readLine(int fd, std::string &line, std::string delimiter);
+        static void readLineBody(int fd, std::string &line, int contentLength, bool &error);
+        static void readLine(int fd, std::string &line, std::string delimiter,  bool &error);
         static bool isDelimiter(std::string line, std::string delimiter);
         static int stringToInt(const std::string& str);
         static bool hasQuery(std::string query, std::string name);
+        static bool checkSend(ssize_t result, std::string functionToBeChecked, int erro = -1);
 
 };
 
