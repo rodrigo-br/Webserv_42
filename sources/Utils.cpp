@@ -11,6 +11,21 @@ bool Utils::check(ssize_t result, std::string functionToBeChecked, int erro)
     return false;
 }
 
+bool Utils::checkSend(ssize_t result, std::string functionToBeChecked, int erro)
+{
+    if (result == erro)
+    {
+        std::cerr << functionToBeChecked << " : " << std::strerror(errno) << std::endl;
+        return true;
+    }
+    else if (result == 0)
+    {
+        std::cerr << functionToBeChecked << " : " << std::strerror(errno) << std::endl;
+        return true;
+    }
+    return false;
+}
+
 bool Utils::hasMethodInInput(int input, HttpMethodEnum::httpMethod method)
 {
     return ((input & method) != 0) && ((input & method) != HttpMethodEnum::UNKNOWN) &&
@@ -52,7 +67,7 @@ bool Utils::hasQuery(std::string query, std::string name)
     return (query.find(name) != std::string::npos);
 }
 
-void	 Utils::readLine(int fd, std::string &line, std::string delimiter)
+void	 Utils::readLine(int fd, std::string &line, std::string delimiter, bool &error)
 {
     char		buffer[2] = {0};
 	ssize_t		numberBytes;
@@ -62,9 +77,17 @@ void	 Utils::readLine(int fd, std::string &line, std::string delimiter)
 	{
 		numberBytes = recv(fd, buffer, 1, 0);
 		if (numberBytes == -1)
-			return;
+        {
+            error = true;
+            std::cerr << "readLine: " << std::strerror(errno) << std::endl;
+			break;
+        }
 		if (numberBytes == 0)
+        {
+            error = true;
+            std::cerr << "readLine: " << std::strerror(errno) << std::endl;
 			break ;
+        }
 		tempLine += buffer;
         if (isDelimiter(tempLine, delimiter))
             break ;
@@ -74,7 +97,7 @@ void	 Utils::readLine(int fd, std::string &line, std::string delimiter)
 		line.resize(line.rfind(delimiter));
 }
 
-void	 Utils::readLineBody(int fd, std::string &line, int contentLength)
+void	 Utils::readLineBody(int fd, std::string &line, int contentLength, bool &error)
 {
     ssize_t		numberBytes;
     char		buffer[20] = {0};
@@ -84,10 +107,18 @@ void	 Utils::readLineBody(int fd, std::string &line, int contentLength)
         if (!contentLength)
             break;
         numberBytes = recv(fd, buffer, 20, 0);
-        if (numberBytes == -1)
-            return ;
-        if (numberBytes == 0)
-            break;
+		if (numberBytes == -1)
+        {
+            error = true;
+            std::cerr << "readLineBody: " << std::strerror(errno) << std::endl;
+			break;
+        }
+		if (numberBytes == 0)
+        {
+            error = true;
+            std::cerr << "readLineBody: " << std::strerror(errno) << std::endl;
+			break ;
+        }
         contentLength -= numberBytes;
         line.append(buffer, numberBytes);
         memset(buffer, 0, 20);

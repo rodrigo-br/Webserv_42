@@ -20,7 +20,7 @@ class Request
 		Request();
 		~Request();
 
-		Request						&createParsedMessage(int &fdConnecion);
+		Request						&createParsedMessage(int &fdConnecion, bool &errorRead);
 		std::string	        		getMensageRequest() const;
 		std::string					getMethod() const;
 		std::string					getPath(void) const;

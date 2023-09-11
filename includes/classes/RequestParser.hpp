@@ -26,7 +26,7 @@ class RequestParser
 		RequestParser ();
 		~RequestParser();
 
-		void    							parserHttpRequest(int &fdConection);
+		void    							parserHttpRequest(int &fdConection, bool &errorRead);
 		std::string 						getMethod(void) const;
 		std::string							getPath(void) const;
 		std::string							getHttpVersion(void) const;
@@ -74,6 +74,7 @@ class RequestParser
 		std::string							_fileName;
 		int									_fdClient;
 		std::string							_request;
+		bool								_isErrorRead;
 
 
 };
