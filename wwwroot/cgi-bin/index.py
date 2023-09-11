@@ -9,7 +9,7 @@ print()
 sys.stdout.reconfigure(encoding='utf-8')
 
 # Gera a página HTML
-prin("<html>")
+print("<html>")
 print("<head><title>Script CGI Python</title></head>")
 print("<body>")
 print("<h1>Ola, humano!</h1>")

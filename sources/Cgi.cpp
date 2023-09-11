@@ -91,11 +91,20 @@ void Cgi::initScriptArguments(Request &request)
 	createArgumentsArray(argmunts);
 }
 
+void timeoutHandler(int sign)
+{
+    (void)sign;
+    std::cout << "CAVALINHO" << std::endl;
+}
+
 std::string Cgi::executeCgi()
 {
     std::string fullNameScript;
     pid_t       pid;
     int         status;
+
+    signal(SIGALRM, timeoutHandler);
+    alarm(15);
 
     this->_fdExec = open(_fileExec.c_str(), O_CREAT | O_RDWR | O_TRUNC, 0644);
     if (this->_fdExec == -1)
@@ -114,8 +123,10 @@ std::string Cgi::executeCgi()
         fullNameScript = "/usr/bin/" + this->_script;
         execve(fullNameScript.c_str(), this->_args, this->_envp);
         std::cerr << "-----------------------Error executing CGI script-----------------" << std::endl;
+        _exit(1);
     }
     waitpid(pid, &status, 0);
+    alarm(0);
     if (WIFSIGNALED(status))
     {
         std::cerr << "-----------------------Error executing CGI-----------------" << std::endl;
