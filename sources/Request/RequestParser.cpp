@@ -99,7 +99,7 @@ size_t  RequestParser::convertChunkSize(void)
 void RequestParser::parseRequestBodyChunked()
 {
     std::size_t     chunkSize = convertChunkSize();
-    std::size_t		length;
+    std::size_t		length = 0;
     std::string        tempLine;
 
     while (chunkSize > 0)
@@ -167,7 +167,6 @@ void 	RequestParser::parseRequestHeader(void)
                     std::string headerName = line.substr(0, colonPos);
                     std::string headerValue = line.substr(colonPos + 2);
                     this->_headers[headerName] = headerValue;
-
                 }
             }
         }
@@ -290,7 +289,6 @@ void RequestParser::setFileName(std::string line)
 int RequestParser::getContentLength() const
 {
     std::string contentLengthStr = getHeader("Content-Length");
-
     if (!contentLengthStr.empty())
     {
         return atol(contentLengthStr.c_str());

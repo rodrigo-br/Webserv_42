@@ -64,6 +64,7 @@ bool RequestValidator::endsWithSlash(size_t position, size_t len)
 void RequestValidator::handleRootPath(ServerData &serverData, Request& request, const std::string& path, const std::string& _root)
 {
     std::string location = serverData.getLocation(path);
+
     if (!location.empty())
     {
         this->_path = true;
@@ -206,7 +207,7 @@ void RequestValidator::httpVersionValidator(Request& request)
 
 void RequestValidator::bodySizeLimitValidator(ServerData &serverData, Request& request)
 {
-	if (Utils::stringToInt(request.getHeader("Content-Length")) <= serverData.getBodySizeLimit())
+	if (Utils::stringToInt(request.getHeader("Content-Length")) <= serverData.getBodySizeLimit() && Utils::stringToInt(request.getHeader("Content-Length")) != 0)
 	{
 		this->_bodySizeLimit = true;
 	}

@@ -37,16 +37,16 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 	std::cout << std::endl<<  "response ===== "<< response.getResponse() << std::endl << std::endl;
 	if (Utils::checkSend(send(clientSocket, response.getResponse(), response.getSize(), 0), "Send"))
 	{
-		close(clientSocket);
-		clienstSocks.erase(clienstSocks.begin() + i);
+		// close(clientSocket);
+		// clienstSocks.erase(clienstSocks.begin() + i);
 		return;
 	}
 	if (response.hasBody())
 	{
 		if (Utils::checkSend(send(clientSocket, response.getBody(), response.bodySize(), 0), "Send body"))
 		{
-			close(clientSocket);
-			clienstSocks.erase(clienstSocks.begin() + i);
+			// close(clientSocket);
+			// clienstSocks.erase(clienstSocks.begin() + i);
 			return;
 		}
 	}

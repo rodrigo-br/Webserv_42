@@ -73,14 +73,14 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     char *body;
     std::string file;
-
-    if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
+    if (!this->validator.getMethodAllowed() && (this->validator.getPath() || this->validator.isDirectoryListing()))
     {
         file = this->root + this->validator.getErrorPage(405);
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
-    else if (this->validator.getBodySizeLimit() == false)
+    else if (this->validator.getBodySizeLimit() == false && request.getHeader("Transfer-Encoding") != "chunked")
     {
+
         file = this->root + this->validator.getErrorPage(413);
         this->statusCode = StatusCodesEnum::PAYLOAD_TOO_LARGE;
     }
@@ -103,9 +103,35 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
         }
     }
+    // else if (request.getHeader("Transfer-Encoding") == "chunked")
+    // {
+    //     std::string chunkedBody = request.getBody();
+    //     if (!chunkedBody.empty())
+    //     {
+    //         std::string filetemp = this->root + "/post/" + "temp_chunked_body.txt";
+    //         std::ofstream outputFile(filetemp.c_str(), std::ios::binary);
+    //         if (outputFile) {
+    //             outputFile << chunkedBody;
+    //             outputFile.close();
+                
+    //             std::vector<char> buffer = this->openFileAsVector(filetemp);
+    //             this->_bodySize = buffer.size();
+    //             body = new char[this->_bodySize];
+    //             std::copy(buffer.begin(), buffer.end(), body);
+    //             this->statusCode = StatusCodesEnum::OK;
+    //             remove(filetemp.c_str());
+    //         }
+
+    //     }
+    //     else 
+    //     {
+    //         file = this->root + this->validator.getErrorPage(405);
+    //         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
+    //     }
+    // }
     else
     {
-        file = this->root + this->validator.getErrorPage(413);
+        file = this->root + this->validator.getErrorPage(411);
         this->statusCode = StatusCodesEnum::LENGTH_REQUIRED;
     }
     if(!file.empty())
