@@ -109,19 +109,25 @@ void ConfParser::createServers()
     std::string line;
     while (std::getline(this->_configFile, line))
     {
-        char *token = std::strtok(const_cast<char *>(line.c_str()), " \n");
+        char *token = std::strtok(const_cast<char *>(line.c_str()), " \n\t");
         std::vector<std::string> tokens;
         if (token != NULL)
         {
             while (token != NULL)
             {
                 tokens.push_back(token);
-                token = std::strtok(NULL, " \n");
+                token = std::strtok(NULL, " \n\t");
             }
             this->_succeed = assignTokens(tokens);
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed) && std::atoi(tokens[0].c_str()) <= 0)
             {
-                std::cout << "Falhô = " <<  tokens[1] << std::endl;
+                if (!tokens[1].empty()) {
+                    std::cout << "Falhô = " <<  tokens[1] << std::endl;
+                }
+                else  
+                {
+                    std::cout << "Falhô = " << std::endl;
+                }
                 continue ;
             }
             if (this->_currentServerConfig > 0)

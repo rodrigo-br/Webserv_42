@@ -13,6 +13,7 @@ class ValidateLocationIndex : public IValidateFunction
         virtual bool operator()(std::string &path) const
         {
             struct stat info;
+            std::cout << path << std::endl;
             return (path.find("..") == std::string::npos
                     && path.find("//") == std::string::npos
                     && stat(path.c_str(), &info) == 0
