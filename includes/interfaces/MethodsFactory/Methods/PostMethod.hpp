@@ -30,7 +30,7 @@ class PostMethod : public IMethod
         char        *BODY_BUILDER_BIIIIHHHHLLL();
         std::string get_status_msg() const;
         std::string get_content_type();
-        char* generateResponsePage(const std::string& fileName);
+        std::string generateResponseBody( std::string fileName);
 
 };
 

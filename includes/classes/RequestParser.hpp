@@ -43,6 +43,7 @@ class RequestParser
 		void								setBody(std::string newBody);
 		void								setFileExec(std::string newFileExec);
 		void 								setMethod(std::string method);
+		int									getContentLength(void) const;
 
 
 	private:
@@ -52,8 +53,6 @@ class RequestParser
 		void 								parseRequestStartLine(void);
 		void 								parseRequestHeader(void);
 		void 								parseRequestBody(void);
-		void 								parseChunkedBody(std::istringstream& iss);
-		int									getContentLength(void) const;
 		void       							setFileName(std::string file);
 		size_t 								convertChunkSize();
 		void								parseRequestBodyChunked(void);

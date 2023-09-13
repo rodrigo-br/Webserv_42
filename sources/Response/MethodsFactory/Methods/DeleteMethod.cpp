@@ -62,10 +62,15 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
     char        *body;
     std::string path = request.getPath();
 
-    if (!this->validator.getMethodAllowed() && this->validator.getPath())
+    if (!this->validator.getMethodAllowed() && (this->validator.getPath() || this->validator.isDirectoryListing()))
     {
         file = this->root + this->validator.getErrorPage(405);
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
+    }
+    else if (!this->validator.getPath() && !this->validator.isDirectoryListing())
+    {
+        file = this->root + this->validator.getErrorPage(404);
+        this->statusCode = StatusCodesEnum::NOT_FOUND;
     }
     else if (path.find("/delete") != std::string::npos)
     {
@@ -78,6 +83,11 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
         {
             this->statusCode = StatusCodesEnum::GONE;
         }
+    }
+    else if (this->validator.getMethodAllowed() && this->validator.getPath())
+    {
+        file = this->root + this->validator.getErrorPage(202);
+        this->statusCode = StatusCodesEnum::ACCEPTED;
     }
     if (!file.empty())
     {

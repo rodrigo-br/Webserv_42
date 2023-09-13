@@ -40,8 +40,8 @@ class Request
 		void						setAllowed(int value);
 		int							getAllowed();
 		void						setMethod(std::string method);
+		int 						getContentLength() const;
 
-int getContentLength() const;
 	private:
 		RequestParser				_parser;
 		char            			_request[BUFFER_SIZE2];
