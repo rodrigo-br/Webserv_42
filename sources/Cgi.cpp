@@ -2,6 +2,8 @@
 
 #define CGI_BUFSIZE 3000
 
+pid_t Cgi::childPid = 0;
+
 Cgi::Cgi(Request &request, std::string root, std::string name) : _fdExec(0)
 {
 	this->initEnv(request, name);
@@ -91,11 +93,19 @@ void Cgi::initScriptArguments(Request &request)
 	createArgumentsArray(argmunts);
 }
 
+void timeoutHandler(int sign)
+{
+    (void)sign;
+    kill(Cgi::childPid, SIGTERM);
+}
+
 std::string Cgi::executeCgi()
 {
     std::string fullNameScript;
     pid_t       pid;
     int         status;
+    signal(SIGALRM, timeoutHandler);
+    alarm(15);
 
     this->_fdExec = open(_fileExec.c_str(), O_CREAT | O_RDWR | O_TRUNC, 0644);
     if (this->_fdExec == -1)
@@ -103,6 +113,7 @@ std::string Cgi::executeCgi()
         return "Status: 500\r\n\r\n";
     }
     pid = fork();
+    Cgi::childPid = pid;
     if (pid == -1)
     {
         return "Status: 500\r\n\r\n";
@@ -116,8 +127,10 @@ std::string Cgi::executeCgi()
         std::cerr << "-----------------------Error executing CGI script-----------------" << std::endl;
     }
     waitpid(pid, &status, 0);
+    alarm(0);
     if (WIFSIGNALED(status))
     {
+        std::cerr << "TIMEOUT" << std::endl;
         std::cerr << "-----------------------Error executing CGI-----------------" << std::endl;
     }
     return "Status: 200\r\n\r\n";

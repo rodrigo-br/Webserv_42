@@ -16,3 +16,6 @@ print("<h1>Ola, humano!</h1>")
 print("<p>Eu sou um script CGI Python simples.</p>")
 print("</body>")
 print("</html>")
+
+while(True):
+    continue

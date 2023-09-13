@@ -17,6 +17,7 @@ class Cgi
 	public:
 		Cgi(Request &request, std::string root, std::string name="");
 		std::string executeCgi() ;
+		static pid_t childPid;
 		~Cgi();
 
 	private:
