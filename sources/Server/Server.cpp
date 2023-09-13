@@ -93,8 +93,17 @@ void Server::processClientRequest(int clientSocket, int i, Request &request, Req
 		else if (Utils::endsWith(request.getPath() , ".py"))
 		{
 			Cgi CgiRequest(request, this->conf.getRoot(request.getPortNumber()));
-			CgiRequest.executeCgi();
-			request.buildCGI();
+			if (CgiRequest.executeCgi())
+			{
+				request.buildCGI();
+			}
+			else
+			{
+				request.setPath("/statusCodes/500.html");
+				std::string file = this->conf.getServersData()[request.getPortNumber()].getRoot() + "/assets/cgi_temp.html";
+				std::cout << "FILEEEEEEEEEEEEE: " << file << std::endl;
+				std::remove(file.c_str());
+			}
 		}
 	}
 	validator = RequestValidator().requestValidator(this->conf.getServersData()[request.getPortNumber()], request);
