@@ -101,7 +101,6 @@ void Server::processClientRequest(int clientSocket, int i, Request &request, Req
 			{
 				request.setPath("/statusCodes/500.html");
 				std::string file = this->conf.getServersData()[request.getPortNumber()].getRoot() + "/assets/cgi_temp.html";
-				std::cout << "FILEEEEEEEEEEEEE: " << file << std::endl;
 				std::remove(file.c_str());
 			}
 		}

@@ -20,7 +20,7 @@ void    							RequestParser::parserHttpRequest(int &fdConection, bool &errorRea
 }
 
 void    RequestParser::parseRequestQuery()
-{	
+{
     size_t queryStart = this->_path.find_first_of('?');
     if (queryStart != std::string::npos)
 	{
@@ -87,9 +87,11 @@ size_t  RequestParser::convertChunkSize(void)
 
     Utils::readLine(this->_fdClient, line, CRLF, this->_isErrorRead);
     std::size_t chunkSize = 0;
+
     if (line == "")
         return 0;
     chunkSizeLine = line.substr(0,  line.find(" "));
+
     std::stringstream ss;
     ss << std::hex << chunkSizeLine;
     ss >> chunkSize;
@@ -98,17 +100,18 @@ size_t  RequestParser::convertChunkSize(void)
 
 void RequestParser::parseRequestBodyChunked()
 {
-    std::size_t     chunkSize = convertChunkSize();
-    std::size_t		length;
+    std::size_t		length = 0;
     std::string        tempLine;
+
+    std::size_t     chunkSize = convertChunkSize();
 
     while (chunkSize > 0)
     {
         Utils::readLine(this->_fdClient, tempLine, CRLF, this->_isErrorRead);
-        this->_requestBody += tempLine;
-        length += chunkSize;
-        this->_request += tempLine + "\n";
         this->_requestBody += tempLine + "\n";
+        this->_request += tempLine + "\n";
+
+        length += chunkSize;
         Utils::readLine(this->_fdClient, tempLine, CRLF, this->_isErrorRead);
         chunkSize = convertChunkSize();
     }

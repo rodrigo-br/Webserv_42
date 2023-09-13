@@ -7,11 +7,10 @@ std::vector<char> MethodsUtils::openFileAsVector(std::string path)
     {
         path += "index.html";
     }
-    std::cout << path << std::endl;
     std::ifstream file(path.c_str(), std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {
-        std::cout << "Failed to open file " << path << std::endl;
+        std::cerr << "Failed to open file " << path << std::endl;
         return std::vector<char>();
     }
     std::streamsize size = file.tellg();
@@ -19,7 +18,7 @@ std::vector<char> MethodsUtils::openFileAsVector(std::string path)
     std::vector<char> imageBuffer(size);
     if (!file.read(imageBuffer.data(), size))
     {
-        std::cout << "Failed to read image file" << std::endl;
+        std::cerr << "Failed to read image file" << std::endl;
         return std::vector<char>();
     }
     file.close();
@@ -69,6 +68,5 @@ int MethodsUtils::findStatusCodeFromFile(std::string file)
     size_t startPos = file.find_last_of('/') + 1;
     size_t finalPos = file.find_last_of('.');
     std::string fileNameWithoutExtension = file.substr(startPos, finalPos);
-    std::cout << fileNameWithoutExtension << std::endl;
     return std::atoi(fileNameWithoutExtension.c_str());
 }

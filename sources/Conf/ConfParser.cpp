@@ -99,7 +99,7 @@ void ConfParser::readConfigFile(std::string file)
 
     if (!this->_configFile.is_open())
     {
-        std::cout << "Erro ao abrir o arquivo de conf" << std::endl;
+        std::cerr << "Erro ao abrir o arquivo de conf" << std::endl;
         return ;
     }
 }
@@ -121,7 +121,7 @@ void ConfParser::createServers()
             this->_succeed = assignTokens(tokens);
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed) && std::atoi(tokens[0].c_str()) <= 0)
             {
-                std::cout << "Falhô = " <<  tokens[1] << std::endl;
+                std::cerr << "Erro na leitura do arquivo de configuração" << std::endl;
                 continue ;
             }
             if (this->_currentServerConfig > 0)

@@ -5,7 +5,7 @@ bool Utils::check(ssize_t result, std::string functionToBeChecked, int erro)
 {
     if (result <= erro)
     {
-        std::cout << functionToBeChecked << " : " << std::strerror(errno) << std::endl;
+        std::cerr << functionToBeChecked << " : " << std::strerror(errno) << std::endl;
         return true;
     }
     return false;
@@ -48,7 +48,7 @@ std::string Utils::intToString(int value)
     return ss.str();
 }
 
-int Utils::stringToInt(const std::string& str) 
+int Utils::stringToInt(const std::string& str)
 {
     std::stringstream ss(str);
     int value = 0;

@@ -144,7 +144,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     std::string file;
     char * body;
 
-    if (!this->validator.getMethodAllowed() && this->validator.getPath())
+    if (!this->validator.getMethodAllowed() && (this->validator.getPath() || this->validator.isDirectoryListing()))
     {
         file = this->root + this->validator.getErrorPage(405);
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;

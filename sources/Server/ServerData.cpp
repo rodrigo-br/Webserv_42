@@ -8,6 +8,7 @@ ServerData::ServerData()
     this->_errorPages[413] = "/statusCodes/413.html";
     this->_errorPages[500] = "/statusCodes/500.html";
     this->_errorPages[501] = "/statusCodes/501.html";
+    this->_errorPages[411] = "/statusCodes/411.html";
     this->_serverNames.push_back("localhost");
     this->_root = "wwwroot";
     this->_bodySizeLimit = 5000000;

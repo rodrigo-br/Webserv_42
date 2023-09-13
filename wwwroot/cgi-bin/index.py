@@ -17,3 +17,13 @@ print("<p>Eu sou um script CGI Python simples.</p>")
 print("</body>")
 print("</html>")
 
+
+# Errors to test:
+
+# syntax error:
+#pri
+
+# Loop error:
+while(True):
+    continue
+

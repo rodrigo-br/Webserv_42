@@ -42,7 +42,6 @@ void		Cgi::initEnv(Request &request, std::string name)
 	this->_env["REQUEST_METHOD"] = request.getMethod();
 	this->_env["PATH_INFO"] =  this->_pathTemp;
     std::string const scriptName = this->_pathTemp.substr(this->_pathTemp.find_last_of("/") + 1);
-	std::cout << scriptName << std::endl;
 	this->_env["SCRIPT_NAME"] =  scriptName;
 	this->_env["QUERY_STRING"] = request.getQuery();
 	this->_env["CONTENT_LENGTH"] = Utils::intToString(request.getBody().length());
