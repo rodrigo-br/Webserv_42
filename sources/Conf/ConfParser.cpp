@@ -16,7 +16,7 @@ bool ConfParser::isLocationBlock(std::vector<std::string> tokens)
     std::string value = this->_serversData[this->_currentServerConfig].getRoot() + tokens[1];
     return (tokens[0].compare("location") == 0 && tokens[2].compare("{") == 0
             && (this->_validConfigurations.ValidateAServerConfiguration(tokens[0],
-            value) || tokens[1].compare("/") == 0));
+            value) || tokens[1][0] == '/'));
 }
 
 
@@ -82,10 +82,16 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
 }
 
 ConfParser::ConfParser(std::string file) :
-    _succeed(false), _inServerBrackets(false), _inLocationBrackets(false), _currentServerConfig(8000), _criticalError(false)
+    _succeed(false), _inServerBrackets(false), _inLocationBrackets(false), _currentServerConfig(-1), _criticalError(false)
 {
     readConfigFile(file);
     createServers();
+    for (std::map<int, ServerData>::iterator it = _serversData.begin(); it != _serversData.end(); ++it) {
+        if (it->first == -1) {
+            _serversData.erase(it);
+            std::cerr << "Erro: Server sem listen não construído" << std::endl;
+        }
+    }
 }
 
 ConfParser::~ConfParser()
@@ -119,7 +125,6 @@ void ConfParser::createServers()
                 token = std::strtok(NULL, " \n");
             }
             this->_succeed = assignTokens(tokens);
-            std::cout << tokens.size() << std::endl;
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed) && std::atoi(tokens[0].c_str()) <= 0)
             {
                 std::cerr << "Erro na leitura do arquivo de configuração" << std::endl;
