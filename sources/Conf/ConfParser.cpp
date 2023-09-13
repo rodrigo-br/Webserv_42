@@ -82,7 +82,7 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
 }
 
 ConfParser::ConfParser(std::string file) :
-    _succeed(false), _inServerBrackets(false), _inLocationBrackets(false), _currentServerConfig(-1), _criticalError(false)
+    _succeed(false), _inServerBrackets(false), _inLocationBrackets(false), _currentServerConfig(8000), _criticalError(false)
 {
     readConfigFile(file);
     createServers();
@@ -119,12 +119,31 @@ void ConfParser::createServers()
                 token = std::strtok(NULL, " \n");
             }
             this->_succeed = assignTokens(tokens);
+            std::cout << tokens.size() << std::endl;
             if (notEmptyLineAndFailed(tokens.size(), this->_succeed) && std::atoi(tokens[0].c_str()) <= 0)
             {
                 std::cerr << "Erro na leitura do arquivo de configuração" << std::endl;
-                continue ;
+                bool banana = true;
+                while (banana)
+                {
+                    std::getline(this->_configFile, line);
+                    std::vector<std::string> tokens_1;
+                    char *token_1 = std::strtok(const_cast<char *>(line.c_str()), " \n");
+                    if (token_1 != NULL)
+                    {
+                        while (token_1 != NULL)
+                        {
+                            tokens_1.push_back(token_1);
+                            token_1 = std::strtok(NULL, " \n");
+                        }
+                    }
+                    if (tokens_1[0] == "}" || token_1 == NULL)
+                    {
+                        banana = false;
+                    }
+                }
             }
-            if (this->_currentServerConfig > 0)
+            else if (this->_currentServerConfig > 0)
             {
                 this->_serversData[this->_currentServerConfig].setConfiguration(tokens);
             }
