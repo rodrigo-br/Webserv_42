@@ -150,8 +150,8 @@ void ConfParser::createServers()
                     }
                     if (token_1 == NULL || tokens_1[0] == "}")
                     {
-                        std::getline(this->_configFile, line);
                         banana = false;
+                        this->isValidClosingBracket(tokens_1[0]);
                     }
                 }
             }

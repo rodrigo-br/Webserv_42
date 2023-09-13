@@ -147,7 +147,7 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     if (this->validator.getLocationRedirect(request.getPath()))
     {
         file = request.getPath();
-        this->statusCode = StatusCodesEnum::PERMANENT_REDIRECT;
+        this->statusCode = StatusCodesEnum::FOUND;
     }
     else if (!this->validator.getMethodAllowed() && (this->validator.getPath() || this->validator.isDirectoryListing()))
     {
