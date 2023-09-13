@@ -166,6 +166,26 @@ std::map<int, std::string> ServerData::getErrorPages()
     return this->_errorPages;
 }
 
+
+std::string ServerData::getRedirectedPath(std::string locationPath)
+{
+    std::map<std::string, Location>::const_iterator it = this->_location.find(locationPath);
+
+    if (it != this->_location.end())
+        return it->second.getRedirectedPath();
+    else
+        return  this->_errorPages[404];
+}
+
+void ServerData::setRedirectedPath(std::string locationPath, std::string redirectedPath)
+{
+    std::map<std::string, Location>::iterator it = this->_location.find(locationPath);
+
+    if (it != this->_location.end())
+        it->second.setRedirectedPath(redirectedPath);
+
+}
+
 bool ServerData::getLocationRedirect(std::string locationName) const
 {
     std::map<std::string, Location>::const_iterator it = this->_location.find(locationName);

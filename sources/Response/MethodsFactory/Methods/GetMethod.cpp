@@ -46,6 +46,12 @@ std::string GetMethod::build_headers()
     std::string headers;
     headers.append("Content-Type: ");
     headers.append(this->get_content_type());
+    if (this->_isRedirect)
+    {
+        headers.append("\r\n");
+        headers.append("Location: ");
+        headers.append(this->_newLocationPath);
+    }
     headers.append("\r\n\n");
     return headers;
 }
@@ -144,10 +150,13 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     std::string file;
     char * body;
 
-    if (this->validator.getLocationRedirect(request.getPath()))
+    this->_isRedirect = this->validator.getLocationRedirect(request.getPath());
+    if (this->_isRedirect)
     {
-        file = request.getPath();
+        file = this->validator.getRedirectedPath(request.getPath());
+        this->_newLocationPath = file.substr(this->root.length());
         this->statusCode = StatusCodesEnum::FOUND;
+        request.setPath(file);
     }
     else if (!this->validator.getMethodAllowed() && (this->validator.getPath() || this->validator.isDirectoryListing()))
     {

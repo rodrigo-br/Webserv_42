@@ -42,6 +42,8 @@ class ServerData
         void setErrorPage(int erro, std::string errorPagePath);
         int  getAllowed(std::string locationPath);
         std::map<int, std::string> getErrorPages();
+        std::string getRedirectedPath(std::string locationPath);
+        void setRedirectedPath(std::string locationPath, std::string redirectedPath);
 };
 
 #endif

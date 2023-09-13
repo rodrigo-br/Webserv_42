@@ -218,6 +218,12 @@ void RequestValidator::setBody(bool body)
 	this->_requestBody = body;
 }
 
+
+std::string RequestValidator::getRedirectedPath(std::string locationPath)
+{
+    return this->_serverData.getRedirectedPath(locationPath);
+}
+
 bool RequestValidator::getPath(void) const
 {
 	return this->_path;

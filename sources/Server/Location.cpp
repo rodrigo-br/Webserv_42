@@ -1,11 +1,11 @@
 #include "classes/Location.hpp"
 
-Location::Location() : _index(""), _allowedMethods(0), _directoryListening(false), _isRedirect(false)
+Location::Location() : _index(""), _allowedMethods(0), _directoryListening(false), _isRedirect(false), _redirectedPath("")
 {
 }
 
-Location::Location(std::string index, int allowedMethods, bool directoryListening, bool isRedirect) :
-    _index(index), _allowedMethods(allowedMethods), _directoryListening(directoryListening), _isRedirect(isRedirect)
+Location::Location(std::string index, int allowedMethods, bool directoryListening, bool isRedirect, std::string redirectedPath) :
+    _index(index), _allowedMethods(allowedMethods), _directoryListening(directoryListening), _isRedirect(isRedirect), _redirectedPath(redirectedPath)
 {
 }
 
@@ -22,6 +22,7 @@ Location& Location::operator=(Location const& rhs)
         this->_allowedMethods = rhs.getAllowedMethods();
         this->_directoryListening = rhs.getDirectoryListening();
         this->_isRedirect = rhs.getIsRedirect();
+        this->_redirectedPath = rhs.getRedirectedPath();
     }
     return *this;
 }
@@ -64,4 +65,14 @@ void         Location::setIsRedirect()
 bool         Location::getIsRedirect() const
 {
     return  this->_isRedirect;
+}
+
+void Location::setRedirectedPath(std::string path)
+{
+    this->_redirectedPath = path;
+}
+
+std::string Location::getRedirectedPath() const
+{
+    return this->_redirectedPath;
 }

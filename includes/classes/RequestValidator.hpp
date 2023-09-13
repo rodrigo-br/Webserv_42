@@ -30,6 +30,7 @@ class RequestValidator
 		std::string					getRoot(void) const;
 		bool						getLocationRedirect(std::string locationName) const;
 		void 						setBody(bool body);
+		std::string					getRedirectedPath(std::string locationPath);
 
 	private:
 		HttpMethodEnum::httpMethod	methodValidator(Request& request);

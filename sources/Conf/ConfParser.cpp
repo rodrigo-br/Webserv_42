@@ -74,8 +74,15 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
             if (tokens[0].compare("redirect") == 0)
             {
                 ServerData server = this->_serversData[this->_currentServerConfig];
-                tokens[1] = server.getRoot() + "/" + tokens[1];
+                std::string bananinha = (server.getRoot() + "/" + tokens[1]);
+                tokens[1] = server.getRoot() + this->_currentLocationBlock;
                 this->_serversData[this->_currentServerConfig].setLocationRedirect( this->_currentLocationBlock );
+                this->_serversData[this->_currentServerConfig].setRedirectedPath(this->_currentLocationBlock, bananinha);
+                if (this->_validConfigurations.ValidateALocationConfiguration(tokens[0], bananinha))
+                {
+                    createOrUpdateLocationData(tokens);
+                    return true;
+                }
             }
             if (this->_validConfigurations.ValidateALocationConfiguration(tokens[0], tokens[1]))
             {
