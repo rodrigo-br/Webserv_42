@@ -144,6 +144,7 @@ void ConfParser::createServers()
                     }
                     if (tokens_1[0] == "}" || token_1 == NULL)
                     {
+                        std::getline(this->_configFile, line);
                         banana = false;
                     }
                 }
