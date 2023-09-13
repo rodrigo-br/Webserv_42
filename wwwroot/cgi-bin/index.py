@@ -17,5 +17,3 @@ print("<p>Eu sou um script CGI Python simples.</p>")
 print("</body>")
 print("</html>")
 
-while(True):
-    continue

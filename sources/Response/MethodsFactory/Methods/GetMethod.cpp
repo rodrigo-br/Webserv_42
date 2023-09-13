@@ -167,6 +167,17 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     {
         std::vector<char> buffer = this->openFileAsVector(file);
         this->_bodySize = buffer.size();
+        if (file.find("cgi_temp.html") != std::string::npos)
+        {
+            std::remove(file.c_str());
+            if (this->_bodySize <= 5)
+            {
+                file = this->root + this->validator.getErrorPage(500);
+                this->statusCode = StatusCodesEnum::INTERNAL_SERVER_ERROR;
+                buffer = this->openFileAsVector(file);
+                this->_bodySize = buffer.size();
+            }
+        }
         body = new char[this->_bodySize];
         std::copy(buffer.begin(), buffer.end(), body);
     }

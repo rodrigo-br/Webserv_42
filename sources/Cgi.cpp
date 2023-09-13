@@ -99,7 +99,7 @@ void timeoutHandler(int sign)
     kill(Cgi::childPid, SIGTERM);
 }
 
-std::string Cgi::executeCgi()
+bool Cgi::executeCgi()
 {
     std::string fullNameScript;
     pid_t       pid;
@@ -110,13 +110,13 @@ std::string Cgi::executeCgi()
     this->_fdExec = open(_fileExec.c_str(), O_CREAT | O_RDWR | O_TRUNC, 0644);
     if (this->_fdExec == -1)
     {
-        return "Status: 500\r\n\r\n";
+        return false;
     }
     pid = fork();
     Cgi::childPid = pid;
     if (pid == -1)
     {
-        return "Status: 500\r\n\r\n";
+        return false;
     }
     else if (pid == 0)
     {
@@ -132,8 +132,9 @@ std::string Cgi::executeCgi()
     {
         std::cerr << "TIMEOUT" << std::endl;
         std::cerr << "-----------------------Error executing CGI-----------------" << std::endl;
+        return false;
     }
-    return "Status: 200\r\n\r\n";
+    return true;
 }
 
 void Cgi::freeArrayOfStrings(char **arg)
