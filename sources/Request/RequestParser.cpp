@@ -86,33 +86,41 @@ size_t  RequestParser::convertChunkSize(void)
     std::string chunkSizeLine;
 
     Utils::readLine(this->_fdClient, line, CRLF, this->_isErrorRead);
+            std::cout <<  "line = " << line << std::endl;
     std::size_t chunkSize = 0;
+
     if (line == "")
         return 0;
     chunkSizeLine = line.substr(0,  line.find(" "));
+
     std::stringstream ss;
     ss << std::hex << chunkSizeLine;
     ss >> chunkSize;
+        std::cout <<  "chunkSizeLine = " << chunkSizeLine << std::endl;
     return chunkSize;
 }
 
 void RequestParser::parseRequestBodyChunked()
 {
-    std::size_t     chunkSize = convertChunkSize();
-    std::size_t		length;
+    std::size_t		length = 0;
     std::string        tempLine;
+
+    std::size_t     chunkSize = convertChunkSize();
+            std::cout <<  "chunkSize1 = " << chunkSize << std::endl;
 
     while (chunkSize > 0)
     {
         Utils::readLine(this->_fdClient, tempLine, CRLF, this->_isErrorRead);
-        this->_requestBody += tempLine;
-        length += chunkSize;
-        this->_request += tempLine + "\n";
         this->_requestBody += tempLine + "\n";
+        this->_request += tempLine + "\n";
+
+        std::cout <<  "_requestBody = " << _requestBody << std::endl;
+        length += chunkSize;
         Utils::readLine(this->_fdClient, tempLine, CRLF, this->_isErrorRead);
         chunkSize = convertChunkSize();
     }
     this->_headers["Content-Length"] = Utils::intToString(length);
+    std::cout << "Content-Length = " << length << std::endl;
 }
 
 void RequestParser::parseRequestBodyContentType(void)

@@ -103,3 +103,8 @@ void Request::setMethod(std::string method)
 {
     this->_parser.setMethod(method);
 }
+
+int Request::getContentLength() const
+{
+    return  this->_parser.getContentLength();
+}

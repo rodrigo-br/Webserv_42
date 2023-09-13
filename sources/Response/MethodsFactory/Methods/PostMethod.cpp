@@ -69,44 +69,66 @@ std::string PostMethod::get_status_msg() const
     return this->_statusCodes.getStatusMessage(this->get_status_code());
 }
 
+std::string  PostMethod::generateResponseBody( std::string fileName)
+{
+    std::string file = request.getBody();;
+    if (!file.empty())
+    {
+        std::string filePath = this->root + "/post/" + fileName;
+        std::ofstream outFile(filePath.c_str(), std::ios::binary);
+        if (outFile)
+        {
+            outFile << file;
+            outFile.close();
+            file = this->root + std::string("/post/success.html");
+            this->statusCode = StatusCodesEnum::OK;
+        }
+    }
+    else 
+    {
+        file = this->root + std::string("/post/error.html");
+        this->statusCode = StatusCodesEnum::BAD_REQUEST;
+    }
+    return file;
+}
+
 char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 {
     char *body;
     std::string file;
 
-    if (!this->validator.getMethodAllowed() && this->validator.getPath() == true)
+    if (!this->validator.getMethodAllowed() && (this->validator.getPath() || this->validator.isDirectoryListing()))
     {
         file = this->root + this->validator.getErrorPage(405);
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
+    }
+    else if (!this->validator.getPath() && !this->validator.isDirectoryListing())
+    {
+        file = this->root + this->validator.getErrorPage(404);
+        this->statusCode = StatusCodesEnum::NOT_FOUND;
     }
     else if (this->validator.getBodySizeLimit() == false)
     {
         file = this->root + this->validator.getErrorPage(413);
         this->statusCode = StatusCodesEnum::PAYLOAD_TOO_LARGE;
     }
-    else if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos)
+    else if (request.getHeader("Content-Type").find("multipart/form-data") != std::string::npos && this->validator.getPath())
+    {   
+        file = generateResponseBody( request.getFileName());
+    }
+    else if (request.getHeader("Transfer-Encoding") == "chunked" && this->validator.getPath())
+    {   
+        file = generateResponseBody("temp_chunked_body.txt");
+    }
+    else if (request.getContentLength() == 0)
     {
-        file = request.getBody();
-        std::string filePath = this->root + "/post/" + request.getFileName();
-        std::ofstream outFile(filePath.c_str(), std::ios::binary);
-        if (outFile)
-        {
-            outFile.write(file.c_str(), request.getBody().length());
-            outFile.close();
-            file = this->root + std::string("/post/success.html");
-            this->statusCode = StatusCodesEnum::OK;
-        }
-        else
-        {
-            file = this->root + std::string("/post/error.html");
-            this->statusCode = StatusCodesEnum::BAD_REQUEST; //////////////////////// troca essa porra
-
-        }
+        file = this->root + this->validator.getErrorPage(411);
+        this->statusCode = StatusCodesEnum::LENGTH_REQUIRED;
     }
     else
     {
-        file = this->root + this->validator.getErrorPage(413);
-        this->statusCode = StatusCodesEnum::LENGTH_REQUIRED;
+        file = this->root + this->validator.getErrorPage(202);
+        this->statusCode = StatusCodesEnum::ACCEPTED;
     }
     if(!file.empty())
     {
