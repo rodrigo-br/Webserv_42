@@ -144,6 +144,13 @@ char *GetMethod::BODY_BUILDER_BIIIIHHHHLLL()
     std::string file;
     char * body;
 
+        std::cout <<  "request.getPath() === " << request.getPath() << std::endl;
+        std::cout <<  std::boolalpha << " validator.getLocationRedirect === " << validator.getLocationRedirect(request.getPath()) << std::endl;
+
+    if (this->validator.getLocationRedirect(request.getPath()))
+    {
+        std::cout <<  "socorrooooooooooooooooooooooo" << std::endl;
+    }
     if (!this->validator.getMethodAllowed() && (this->validator.getPath() || this->validator.isDirectoryListing()))
     {
         file = this->root + this->validator.getErrorPage(405);

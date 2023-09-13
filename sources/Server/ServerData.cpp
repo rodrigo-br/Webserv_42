@@ -112,10 +112,8 @@ void ServerData::setLocationIndex(std::string index)
 
 void ServerData::setLocationRedirect(std::string redirect)
 {
-    std::cout << redirect << std::endl;
-        std::cout <<  "aaaaaaaaaaaaaaaa" << std::endl;
-
-    this->_location[this->_currentLocation].setIndex(redirect);
+    std::cout <<  "redirect = "<<  redirect << std::endl;
+    this->_location[redirect].setIsRedirect();
 }
 
 void ServerData::setLocationAllowedMethods(std::string allowedMethods)
@@ -148,3 +146,12 @@ std::map<int, std::string> ServerData::getErrorPages()
     return this->_errorPages;
 }
 
+bool ServerData::getLocationRedirect(std::string locationName) const
+{
+    std::map<std::string, Location>::const_iterator it = this->_location.find(locationName);
+
+    if (it != this->_location.end())
+        return it->second.getIsRedirect();
+    else
+        return  false;
+}

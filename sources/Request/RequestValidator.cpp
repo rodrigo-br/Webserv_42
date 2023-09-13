@@ -7,6 +7,7 @@ RequestValidator::~RequestValidator(void) {}
 RequestValidator &RequestValidator::requestValidator(ServerData &serverData, Request& request)
 {
 	this->_errorPages = serverData.getErrorPages();
+	this->_serverData = serverData;
 	methodValidator(request);
 	pathValidator(serverData, request);
 	bodyValidator(request);
@@ -35,10 +36,6 @@ void RequestValidator::pathValidator(ServerData &serverData, Request& request)
 	size_t		position = path.find_last_of("/");
 	size_t		len = path.length();
 
-		std::cout <<  "redirect" << serverData.getLocation("redirect") << std::endl;
-	// if (!serverData.getLocation( "index") ==   : :)
-	// {
-	// }
     if (isRootPath(path, len))
 	{
         handleRootPath(serverData, request, path, root);
@@ -282,4 +279,10 @@ void	RequestValidator::serverNamesValidator(ServerData &serverData, Request& req
 	}
 	this->_path = false;
 	this->_isDirectoryListing = false;
+}
+
+
+bool RequestValidator::getLocationRedirect(std::string locationName) const
+{
+    return this->_serverData.getLocationRedirect(locationName);
 }

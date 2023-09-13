@@ -71,6 +71,12 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
                 ServerData server = this->_serversData[this->_currentServerConfig];
                 tokens[1] = server.getRoot() + this->_currentLocationBlock + "/" + tokens[1];
             }
+            if (tokens[0].compare("redirect") == 0)
+            {
+                ServerData server = this->_serversData[this->_currentServerConfig];
+                tokens[1] = server.getRoot() + "/" + tokens[1];
+                server.setLocationRedirect( this->_currentLocationBlock );
+            }
             if (this->_validConfigurations.ValidateALocationConfiguration(tokens[0], tokens[1]))
             {
                 createOrUpdateLocationData(tokens);
@@ -241,4 +247,3 @@ std::string ConfParser::getLocation(int port, std::string locationName) const
     else
         throw std::invalid_argument("Porta não encontrada");
 }
-

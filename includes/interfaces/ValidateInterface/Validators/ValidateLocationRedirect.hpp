@@ -12,8 +12,8 @@ class ValidateLocationRedirect : public IValidateFunction
 
         virtual bool operator()(std::string &path) const
         {
-            std::cout <<  " path = "<< path << std::endl;
             struct stat info;
+
             return (path.find("..") == std::string::npos
                     && path.find("//") == std::string::npos
                     && stat(path.c_str(), &info) == 0
