@@ -20,6 +20,8 @@ class ServerData
 
     public:
         ServerData();
+        ServerData(ServerData const &src);
+        ServerData    &operator=(ServerData const &rhs);
 
         std::string getRoot() const;
         int getBodySizeLimit() const;

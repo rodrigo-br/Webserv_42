@@ -22,6 +22,26 @@ ServerData::ServerData()
     this->_configurations["body_size_limit"] = &ServerData::setBodySizeLimit;
 }
 
+ServerData::ServerData(ServerData const& src)
+{
+    *this = src;
+}
+
+ServerData& ServerData::operator=(ServerData const& rhs)
+{
+    if (this != &rhs)
+    {
+        this->_root = rhs.getRoot();
+        this->_bodySizeLimit = rhs.getBodySizeLimit();
+        this->_currentLocation = rhs._currentLocation;
+        this->_serverNames = rhs.getServerNames();
+        this->_location = rhs.getLocations();
+        this->_configurations = rhs._configurations;
+        this->_errorPages = rhs._errorPages;
+    }
+    return *this;
+}
+
 std::vector<std::string> ServerData::getServerNames() const
 {
     return this->_serverNames;
@@ -112,7 +132,7 @@ void ServerData::setLocationIndex(std::string index)
 
 void ServerData::setLocationRedirect(std::string redirect)
 {
-    std::cout <<  "redirect = "<<  redirect << std::endl;
+    std::cout <<  "setLocationRedirect TO = "<<  redirect << std::endl;
     this->_location[redirect].setIsRedirect();
 }
 

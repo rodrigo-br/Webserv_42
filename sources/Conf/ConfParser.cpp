@@ -75,7 +75,7 @@ bool ConfParser::isValidConfiguration(std::vector<std::string> tokens)
             {
                 ServerData server = this->_serversData[this->_currentServerConfig];
                 tokens[1] = server.getRoot() + "/" + tokens[1];
-                server.setLocationRedirect( this->_currentLocationBlock );
+                this->_serversData[this->_currentServerConfig].setLocationRedirect( this->_currentLocationBlock );
             }
             if (this->_validConfigurations.ValidateALocationConfiguration(tokens[0], tokens[1]))
             {
