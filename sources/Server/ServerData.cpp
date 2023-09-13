@@ -2,6 +2,7 @@
 
 ServerData::ServerData()
 {
+    this->_errorPages[202] = "/statusCodes/202.html";
     this->_errorPages[404] = "/statusCodes/404.html";
     this->_errorPages[405] = "/statusCodes/405.html";
     this->_errorPages[413] = "/statusCodes/413.html";

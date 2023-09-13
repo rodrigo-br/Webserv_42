@@ -79,6 +79,11 @@ char *DeleteMethod::BODY_BUILDER_BIIIIHHHHLLL()
             this->statusCode = StatusCodesEnum::GONE;
         }
     }
+    else if (this->validator.getMethodAllowed() && this->validator.getPath())
+    {
+        file = this->root + this->validator.getErrorPage(202);
+        this->statusCode = StatusCodesEnum::ACCEPTED;
+    }
     if (!file.empty())
     {
         std::vector<char> buffer = this->openFileAsVector(file);
