@@ -1,4 +1,5 @@
 #include "classes/ServerData.hpp"
+#include <iostream>
 
 ServerData::ServerData()
 {
@@ -14,6 +15,7 @@ ServerData::ServerData()
     this->_bodySizeLimit = 5000000;
     this->_configurations["root"] = &ServerData::setRoot;
     this->_configurations["index"] = &ServerData::setLocationIndex;
+    this->_configurations["redirect"] = &ServerData::setLocationRedirect;
     this->_configurations["directory_listing"] = &ServerData::setLocationDirectoryListening;
     this->_configurations["http_methods"] = &ServerData::setLocationAllowedMethods;
     this->_configurations["server_names"] = &ServerData::setServerNames;
@@ -106,6 +108,14 @@ void ServerData::setConfiguration(std::vector<std::string> tokens)
 void ServerData::setLocationIndex(std::string index)
 {
     this->_location[this->_currentLocation].setIndex(index);
+}
+
+void ServerData::setLocationRedirect(std::string redirect)
+{
+    std::cout << redirect << std::endl;
+        std::cout <<  "aaaaaaaaaaaaaaaa" << std::endl;
+
+    this->_location[this->_currentLocation].setIndex(redirect);
 }
 
 void ServerData::setLocationAllowedMethods(std::string allowedMethods)

@@ -35,6 +35,7 @@ class ServerData
         bool isDirectoryListingLocation(std::string locationPath);
         void setLocationAllowedMethods(std::string allowedMethods);
         void setLocationDirectoryListening(std::string directoryListening);
+        void setLocationRedirect(std::string redirect);
         void setErrorPage(int erro, std::string errorPagePath);
         int  getAllowed(std::string locationPath);
         std::map<int, std::string> getErrorPages();

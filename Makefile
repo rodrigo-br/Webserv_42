@@ -34,6 +34,9 @@ $(DIR_OBJS)/%.o: $(DIR_SOURCES)/%.cpp
 clean:
 	rm -rf $(TESTS_OBJS)
 	$(RM) $(DIR_OBJS)
+	if [ -e web_leaks.txt ]; then \
+		rm web_leaks.txt; \
+	fi
 
 fclean: clean
 	$(RM) $(NAME)

@@ -35,6 +35,10 @@ void RequestValidator::pathValidator(ServerData &serverData, Request& request)
 	size_t		position = path.find_last_of("/");
 	size_t		len = path.length();
 
+		std::cout <<  "redirect" << serverData.getLocation("redirect") << std::endl;
+	// if (!serverData.getLocation( "index") ==   : :)
+	// {
+	// }
     if (isRootPath(path, len))
 	{
         handleRootPath(serverData, request, path, root);

@@ -99,6 +99,7 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (!this->validator.getMethodAllowed() && (this->validator.getPath() || this->validator.isDirectoryListing()))
     {
+        std::cout << std::boolalpha <<  "getMethodAllowed " << this->validator.getMethodAllowed()<<  "getPath " <<this->validator.getPath() <<  "sDirectoryListing() " <<this->validator.isDirectoryListing() << std::endl;
         file = this->root + this->validator.getErrorPage(405);
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
@@ -118,7 +119,11 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else if (request.getHeader("Transfer-Encoding") == "chunked" && this->validator.getPath())
     {
-        file = generateResponseBody("temp_chunked_body.txt");
+        file = generateResponseBody("chunked_body");
+    }
+    else if (request.getContentLength() != 0 && this->validator.getPath())
+    {
+        file = generateResponseBody("body");
     }
     else if (request.getContentLength() == 0)
     {
@@ -127,7 +132,7 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
-        file = this->root + this->validator.getErrorPage(501);
+        file = this->root + this->validator.getErrorPage(500);
         this->statusCode = StatusCodesEnum::INTERNAL_SERVER_ERROR;
     }
     if(!file.empty())

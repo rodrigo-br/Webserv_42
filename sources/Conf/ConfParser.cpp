@@ -142,7 +142,7 @@ void ConfParser::createServers()
                             token_1 = std::strtok(NULL, " \n");
                         }
                     }
-                    if (tokens_1[0] == "}" || token_1 == NULL)
+                    if (token_1 == NULL || tokens_1[0] == "}")
                     {
                         std::getline(this->_configFile, line);
                         banana = false;
