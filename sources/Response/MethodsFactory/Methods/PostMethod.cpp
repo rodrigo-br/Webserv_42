@@ -118,7 +118,11 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else if (request.getHeader("Transfer-Encoding") == "chunked" && this->validator.getPath())
     {
-        file = generateResponseBody("temp_chunked_body.txt");
+        file = generateResponseBody("chunked_body");
+    }
+    else if (request.getContentLength() != 0 && this->validator.getPath())
+    {
+        file = generateResponseBody("body");
     }
     else if (request.getContentLength() == 0)
     {
@@ -127,7 +131,7 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
     }
     else
     {
-        file = this->root + this->validator.getErrorPage(501);
+        file = this->root + this->validator.getErrorPage(500);
         this->statusCode = StatusCodesEnum::INTERNAL_SERVER_ERROR;
     }
     if(!file.empty())

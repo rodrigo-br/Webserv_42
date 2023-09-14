@@ -30,7 +30,6 @@ std::map<int, ServerData>& Conf::getServersData()
     return this->_parser->getServersData();
 }
 
-
 bool Conf::criticalError()
 {
     return this->_parser->getCriticalError();

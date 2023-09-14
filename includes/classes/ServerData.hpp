@@ -20,6 +20,8 @@ class ServerData
 
     public:
         ServerData();
+        ServerData(ServerData const &src);
+        ServerData    &operator=(ServerData const &rhs);
 
         std::string getRoot() const;
         int getBodySizeLimit() const;
@@ -35,9 +37,13 @@ class ServerData
         bool isDirectoryListingLocation(std::string locationPath);
         void setLocationAllowedMethods(std::string allowedMethods);
         void setLocationDirectoryListening(std::string directoryListening);
+        void setLocationRedirect(std::string redirect);
+        bool getLocationRedirect(std::string locationName) const;
         void setErrorPage(int erro, std::string errorPagePath);
         int  getAllowed(std::string locationPath);
         std::map<int, std::string> getErrorPages();
+        std::string getRedirectedPath(std::string locationPath);
+        void setRedirectedPath(std::string locationPath, std::string redirectedPath);
 };
 
 #endif

@@ -145,6 +145,14 @@ void RequestParser::parseRequestBody(void)
     {
         parseRequestBodyContentType();
     }
+    else if (!getHeader("Content-Length").empty())
+    {
+            std::string tempLine;
+
+        Utils::readLineBody(this->_fdClient, tempLine, getContentLength(), this->_isErrorRead);
+        this->_requestBody += tempLine;
+        this->_request += tempLine + "\n";
+    }
 }
 
 void 	RequestParser::parseRequestHeader(void)

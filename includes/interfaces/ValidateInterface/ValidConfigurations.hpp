@@ -11,6 +11,7 @@
 # include "interfaces/ValidateInterface/Validators/ValidateDirectoryExist.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidateMethods.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidateLocationIndex.hpp"
+# include "interfaces/ValidateInterface/Validators/ValidateLocationRedirect.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidateGenericConfiguration.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidateServerNames.hpp"
 # include "interfaces/ValidateInterface/Validators/ValidateBodySizeLimit.hpp"

@@ -7,6 +7,7 @@ RequestValidator::~RequestValidator(void) {}
 RequestValidator &RequestValidator::requestValidator(ServerData &serverData, Request& request)
 {
 	this->_errorPages = serverData.getErrorPages();
+	this->_serverData = serverData;
 	methodValidator(request);
 	pathValidator(serverData, request);
 	bodyValidator(request);
@@ -217,6 +218,12 @@ void RequestValidator::setBody(bool body)
 	this->_requestBody = body;
 }
 
+
+std::string RequestValidator::getRedirectedPath(std::string locationPath)
+{
+    return this->_serverData.getRedirectedPath(locationPath);
+}
+
 bool RequestValidator::getPath(void) const
 {
 	return this->_path;
@@ -278,4 +285,10 @@ void	RequestValidator::serverNamesValidator(ServerData &serverData, Request& req
 	}
 	this->_path = false;
 	this->_isDirectoryListing = false;
+}
+
+
+bool RequestValidator::getLocationRedirect(std::string locationName) const
+{
+    return this->_serverData.getLocationRedirect(locationName);
 }

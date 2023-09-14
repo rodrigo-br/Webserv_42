@@ -1,4 +1,5 @@
 #include "classes/ServerData.hpp"
+#include <iostream>
 
 ServerData::ServerData()
 {
@@ -10,14 +11,36 @@ ServerData::ServerData()
     this->_errorPages[501] = "/statusCodes/501.html";
     this->_errorPages[411] = "/statusCodes/411.html";
     this->_serverNames.push_back("localhost");
+    this->_serverNames.push_back("127.0.0.1");
     this->_root = "wwwroot";
     this->_bodySizeLimit = 5000000;
     this->_configurations["root"] = &ServerData::setRoot;
     this->_configurations["index"] = &ServerData::setLocationIndex;
+    this->_configurations["redirect"] = &ServerData::setLocationRedirect;
     this->_configurations["directory_listing"] = &ServerData::setLocationDirectoryListening;
     this->_configurations["http_methods"] = &ServerData::setLocationAllowedMethods;
     this->_configurations["server_names"] = &ServerData::setServerNames;
     this->_configurations["body_size_limit"] = &ServerData::setBodySizeLimit;
+}
+
+ServerData::ServerData(ServerData const& src)
+{
+    *this = src;
+}
+
+ServerData& ServerData::operator=(ServerData const& rhs)
+{
+    if (this != &rhs)
+    {
+        this->_root = rhs.getRoot();
+        this->_bodySizeLimit = rhs.getBodySizeLimit();
+        this->_currentLocation = rhs._currentLocation;
+        this->_serverNames = rhs.getServerNames();
+        this->_location = rhs.getLocations();
+        this->_configurations = rhs._configurations;
+        this->_errorPages = rhs._errorPages;
+    }
+    return *this;
 }
 
 std::vector<std::string> ServerData::getServerNames() const
@@ -108,6 +131,11 @@ void ServerData::setLocationIndex(std::string index)
     this->_location[this->_currentLocation].setIndex(index);
 }
 
+void ServerData::setLocationRedirect(std::string redirect)
+{
+    this->_location[redirect].setIsRedirect();
+}
+
 void ServerData::setLocationAllowedMethods(std::string allowedMethods)
 {
     this->_location[this->_currentLocation].setAllowedMethods(std::atoi(allowedMethods.c_str()));
@@ -138,3 +166,32 @@ std::map<int, std::string> ServerData::getErrorPages()
     return this->_errorPages;
 }
 
+
+std::string ServerData::getRedirectedPath(std::string locationPath)
+{
+    std::map<std::string, Location>::const_iterator it = this->_location.find(locationPath);
+
+    if (it != this->_location.end())
+        return it->second.getRedirectedPath();
+    else
+        return  this->_errorPages[404];
+}
+
+void ServerData::setRedirectedPath(std::string locationPath, std::string redirectedPath)
+{
+    std::map<std::string, Location>::iterator it = this->_location.find(locationPath);
+
+    if (it != this->_location.end())
+        it->second.setRedirectedPath(redirectedPath);
+
+}
+
+bool ServerData::getLocationRedirect(std::string locationName) const
+{
+    std::map<std::string, Location>::const_iterator it = this->_location.find(locationName);
+
+    if (it != this->_location.end())
+        return it->second.getIsRedirect();
+    else
+        return  false;
+}

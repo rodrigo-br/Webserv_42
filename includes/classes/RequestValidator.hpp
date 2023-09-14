@@ -27,10 +27,10 @@ class RequestValidator
 		bool						isDirectoryListing();
 		bool						getBodySizeLimit(void) const;
 		std::string					getErrorPage(int erro);
-
 		std::string					getRoot(void) const;
-
+		bool						getLocationRedirect(std::string locationName) const;
 		void 						setBody(bool body);
+		std::string					getRedirectedPath(std::string locationPath);
 
 	private:
 		HttpMethodEnum::httpMethod	methodValidator(Request& request);
@@ -59,6 +59,7 @@ class RequestValidator
 		bool						_methodAllowed;
 		bool						_bodySizeLimit;
 		std::string					root;
+		ServerData					_serverData;
 };
 
 #endif

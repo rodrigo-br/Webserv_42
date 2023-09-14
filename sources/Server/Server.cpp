@@ -30,11 +30,7 @@ void Server::closeSockets()
 
 void Server::sendClientResponse(int clientSocket, int i, Request &request, RequestValidator &validator)
 {
-	std::cout << "Sending response to client" << std::endl;
-
-
 	Response response(new ResponseBuilder(request, validator));
-	std::cout << std::endl<<  "response ===== "<< response.getResponse() << std::endl << std::endl;
 	if (Utils::checkSend(send(clientSocket, response.getResponse(), response.getSize(), 0), "Send"))
 	{
 		close(clientSocket);
@@ -59,7 +55,6 @@ void Server::sendClientResponse(int clientSocket, int i, Request &request, Reque
 
 void Server::processClientRequest(int clientSocket, int i, Request &request, RequestValidator &validator)
 {
-	std::cout << "Reading client request" << std::endl;
 	request = Request().createParsedMessage(clientSocket, this->isErrorRead);
 	if (this->isErrorRead)
 	{
@@ -67,8 +62,6 @@ void Server::processClientRequest(int clientSocket, int i, Request &request, Req
 		clienstSocks.erase(clienstSocks.begin() + i);
 		return ;
 	}
-	std::cout << "****************************mensagem gerada**************************" << std::endl;
-	std::cout << request.getMensageRequest() << std::string(42, '-') << '\n' << std::endl;
 	std::string cgi = "/cgi-bin";
 	if (!this->conf.getLocation(request.getPortNumber(), cgi).empty())
 	{
@@ -142,7 +135,7 @@ void Server::acceptNewClient(int sockfd)
 	}
 	else
 	{
-		std::cout << "Failed to accept new client" << std::endl;
+		std::cerr << "Failed to accept new client" << std::endl;
 	}
 }
 

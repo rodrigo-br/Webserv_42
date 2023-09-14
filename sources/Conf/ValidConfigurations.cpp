@@ -11,6 +11,7 @@ ValidConfigurations::ValidConfigurations()
     this->_serverConfigurations["body_size_limit"] = new ValidateBodySizeLimit();
     this->_locationConfigurations["http_methods"] = new ValidateMethods();
     this->_locationConfigurations["index"] = new ValidateLocationIndex();
+    this->_locationConfigurations["redirect"] = new ValidateLocationRedirect();
     this->_locationConfigurations["directory_listing"] = new ValidateGenericConfiguration("on");
     this->_locationConfigurations["cgi_pass"] = new ValidateGenericConfiguration(".py");
 }
