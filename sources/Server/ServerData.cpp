@@ -11,6 +11,7 @@ ServerData::ServerData()
     this->_errorPages[501] = "/statusCodes/501.html";
     this->_errorPages[411] = "/statusCodes/411.html";
     this->_serverNames.push_back("localhost");
+    this->_serverNames.push_back("127.0.0.1");
     this->_root = "wwwroot";
     this->_bodySizeLimit = 5000000;
     this->_configurations["root"] = &ServerData::setRoot;
@@ -132,7 +133,6 @@ void ServerData::setLocationIndex(std::string index)
 
 void ServerData::setLocationRedirect(std::string redirect)
 {
-    std::cout <<  "setLocationRedirect TO = "<<  redirect << std::endl;
     this->_location[redirect].setIsRedirect();
 }
 

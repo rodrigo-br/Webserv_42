@@ -99,7 +99,6 @@ char *PostMethod::BODY_BUILDER_BIIIIHHHHLLL()
 
     if (!this->validator.getMethodAllowed() && (this->validator.getPath() || this->validator.isDirectoryListing()))
     {
-        std::cout << std::boolalpha <<  "getMethodAllowed " << this->validator.getMethodAllowed()<<  "getPath " <<this->validator.getPath() <<  "sDirectoryListing() " <<this->validator.isDirectoryListing() << std::endl;
         file = this->root + this->validator.getErrorPage(405);
         this->statusCode = StatusCodesEnum::METHOD_NOT_ALLOWED;
     }
