@@ -1,9 +1,15 @@
-[![Português](https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/22px-Flag_of_Brazil.svg.png)](READMEPT.md) **PT**
+<p align="center">
+  <a href="READMEPT.md">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/22px-Flag_of_Brazil.svg.png" alt="Português">
+  <strong>PT</strong>
+  </a>
+</p>
+
 <h1 align=center>Webserv</h1>
 
 ## About the implementation
 
-a project to put pictures of our dogs on the web
+A server developed by   <a href="https://github.com/leaozim">Larissa</a>  and <a href="https://github.com/rodrigo-br">Rodrigo</a>, dedicated to sharing pictures of their dogs on the web.
 
 <h4 align=center>
 	<b>Emily e Nico</b>
