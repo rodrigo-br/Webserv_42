@@ -1,9 +1,17 @@
-[![English](https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/22px-Flag_of_the_United_States.svg.png)](README.md) **English**
+<p align="center">
+  <a href="README.md">
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/22px-Flag_of_the_United_States.svg.png">
+	<strong>EN</strong>
+  </a>
+</p>
+
 <h1 align=center>Webserv</h1>
 
 ## Sobre a implementação
 
-Um projeto para colocar fotos dos nossos cães na web.
+Um servidor desenvolvido por <a href='https://github.com/leaozim'>Larissa</a> e <a href='https://github.com/rodrigo-br'>Rodrigo</a>, dedicado a compartilhar fotos de seus cães na web.
+
+
 
 <h4 align=center>
 	<b>Emily e Nico</b>
