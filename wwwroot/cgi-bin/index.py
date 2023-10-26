@@ -24,6 +24,6 @@ print("</html>")
 #pri
 
 # Loop error:
-while(True):
-    continue
+# while(True):
+#     continue
 
