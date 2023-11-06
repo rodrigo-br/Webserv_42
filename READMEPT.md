@@ -63,6 +63,14 @@ Para compilar o projeto, siga estas etapas:
 ./webserv [arquivo de configuração]
 ```
 
+## Como testar o Webserv
+
+1. Acesse diretamente as rotas configuradas no arquivo "conf/default.conf" no navegador web Firefox.
+
+2. Utilize as ferramentas de desenvolvedor do navegador para inspecionar as solicitações e respostas HTTP.
+
+3. Experimente ferramentas de terceiros, como Postman, Insomnia ou o comando "curl", para enviar solicitações HTTP personalizadas e verificar as respostas.
+
 ## Sobre a configuração
 
 - Arquivo de Configuração Padrão

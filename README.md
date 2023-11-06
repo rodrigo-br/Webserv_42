@@ -61,6 +61,15 @@ To compile the project, follow these steps:
 ./webserv [configuration file] 
 ```
 
+## How to test Webserv
+
+1. Access the routes configured in the "conf/default.conf" file directly in the Firefox web browser.
+
+2. Use browser developer tools to inspect HTTP requests and responses.
+
+3. Try third-party tools such as Postman, Insomnia, or the "curl" command to send custom HTTP requests and check the responses.
+
+
 ## About configuration
 
 - Default Configuration File
