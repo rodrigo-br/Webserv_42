@@ -174,4 +174,19 @@ location /directory {
     }
 ```
 
+## Exemplo de algumas rotas configuradas
+
+<p align="center">
+    <img src="wwwroot/assets/emily.png" alt="page" style="display: block; margin: auto;">
+</p>
+
+
+<p align="center">
+    <img src="wwwroot/assets/pagina_de_erro1.png" alt="error1" style="display: block; margin: auto;">
+</p>
+
+<p align="center">
+    <img src="wwwroot/assets/pagina_de_erro2.png" alt="error2" style="display: block; margin: auto;">
+</p>
+
 
